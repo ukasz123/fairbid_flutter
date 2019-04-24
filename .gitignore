@@ -1,0 +1,12 @@
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+
+doc/
+org.eclipse.buildship.core.prefs
+Flutter.podspec
+flutter_export_environment.sh

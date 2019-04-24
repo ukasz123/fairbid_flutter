@@ -1,0 +1,24 @@
+name: fairbid_flutter_example
+version: 0.0.1
+description: Demonstrates how to use the fairbid_flutter plugin.
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.2.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  rxdart: ^0.22.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  fairbid_flutter:
+    path: ../
+
+flutter:
+  uses-material-design: true

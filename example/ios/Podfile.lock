@@ -1,0 +1,29 @@
+PODS:
+  - fairbid_flutter (0.0.1):
+    - FairBidSDK (= 2.5.0)
+    - Flutter
+  - FairBidSDK (2.5.0)
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
+  - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  trunk:
+    - FairBidSDK
+
+EXTERNAL SOURCES:
+  fairbid_flutter:
+    :path: ".symlinks/plugins/fairbid_flutter/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  fairbid_flutter: 6b1fb7586d044360642a73bab72c39ab85ee9641
+  FairBidSDK: ba6f7ee581149cfb78c0892981d076e3c93fa53a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+
+PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
+
+COCOAPODS: 1.8.4
