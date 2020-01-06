@@ -62,7 +62,7 @@ class FairBidInternal {
   Future<bool> _available(AdType adType, String placement) {
     assert(adType != null);
     assert(placement != null && placement.isNotEmpty);
-    if (!_started.isCompleted){
+    if (!_started.isCompleted) {
       return Future.value(false);
     }
     return _channel.invokeMethod("isAvailable", <String, String>{
@@ -88,14 +88,15 @@ class FairBidInternal {
     if (eventType == null || adType == null) {
       return null;
     }
-    ImpressionData impressionData =impressionDataRaw != null ? ImpressionData._fromMap(adType, impressionDataRaw) : null;
+    ImpressionData impressionData = impressionDataRaw != null
+        ? ImpressionData._fromMap(adType, impressionDataRaw)
+        : null;
     List<dynamic> extras = eventData.length > 4 ? eventData.sublist(4) : null;
-    return AdEvent._(adType, placement, eventType,impressionData, extras);
+    return AdEvent._(adType, placement, eventType, impressionData, extras);
   }
-  
 
   Future<void> _request(AdType type, String placement) async {
-    if (!_started.isCompleted){
+    if (!_started.isCompleted) {
       throw FairBidSDKNotStartedException();
     }
     await _channel.invokeMethod("request", <String, String>{
@@ -104,8 +105,9 @@ class FairBidInternal {
     });
   }
 
-  Future<void> _show(AdType type, String placement, {Map<String, String> extraOptions}) async {
-    if (!_started.isCompleted){
+  Future<void> _show(AdType type, String placement,
+      {Map<String, String> extraOptions}) async {
+    if (!_started.isCompleted) {
       throw FairBidSDKNotStartedException();
     }
     await _channel.invokeMethod("show", <String, Object>{
@@ -114,9 +116,11 @@ class FairBidInternal {
       "extraOptions": extraOptions,
     });
   }
-  static Future<int> _getImpressionDepth(AdType type) => _channel.invokeMethod("getImpressionDepth", <String, Object>{
-    "adType": _adTypeToName(type),
-  });
+
+  static Future<int> _getImpressionDepth(AdType type) =>
+      _channel.invokeMethod("getImpressionDepth", <String, Object>{
+        "adType": _adTypeToName(type),
+      });
 
   InterstitialAd prepareInterstitial(String placementId) =>
       InterstitialAd._(sdk: this, placement: placementId);
@@ -124,35 +128,36 @@ class FairBidInternal {
   RewardedAd prepareRewarded(String placement) =>
       RewardedAd._(sdk: this, placement: placement);
 
-
   BannerAd prepareBanner(String placement) =>
       BannerAd._(this, placementId: placement);
-
 }
+
 /// Interstitials are static or video ads presented before, during or after the user interacts with your app.
 /// The user can view and then immediately dismiss them. This is a non-rewarded format for the user.
-/// 
+///
 /// Official documentation: [iOS](https://dev-ios.fyber.com/docs/interstitial), [Android](https://dev-android.fyber.com/docs/interstitial).
 class InterstitialAd extends _AdWrapper {
   InterstitialAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.interstitial, placement);
 
   /// Impression depth represents the amount of impressions of interstitial ads.
-  static Future<int> get impressionDepth => FairBidInternal._getImpressionDepth(AdType.interstitial);
+  static Future<int> get impressionDepth =>
+      FairBidInternal._getImpressionDepth(AdType.interstitial);
 }
+
 /// Rewarded ads are an engaging ad format that shows a short video ad to the user and in exchange the user will earn a reward. The user must consent and watch the video completely through to the end in order to earn the reward.
-/// 
+///
 /// Official documentation: [iOS](https://dev-ios.fyber.com/docs/rewarded-ads), [Android](https://dev-android.fyber.com/docs/rewarded-video).
 class RewardedAd extends _AdWrapper {
   RewardedAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.rewarded, placement);
 
-
-  Future<void> showWithSSR({Map<String, String> serverSideRewarding}) => 
-  _sdk._show(AdType.rewarded, placementId, extraOptions: serverSideRewarding);
+  Future<void> showWithSSR({Map<String, String> serverSideRewarding}) => _sdk
+      ._show(AdType.rewarded, placementId, extraOptions: serverSideRewarding);
 
   /// Impression depth represents the amount of impressions of rewarded ads.
-  static Future<int> get impressionDepth => FairBidInternal._getImpressionDepth(AdType.rewarded);
+  static Future<int> get impressionDepth =>
+      FairBidInternal._getImpressionDepth(AdType.rewarded);
 }
 
 /// Used for displaying banner ad near top and bottom edges of the screen
@@ -165,7 +170,8 @@ class BannerAd with _EventsProvider {
 
   /// Loads and shows banner ad
   ///
-  Future<void> show({BannerAlignment alignment = BannerAlignment.bottom}) async {
+  Future<void> show(
+      {BannerAlignment alignment = BannerAlignment.bottom}) async {
     await FairBidInternal._channel
         .invokeMethod('showAlignedBanner', <String, String>{
       'placement': this.placementId,
@@ -182,7 +188,8 @@ class BannerAd with _EventsProvider {
   }
 
   /// Impression depth represents the amount of impressions of banner ads.
-  static Future<int> get impressionDepth => FairBidInternal._getImpressionDepth(AdType.banner);
+  static Future<int> get impressionDepth =>
+      FairBidInternal._getImpressionDepth(AdType.banner);
 
   @override
   AdType get _type => AdType.banner;
@@ -198,6 +205,6 @@ class FairBidSDKNotStartedException implements Exception {
 
   @override
   String toString() {
-  return "FairBid SDK has not been started";
-   }
+    return "FairBid SDK has not been started";
+  }
 }

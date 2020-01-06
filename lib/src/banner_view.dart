@@ -9,7 +9,8 @@ import 'package:meta/meta.dart';
 // shared channel
 const MethodChannel _channel = FairBidInternal.methodCallChannel;
 
-const EventChannel _metadataChannel = EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
+const EventChannel _metadataChannel =
+    EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
 
 const int _defaultBannerHeight = 50;
 
@@ -52,7 +53,8 @@ class _NativeBannerWrapper extends StatefulWidget {
 
   final Orientation orientation;
 
-  const _NativeBannerWrapper({Key key, this.placement, this.viewConstraints, this.orientation})
+  const _NativeBannerWrapper(
+      {Key key, this.placement, this.viewConstraints, this.orientation})
       : super(key: key);
 
   @override
@@ -80,8 +82,10 @@ class _FBBannerState extends State<_NativeBannerWrapper> {
           bannerParams,
         )
         .then((dynamicL) => dynamicL.cast<double>());
-    _sizeStream = _metadataChannel.receiveBroadcastStream(widget.placement).map((data) => (data as List<dynamic>).cast<double>()).asBroadcastStream();
-    
+    _sizeStream = _metadataChannel
+        .receiveBroadcastStream(widget.placement)
+        .map((data) => (data as List<dynamic>).cast<double>())
+        .asBroadcastStream();
   }
 
   @override
@@ -98,7 +102,8 @@ class _FBBannerState extends State<_NativeBannerWrapper> {
       future: _loadFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          double width = snapshot.data[0] <= 0 ? double.infinity : snapshot.data[0];
+          double width =
+              snapshot.data[0] <= 0 ? double.infinity : snapshot.data[0];
           double height = snapshot.data[1];
           PlatformViewCreatedCallback callback =
               (id) => print("Banner view created: $id");
@@ -119,16 +124,15 @@ class _FBBannerState extends State<_NativeBannerWrapper> {
             );
           }
           return StreamBuilder<List<double>>(
-            stream: _sizeStream,
-            initialData: [width, height],
-            builder: (context, snapshot) {
-              return SizedBox(
-                width: snapshot.data[0],
-                height: snapshot.data[1],
-                child: nativeView,
-              );
-            }
-          );
+              stream: _sizeStream,
+              initialData: [width, height],
+              builder: (context, snapshot) {
+                return SizedBox(
+                  width: snapshot.data[0],
+                  height: snapshot.data[1],
+                  child: nativeView,
+                );
+              });
         } else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(6.0),

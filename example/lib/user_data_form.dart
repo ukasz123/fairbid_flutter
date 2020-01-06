@@ -46,10 +46,9 @@ class __UserDataFormFieldsState extends State<_UserDataFormFields> {
                   ))
               .toList(),
           onChanged: (gender) => setState(() {
-                widget.data.gender = gender;
-              }),
+            widget.data.gender = gender;
+          }),
         ),
-        
         TextFormField(
           initialValue: "${widget.data.location}",
           decoration: InputDecoration(labelText: "Location"),

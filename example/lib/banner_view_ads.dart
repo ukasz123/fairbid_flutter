@@ -58,12 +58,12 @@ class _BannerViewAdsState extends State<BannerViewAds> {
               child: Column(children: [
                 FittedBox(child: Text(placement)),
                 Container(
-                    alignment: Alignment.center,
-                    color: Color.fromARGB(124, 100, 200, 0),
-                    child: BannerView(
-                      placement: placement,
-                    ),
+                  alignment: Alignment.center,
+                  color: Color.fromARGB(124, 100, 200, 0),
+                  child: BannerView(
+                    placement: placement,
                   ),
+                ),
                 SizedBox(
                   height: 2,
                 )

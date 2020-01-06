@@ -14,15 +14,18 @@ class AdEvent {
   final AdEventType eventType;
 
   /// The [ImpressionData] associated with the event containing detailed information for impression.
-  /// 
+  ///
   /// May be null.
   final ImpressionData impressionData;
+
   /// _(Optional)_ Extra data related to the event.
   ///
   /// See description of [AdEventType]s for extra information.
   final List<dynamic> payload;
 
-  const AdEvent._(this.adType, this.placementId, this.eventType, this.impressionData, [this.payload])
+  const AdEvent._(
+      this.adType, this.placementId, this.eventType, this.impressionData,
+      [this.payload])
       : assert(adType != null),
         assert(eventType != null),
         assert(placementId != null && placementId != '');
@@ -94,7 +97,7 @@ enum AdEventType {
 
   /// Rewarded ad was watched by the user.
   ///
-  /// Triggered for [AdType.rewarded] placements only. 
+  /// Triggered for [AdType.rewarded] placements only.
   /// The [AdEvent.payload] list contains a [bool] value at index 0 that reflects whether user should be rewarded for watching the ad.
   completion,
 
@@ -102,8 +105,9 @@ enum AdEventType {
   ///
   /// Triggered for [AdType.banner] placements.
   error,
+
   /// Request for ad has been started.
-  /// 
+  ///
   /// Triggered for placements of all [AdType]s.
   request,
 }
@@ -146,6 +150,7 @@ mixin _EventsProvider {
     }
     return _eventsStream;
   }
+
   /// Stream of [AdEventType]s that are related only to the placement described by the instance of this class.
   Stream<AdEventType> get simpleEvents =>
       this.events.map((event) => event.eventType).asBroadcastStream();
@@ -163,9 +168,9 @@ enum PriceAccuracy {
 }
 
 /// Detailed information for each impression.
-/// 
+///
 /// Contains granular details to allow you to analyse and optimize both your ad monetization and user acquisition strategies.
-/// 
+///
 /// Relevant only to [AdEventType.show] and [AdEventType.showFailure] events.
 /// Official documentation: [iOS](https://dev-ios.fyber.com/docs/impression-level-data), [Android](https://dev-android.fyber.com/docs/impression-level-data).
 class ImpressionData {
@@ -232,7 +237,7 @@ class ImpressionData {
     @required this.campaignId,
     @required this.impressionDepth,
   });
-  
+
   factory ImpressionData._fromMap(AdType type, Map<String, dynamic> data) {
     var accuracyName = data['priceAccuracy'] as String;
     PriceAccuracy accuracy = PriceAccuracy.undisclosed;
@@ -278,6 +283,6 @@ class ImpressionData {
 
   @override
   String toString() {
-  return "ImpressionData($impressionId): {$priceAccuracy, $netPayout, $currency, $advertiserDomain, $campaignId, $creativeId, $demandSource, $networkInstanceId, $renderingSdk, $renderingSdkVersion, $impressionDepth}";
-   }
+    return "ImpressionData($impressionId): {$priceAccuracy, $netPayout, $currency, $advertiserDomain, $campaignId, $creativeId, $demandSource, $networkInstanceId, $renderingSdk, $renderingSdkVersion, $impressionDepth}";
+  }
 }

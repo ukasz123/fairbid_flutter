@@ -31,12 +31,13 @@ class FairBid {
 
   /// Prepares FairBid SDK for running with provided [Options].
   static FairBid forOptions(Options options) {
-      FairBid instance = FairBid._(options);
-      return instance;
+    FairBid instance = FairBid._(options);
+    return instance;
   }
-      FairBid._(Options options): assert(options != null),
+
+  FairBid._(Options options)
+      : assert(options != null),
         _delegate = FairBidInternal.forOptions(options);
-        
 
   /// Returns a [Future] that completes to the version of integrated FairBid SDK.
   static Future<String> get version => FairBidInternal.platformVersion;

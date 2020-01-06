@@ -14,7 +14,9 @@ class GDPRControls extends StatelessWidget {
       children: <Widget>[
         OutlineButton(
           onPressed: () async {
-            await GDPR.updateConsent(grantsConsent: true, consentString: "IABCompliantConstentString");
+            await GDPR.updateConsent(
+                grantsConsent: true,
+                consentString: "IABCompliantConstentString");
             print("GDPR consent granted");
           },
           child: Text("Grant consent"),

@@ -173,7 +173,8 @@ class AdActions extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        IconButton(tooltip: 'Request ad',
+        IconButton(
+          tooltip: 'Request ad',
           onPressed: requestAction,
           icon: Icon(Icons.file_download),
         ),

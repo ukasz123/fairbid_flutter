@@ -15,11 +15,13 @@ abstract class _AdWrapper with _EventsProvider {
 
   /// Returns stream of availability changes. Listening to this stream is preferred
   /// if you need to know whether ad is available as soon as possible.
-  Stream<bool> get availabilityStream => _startWithFuture(isAvailable, simpleEvents)
+  Stream<bool> get availabilityStream => _startWithFuture(
+          isAvailable, simpleEvents)
       .where((event) =>
           event == AdEventType.available || event == AdEventType.unavailable)
       .map((event) => event == AdEventType.available)
       .asBroadcastStream();
+
   /// Requests for the fill for [placementId]. It has to be called before [show].
   /// Consider calling this method as soon as possible to get the fill for showing when ad should be shown in your app flow.
   Future<void> request() => _sdk._request(_type, placementId);
@@ -31,6 +33,7 @@ abstract class _AdWrapper with _EventsProvider {
 
   final AdType _type;
 }
+
 // utility method - returns the stream with a first element being result of future passed and the rest elements coming from the tail stream
 Stream<T> _startWithFuture<T>(Future<T> first, Stream<T> tail) async* {
   yield await first;
@@ -38,6 +41,7 @@ Stream<T> _startWithFuture<T>(Future<T> first, Stream<T> tail) async* {
     yield t;
   }
 }
+
 // checking if placementId is a correct number
 var _idRegExp = RegExp(r'^[1-9][0-9]*$');
 bool _isCorrectId(String id) => _idRegExp.hasMatch(id);

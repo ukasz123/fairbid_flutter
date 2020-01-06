@@ -1,5 +1,5 @@
 # fairbid_flutter
-Unofficial plugin for [FairBid 2.x SDK](https://www.fyber.com/meet-the-new-fyber-fairbid/) from Fyber
+Unofficial plugin for [FairBid 2.x SDK](https://www.fyber.com/meet-the-new-fyber-fairbid/) from Fyber - the advertisement mediation platform. Supports banner, interstitial and rewarded video ads.
 
 ## Getting Started
 

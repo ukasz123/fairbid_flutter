@@ -115,7 +115,12 @@ class _MyAppState extends State<MyApp> {
                       title: Text("Ads control"),
                       subtitle: _sdk != null
                           ? ImpressionPresenter(
-                              [AdType.interstitial, AdType.rewarded], impressionsStream, [InterstitialAd.impressionDepth, RewardedAd.impressionDepth])
+                              [AdType.interstitial, AdType.rewarded],
+                              impressionsStream,
+                              [
+                                InterstitialAd.impressionDepth,
+                                RewardedAd.impressionDepth
+                              ])
                           : null,
                       content: _sdk != null
                           ? _buildSdkWidgets(context)
@@ -125,8 +130,8 @@ class _MyAppState extends State<MyApp> {
                       isActive: _sdk != null,
                       title: Text("Banners control"),
                       subtitle: _sdk != null
-                          ? ImpressionPresenter(
-                              [AdType.banner], impressionsStream, [BannerAd.impressionDepth])
+                          ? ImpressionPresenter([AdType.banner],
+                              impressionsStream, [BannerAd.impressionDepth])
                           : null,
                       content:
                           _sdk != null ? BannerAds(sdk: _sdk) : Container(),
@@ -224,23 +229,33 @@ class _MyAppState extends State<MyApp> {
 }
 
 class ImpressionPresenter extends StatelessWidget {
-
   final List<AdType> adTypes;
   final Stream<ImpressionData> impressions;
   final List<Future<int>> initialImpressions;
 
-  const ImpressionPresenter(this.adTypes, this.impressions, this.initialImpressions, {Key key}) : super(key: key);
+  const ImpressionPresenter(
+      this.adTypes, this.impressions, this.initialImpressions,
+      {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      for (var index = 0; index < adTypes.length; index++) StreamBuilder<int>(
-        initialData: 0,
-        stream: Observable.concat([Observable.fromFuture(initialImpressions[index]), Observable(impressions.where((imp)=> imp.placementType == adTypes[index]).map((imp)=>imp.impressionDepth))]),
-        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-          return Chip(label: Text('${snapshot.data}'));
-        },
-      ),
-    ],);
+    return Row(
+      children: <Widget>[
+        for (var index = 0; index < adTypes.length; index++)
+          StreamBuilder<int>(
+            initialData: 0,
+            stream: Observable.concat([
+              Observable.fromFuture(initialImpressions[index]),
+              Observable(impressions
+                  .where((imp) => imp.placementType == adTypes[index])
+                  .map((imp) => imp.impressionDepth))
+            ]),
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+              return Chip(label: Text('${snapshot.data}'));
+            },
+          ),
+      ],
+    );
   }
 }
