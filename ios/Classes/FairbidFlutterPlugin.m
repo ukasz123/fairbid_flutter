@@ -62,6 +62,10 @@ BannerDelegateImpl                      *_bannerDelegate;
         [self destroyAlignedBanner:arguments result:result];
     } else if ([@"getImpressionDepth" isEqualToString:call.method]) {
         [self getImpressionDepth:arguments result:result];
+    } else if ([@"updateCCPA" isEqualToString:call.method]) {
+        [self updateCCPAString:arguments result:result];
+    } else if ([@"clearCCPA" isEqualToString:call.method]) {
+        [self clearCCPAString:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -167,6 +171,17 @@ BannerDelegateImpl                      *_bannerDelegate;
 
 - (void)clearGDPR:(FlutterResult)result {
     [[FairBid user] clearGDPRConsent];
+    result(nil);
+}
+
+- (void)updateCCPAString:(NSDictionary *)arguments result:(FlutterResult) result {
+    NSString        *ccpaString = arguments[@"consentString"];
+    [FairBid user].IABUSPrivacyString = ccpaString;
+    result(nil);
+}
+
+- (void)clearCCPAString:(FlutterResult)result {
+    [[FairBid user] clearIABUSPrivacyString];
     result(nil);
 }
 

@@ -16,7 +16,7 @@ Flutter plugin for FairBid 2.x.x
   s.public_header_files = 'Classes/**/*.h'
 
   s.dependency 'Flutter'
-  s.dependency 'FairBidSDK', '2.5.0'
+  s.dependency 'FairBidSDK', '2.6.0'
 
   s.ios.deployment_target = '8.0'
 end

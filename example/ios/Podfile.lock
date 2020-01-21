@@ -1,8 +1,8 @@
 PODS:
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (= 2.5.0)
+    - FairBidSDK (= 2.6.0)
     - Flutter
-  - FairBidSDK (2.5.0)
+  - FairBidSDK (2.6.0)
   - Flutter (1.0.0)
 
 DEPENDENCIES:
@@ -20,8 +20,8 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  fairbid_flutter: 6b1fb7586d044360642a73bab72c39ab85ee9641
-  FairBidSDK: ba6f7ee581149cfb78c0892981d076e3c93fa53a
+  fairbid_flutter: 60cac1d4a5b3dea273aae1ea3970023fde5fcf61
+  FairBidSDK: cc29bc57d1e987de4389106448132f94cc4a4c4c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
 
 PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271

@@ -1,7 +1,7 @@
 import 'package:fairbid_flutter_example/banner_view_ads.dart';
 import 'package:fairbid_flutter_example/full_screen_ads.dart';
 import 'package:fairbid_flutter_example/banner_ads.dart';
-import 'package:fairbid_flutter_example/gdpr_controls.dart';
+import 'package:fairbid_flutter_example/privacy_controls.dart';
 import 'package:fairbid_flutter_example/user_data_form.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';

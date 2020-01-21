@@ -104,8 +104,12 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             this.invokeShowAlignedBanner(call, result);
         } else if (Utils.areEqual(call.method, "destroyAlignedBanner")) {
             this.invokeDestroyAlignedBanner(call, result);
-        } else if (Utils.areEqual(call.method, "getImpressionDepth")){
+        } else if (Utils.areEqual(call.method, "getImpressionDepth")) {
             this.invokeGetImpressionDepth(call, result);
+        } else if (Utils.areEqual(call.method, "updateCCPA")) {
+            this.invokeCCPAStringUpdate(call, result);
+        } else if (Utils.areEqual(call.method, "clearCCPA")) {
+            this.invokeClearCCPAString(result);
         } else {
             result.notImplemented();
         }
@@ -323,6 +327,17 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         UserInfo.setUserId((String) call.argument("id"));
 
+        result.success(null);
+    }
+
+    private void invokeClearCCPAString(MethodChannel.Result result) {
+        UserInfo.clearIabUsPrivacyString(this.registrar.activeContext());
+        result.success(null);
+    }
+
+    private void invokeCCPAStringUpdate(MethodCall call, MethodChannel.Result result) {
+        String ccpaString = call.argument("ccpaString");
+        UserInfo.setIabUsPrivacyString(ccpaString, this.registrar.activeContext());
         result.success(null);
     }
 

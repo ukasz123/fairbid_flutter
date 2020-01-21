@@ -6,7 +6,7 @@ part 'events.dart';
 
 part 'options.dart';
 part 'ad_wrapper.dart';
-part 'gdpr.dart';
+part 'privacy.dart';
 part 'user_data.dart';
 
 class FairBidInternal {

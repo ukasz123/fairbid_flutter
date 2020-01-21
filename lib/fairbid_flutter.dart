@@ -15,7 +15,7 @@ export 'src/internal.dart'
         InterstitialAd,
         RewardedAd,
         AdEventType,
-        GDPR,
+        PrivacySettings,
         UserData,
         Gender,
         Location,

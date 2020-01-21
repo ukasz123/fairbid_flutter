@@ -1,6 +1,6 @@
 name: fairbid_flutter
 description: Unofficial Flutter plugin for FairBid 2 SDK - the advertisement mediation platform. Supports banner, interstitial and rewarded video ads.
-version: 0.5.2
+version: 0.6.0
 homepage: https://github.com/ukasz123/fairbid_flutter
 
 environment:
