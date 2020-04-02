@@ -6,66 +6,114 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
+import '../fairbid_flutter.dart';
+
 // shared channel
 const MethodChannel _channel = FairBidInternal.methodCallChannel;
 
 const EventChannel _metadataChannel =
     EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
 
-const int _defaultBannerHeight = 50;
+enum _BannerType { BANNER, RECTANGLE }
+
+typedef Widget ErrorWidgetBuilder(BuildContext context, Object error);
 
 /// ⚠️This is an **experimental feature**. Use with caution as it may lead to fraud-like behavior of the app.
 @experimental
 class BannerView extends StatelessWidget {
   final String placement;
+  final FairBid sdk;
+  final _BannerType type;
+  final WidgetBuilder placeholderBuilder;
+  final ErrorWidgetBuilder errorWidgetBuilder;
 
-  const BannerView({Key key, this.placement}) : super(key: key);
+  const BannerView._(
+      {Key key,
+      this.placement,
+      this.sdk,
+      this.placeholderBuilder,
+      this.errorWidgetBuilder,
+      this.type})
+      : super(key: key);
+
+  factory BannerView.rectangle(String placement, FairBid sdk,
+          {WidgetBuilder placeholderBuilder,
+          ErrorWidgetBuilder errorWidgetBuilder}) =>
+      BannerView._(
+        placement: placement,
+        sdk: sdk,
+        placeholderBuilder: placeholderBuilder,
+        errorWidgetBuilder: errorWidgetBuilder,
+        type: _BannerType.RECTANGLE,
+      );
+
+  factory BannerView.banner(String placement, FairBid sdk,
+          {WidgetBuilder placeholderBuilder,
+          ErrorWidgetBuilder errorWidgetBuilder}) =>
+      BannerView._(
+        placement: placement,
+        sdk: sdk,
+        placeholderBuilder: placeholderBuilder,
+        errorWidgetBuilder: errorWidgetBuilder,
+        type: _BannerType.BANNER,
+      );
 
   @override
   Widget build(BuildContext context) {
+    // height is fixed value depending on banner type
+    double height = (type == _BannerType.BANNER ? 60 : 250);
     return LayoutBuilder(builder: (context, constraints) {
-      // we need to tell native code what size of banners it can fit into the view
       final viewConstraints = <String, int>{};
-      if (constraints.hasBoundedHeight) {
-        viewConstraints["height"] = constraints.biggest.height.floor();
-      } else {
-        viewConstraints["height"] = _defaultBannerHeight;
-      }
+      viewConstraints["height"] =
+          (constraints.hasBoundedHeight ? constraints.maxHeight : height)
+              .floor();
+
+      // we need to tell native code what size of banners it can fit into the view
+
       if (constraints.hasBoundedWidth) {
         viewConstraints["width"] = constraints.biggest.width.floor();
       } else {
         viewConstraints["width"] = constraints.maxWidth.floor();
       }
-      final orientation = MediaQuery.of(context).orientation;
-      return _NativeBannerWrapper(
-        orientation: orientation,
+
+      return _FBNativeBanner(
         placement: placement,
+        sdk: sdk,
         viewConstraints: viewConstraints,
+        errorWidgetBuilder: errorWidgetBuilder,
+        placeholderBuilder: placeholderBuilder,
       );
     });
   }
 }
 
-class _NativeBannerWrapper extends StatefulWidget {
+class _FBNativeBanner extends StatefulWidget {
   final String placement;
+  final FairBid sdk;
 
   final Map<String, int> viewConstraints;
 
-  final Orientation orientation;
+  final WidgetBuilder placeholderBuilder;
+  final ErrorWidgetBuilder errorWidgetBuilder;
 
-  const _NativeBannerWrapper(
-      {Key key, this.placement, this.viewConstraints, this.orientation})
+  const _FBNativeBanner(
+      {Key key,
+      this.placement,
+      this.sdk,
+      this.viewConstraints,
+      this.placeholderBuilder,
+      this.errorWidgetBuilder})
       : super(key: key);
 
   @override
-  _FBBannerState createState() => _FBBannerState();
+  _FBNativeBannerState createState() => _FBNativeBannerState();
 }
 
-class _FBBannerState extends State<_NativeBannerWrapper> {
+class _FBNativeBannerState extends State<_FBNativeBanner> {
   static final _messageCodec = const StandardMessageCodec();
   static final _viewType = "bannerView";
 
-  Future<List<double>> _loadFuture;
+  Future<dynamic> _loadFuture;
 
   Stream<List<double>> _sizeStream;
 
@@ -76,47 +124,62 @@ class _FBBannerState extends State<_NativeBannerWrapper> {
   @override
   void initState() {
     super.initState();
-    _loadFuture = _channel
-        .invokeMethod<List<dynamic>>(
+    _loadFuture = widget.sdk.started.then((value) {
+      if (value) {
+        print('Loading banner: $bannerParams');
+        return _channel.invokeMethod<dynamic>(
           "loadBanner",
           bannerParams,
-        )
-        .then((dynamicL) => dynamicL.cast<double>());
+        );
+      } else {
+        return Future.error('SDK not started properly');
+      }
+    });
     _sizeStream = _metadataChannel
         .receiveBroadcastStream(widget.placement)
         .map((data) => (data as List<dynamic>).cast<double>())
+        .distinct((l, r) =>
+            l.length == r.length &&
+            l.asMap().entries.fold(true,
+                (previousValue, element) => element.value == r[element.key]))
+        .map((data) {
+          print('Metadata incoming: $data');
+          return data;
+        })
+        .where((data) => data[0] > 0.0 && data[1] > 0.0)
         .asBroadcastStream();
   }
 
   @override
   void dispose() {
+        print('Destroying banner: $bannerParams');
     _channel.invokeMethod("destroyBanner", <String, dynamic>{
       "placement": widget.placement,
     });
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<double>>(
+    return FutureBuilder<dynamic>(
       future: _loadFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          double width =
-              snapshot.data[0] <= 0 ? double.infinity : snapshot.data[0];
-          double height = snapshot.data[1];
+          print("Banner ${widget.placement} loaded: ${snapshot.data}");
+
           PlatformViewCreatedCallback callback =
-              (id) => print("Banner view created: $id");
+              (id) => print("Banner ${widget.placement} view created: $id");
           Widget nativeView;
           if (Platform.isAndroid) {
-            nativeView = AndroidView(
+            nativeView = AndroidView(key: ValueKey("FB_ban_${widget.placement}"),
               onPlatformViewCreated: callback,
               viewType: _viewType,
               creationParams: bannerParams,
               creationParamsCodec: _messageCodec,
             );
           } else {
-            nativeView = UiKitView(
+            nativeView = UiKitView(key: ValueKey("FB_ban_${widget.placement}"),
               viewType: _viewType,
               creationParams: bannerParams,
               creationParamsCodec: _messageCodec,
@@ -125,24 +188,29 @@ class _FBBannerState extends State<_NativeBannerWrapper> {
           }
           return StreamBuilder<List<double>>(
               stream: _sizeStream,
-              initialData: [width, height],
+              initialData: [0, 0],
               builder: (context, snapshot) {
-                return SizedBox(
-                  width: snapshot.data[0],
-                  height: snapshot.data[1],
-                  child: nativeView,
-                );
+                print(
+                    'Showing native view inside ${snapshot.data[0]}x${snapshot.data[1]} box');
+                var size = Size(snapshot.data[0], snapshot.data[0]);
+                if (size.isEmpty) {
+                  return widget.placeholderBuilder != null? widget.placeholderBuilder(context) : Container();
+                } else {
+                  return Container(
+                    width: snapshot.data[0],
+                    height: snapshot.data[1],
+                    child: nativeView,
+                  );
+                }
               });
         } else if (snapshot.hasError) {
-          return Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Text(
-              "Error occured: ${snapshot.error}",
-              style: TextStyle(
-                color: Color.fromARGB(0xff, 0xaa, 0x55, 0x55),
-              ),
-            ),
-          );
+          if (widget.errorWidgetBuilder != null) {
+            return widget.errorWidgetBuilder(context, snapshot.error);
+          }
+        } else {
+          if (widget.placeholderBuilder != null) {
+            return widget.placeholderBuilder(context);
+          }
         }
         return Container();
       },

@@ -146,7 +146,7 @@ class _MyAppState extends State<MyApp> {
                         "Experimental",
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
-                      content: _sdk != null ? BannerViewAds() : Container(),
+                      content: _sdk != null ? BannerViewAds(sdk: _sdk) : Container(),
                     ),
                     Step(
                       isActive: _sdk != null,

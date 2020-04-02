@@ -7,6 +7,7 @@ library fairbid_flutter;
 
 import 'src/internal.dart';
 export 'src/banner_view.dart' show BannerView;
+// export 'src/banner_view_talisman.dart' show BannerView;
 export 'src/internal.dart'
     show
         Options,

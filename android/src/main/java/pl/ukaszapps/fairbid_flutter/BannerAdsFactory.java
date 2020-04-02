@@ -1,17 +1,20 @@
 package pl.ukaszapps.fairbid_flutter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.fyber.fairbid.ads.CreativeSize;
 import com.fyber.fairbid.ads.banner.BannerAdView;
+import com.fyber.fairbid.ads.banner.BannerOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,30 +27,33 @@ import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 
+import static com.fyber.fairbid.ads.CreativeSize.SMART_BANNER;
 import static pl.ukaszapps.fairbid_flutter.FairBidFlutterPlugin.debugLogging;
 
 final class BannerAdsFactory extends PlatformViewFactory {
 
     private static final String TAG = "FlutterBannerFactory";
-    private final DisplayMetrics metrics;
     private Map<String, BannerAdView> adsCache = new ConcurrentHashMap<>();
     private Map<String, EventChannel.EventSink> metadataSinks = new ConcurrentHashMap<>();
 
-    BannerAdsFactory(BinaryMessenger messenger, Context context) {
+    BannerAdsFactory(BinaryMessenger messenger) {
         super(StandardMessageCodec.INSTANCE);
-        this.metrics = context.getResources().getDisplayMetrics();
-        EventChannel bannerMetadataChannel = new EventChannel(messenger, "pl.ukaszapps.fairbid_flutter:bannerMetadata");
+        EventChannel bannerMetadataChannel = new EventChannel(messenger,
+                                                              "pl.ukaszapps.fairbid_flutter:bannerMetadata"
+        );
         bannerMetadataChannel.setStreamHandler(new EventChannel.StreamHandler() {
             @Override
             public void onListen(Object o, EventChannel.EventSink eventSink) {
                 String placement = (String) o;
-                Log.d(TAG, "onListen to metadata: " + placement);
                 metadataSinks.put(placement, eventSink);
+                BannerAdView adView = adsCache.get(placement);
+                if (adView != null) {
+                    eventSink.success(getBannerMeasurements(adView));
+                }
             }
 
             @Override
             public void onCancel(Object o) {
-                Log.d(TAG, "onCancel to metadata: " + o);
                 if (o != null) {
                     metadataSinks.remove(o);
                 }
@@ -57,24 +63,21 @@ final class BannerAdsFactory extends PlatformViewFactory {
 
     @Override
     public PlatformView create(Context context, int viewId, Object args) {
-        Map<String, Object> arguments = (Map<String, Object>) args;
+        @SuppressWarnings("unchecked") Map<String, Object> arguments = (Map<String, Object>) args;
         if (debugLogging) {
             Log.d(TAG, String.format("createPlatformView for %d with args: %s", viewId, arguments));
         }
         String placement = (String) arguments.get("placement");
         if (!TextUtils.isEmpty(placement) && TextUtils.isDigitsOnly(placement)) {
-            BannerAdView cachedBanner = adsCache.get(placement);
+            final BannerAdView cachedBanner = adsCache.get(placement);
             if (cachedBanner != null) {
-                ViewParent parent = cachedBanner.getParent();
-                if (parent != null) {
-                    ((ViewGroup) parent).removeView(cachedBanner);
-                }
+
                 EventChannel.EventSink metadaChannel = metadataSinks.get(placement);
                 if (metadaChannel != null) {
                     ArrayList<Double> size = getBannerMeasurements(cachedBanner);
                     metadaChannel.success(size);
                 }
-                return new BannerPlatformView(cachedBanner, Integer.parseInt(placement));
+                return new BannerPlatformView(cachedBanner);
             }
         }
         TextView defaultView = new TextView(context);
@@ -82,29 +85,43 @@ final class BannerAdsFactory extends PlatformViewFactory {
         return new DefaultPlatformView(defaultView);
     }
 
+    BannerAdView get(@NonNull final String placement) {
+        Utils.checkParameterIsNotNull(placement, "placementName");
+        return adsCache.get(placement);
+    }
+
     void set(@NonNull final String placement, BannerAdView bannerView) {
         Utils.checkParameterIsNotNull(placement, "placementName");
-        Log.d(TAG, "set view for " + placement + " => " + bannerView);
         if (bannerView == null) {
-            adsCache.remove(placement);
+            BannerAdView toRemove = adsCache.remove(placement);
+            if (toRemove != null) {
+                if (debugLogging) {
+                    Log.d(TAG, "removing banner: " + toRemove);
+                }
+                toRemove.destroy();
+            }
         } else {
-            adsCache.put(placement, bannerView);
+            BannerAdView toRemove = adsCache.put(placement, bannerView);
 
-            bannerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            if (toRemove != null) {
+                if (debugLogging) {
+                    Log.d(TAG, "replacing banner: " + toRemove);
+                }
+                toRemove.destroy();
+            }
+            View actualBanner = bannerView.getChildAt(0);
+            if (actualBanner != null) {
+                actualBanner.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                     EventChannel.EventSink metadaChannel = metadataSinks.get(placement);
-                    Log.d(TAG, "onLayoutChange: " + placement + " metadata = " + metadaChannel);
                     if (metadaChannel != null) {
-                        ArrayList<Double> size = getBannerMeasurements((BannerAdView) v);
-
-                        size.set(0, ((double) (right - left) / metrics.density));
-                        size.set(1, ((double) (bottom - top) / metrics.density));
-
+                        float density = v.getResources().getDisplayMetrics().density;
+                        ArrayList<Double> size = new ArrayList<>(Arrays.asList((double) ((right - left) / density),
+                                                                               (double) ((bottom - top) / density)
+                        ));
                         metadaChannel.success(size);
                     }
-                }
-            });
+                });
+            }
             EventChannel.EventSink metadaChannel = metadataSinks.get(placement);
             if (metadaChannel != null) {
                 ArrayList<Double> size = getBannerMeasurements(bannerView);
@@ -114,7 +131,48 @@ final class BannerAdsFactory extends PlatformViewFactory {
         }
     }
 
-    private class DefaultPlatformView implements PlatformView {
+    boolean hasBanner(String placement) {
+        return adsCache.containsKey(placement);
+    }
+
+    void createBannerView(Activity activity, String placement, Integer requestedWidth, Integer requestedHeight) {
+        int placementId = Integer.parseInt(placement);
+        DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+
+        final BannerAdView bannerView = new BannerAdView(activity, placementId);
+
+        final BannerOptions bannerOptions = new BannerOptions();
+        CreativeSize.Builder sizeBuilder = CreativeSize.Builder.newBuilder();
+        int tempWidth = ViewGroup.LayoutParams.MATCH_PARENT;
+        if (requestedWidth != null) {
+            tempWidth = ((Number) (requestedWidth)).intValue();
+            sizeBuilder.withWidth(tempWidth);
+        }
+        int tempHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
+        if (requestedHeight != null) {
+            tempHeight = ((Number) (requestedHeight)).intValue();
+            sizeBuilder.withHeight(tempHeight);
+        }
+
+        bannerView.setBannerOptions(bannerOptions.setFallbackSize(SMART_BANNER));
+        FrameLayout bannerFrame = new FrameLayout(activity);
+        FrameLayout.LayoutParams bannerFrameLayoutParams = new FrameLayout.LayoutParams(
+                (int) (tempWidth * metrics.density),
+                (int) (tempHeight * metrics.density)
+        );
+        bannerView.setLayoutParams(bannerFrameLayoutParams);
+
+        bannerOptions.placeInContainer(bannerFrame);
+        if (debugLogging) {
+            Log.d(TAG,
+                  String.format("placing banner in the frame (%d, %d)", tempWidth, tempHeight)
+            );
+        }
+        bannerView.load(placementId, true);
+        this.set(placement, bannerView);
+    }
+
+    private static class DefaultPlatformView implements PlatformView {
 
         private final View aView;
 
@@ -134,25 +192,22 @@ final class BannerAdsFactory extends PlatformViewFactory {
         }
     }
 
-    private class BannerPlatformView implements PlatformView {
+    private static class BannerPlatformView implements PlatformView {
 
         private final BannerAdView bannerView;
-        private final int placement;
 
-        private BannerPlatformView(BannerAdView bannerView, int placement) {
+        private BannerPlatformView(BannerAdView bannerView) {
             this.bannerView = bannerView;
-            this.placement = placement;
         }
 
         @Override
         public View getView() {
-            bannerView.load(placement);
             return bannerView;
         }
 
         @Override
         public void dispose() {
-            bannerView.destroy();
+            // do nothing
         }
     }
 
@@ -160,21 +215,28 @@ final class BannerAdsFactory extends PlatformViewFactory {
         DisplayMetrics metrics = bannerAdView.getResources().getDisplayMetrics();
         View bannerChild = bannerAdView.getChildAt(0);
         ArrayList<Double> size;
+        double childWidth = 0;
+        double childHeight = 0;
+
+        ViewGroup.LayoutParams bannerAdViewLP = bannerAdView.getLayoutParams();
         if (bannerChild != null) {
-            size = new ArrayList<>(Arrays.asList(
-                    ((double) bannerChild.getLayoutParams().width / metrics.density),
-                    ((double) bannerChild.getLayoutParams().height / metrics.density),
-                    ((double) bannerAdView.getWidth() / metrics.density),
-                    ((double) bannerAdView.getHeight() / metrics.density),
-                    ((double) bannerAdView.getMeasuredWidth() / metrics.density),
-                    ((double) bannerAdView.getMeasuredHeight() / metrics.density)));
-        } else {
-            size = new ArrayList<>(Arrays.asList(
-                    ((double) bannerAdView.getWidth() / metrics.density),
-                    ((double) bannerAdView.getHeight() / metrics.density),
-                    ((double) bannerAdView.getMeasuredWidth() / metrics.density),
-                    ((double) bannerAdView.getMeasuredHeight() / metrics.density)));
+            ViewGroup.LayoutParams temp = bannerAdView.getLayoutParams();
+            if (temp != null) {
+                childWidth = temp.width;
+                childWidth = childWidth < 0 ? (bannerAdViewLP != null ? bannerAdViewLP.width : -1) : childWidth;
+                childHeight = temp.height;
+                childHeight = childHeight < 0 ? (bannerAdViewLP != null ? bannerAdViewLP.height : -1) : childHeight;
+            }
+
         }
+        size = new ArrayList<>(Arrays.asList(
+                (childWidth / metrics.density),
+                (childHeight / metrics.density),
+                ((double) bannerAdView.getWidth() / metrics.density),
+                ((double) bannerAdView.getHeight() / metrics.density),
+                ((double) bannerAdView.getMeasuredWidth() / metrics.density),
+                ((double) bannerAdView.getMeasuredHeight() / metrics.density)
+        ));
         return size;
     }
 }
