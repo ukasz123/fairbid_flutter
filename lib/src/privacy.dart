@@ -26,8 +26,7 @@ class PrivacySettings {
   ///
   /// The [consentString] should be a correct string formatted according to [IAB specification](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Consent%20string%20and%20vendor%20list%20formats%20v1.1%20Final.md)
   ///
-  static Future<void> updateCCPAString(
-      {String ccpaString}) {
+  static Future<void> updateCCPAString({String ccpaString}) {
     final params = <String, Object>{
       if (ccpaString != null) "ccpaString": ccpaString,
     };
@@ -40,7 +39,7 @@ class PrivacySettings {
 
   /// Clears all privacy settings
   static Future<void> clear() => Future.wait([
-    clearGDPRConsent(),
-    clearCCPAString(),
-  ]);
+        clearGDPRConsent(),
+        clearCCPAString(),
+      ]);
 }

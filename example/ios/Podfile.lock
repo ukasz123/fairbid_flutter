@@ -1,17 +1,35 @@
 PODS:
-  - fairbid_flutter (0.0.1):
-    - FairBidSDK (= 2.6.0)
+  - AdColony (4.1.2)
+  - AppLovinSDK (6.11.0)
+  - ChartboostSDK (8.1.0)
+  - fairbid_flutter (0.7.0):
+    - FairBidSDK (~> 3.2.0)
     - Flutter
-  - FairBidSDK (2.6.0)
+  - FairBidSDK (3.2.0)
+  - FBAudienceNetwork (5.9.0):
+    - FBSDKCoreKit/Basics (>= 5.6.0)
+  - FBSDKCoreKit/Basics (7.0.0)
   - Flutter (1.0.0)
+  - UnityAds (3.3.0)
 
 DEPENDENCIES:
+  - AdColony (= 4.1.2)
+  - AppLovinSDK (= 6.11.0)
+  - ChartboostSDK (= 8.1.0)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
+  - FBAudienceNetwork
   - Flutter (from `Flutter`)
+  - UnityAds (= 3.3.0)
 
 SPEC REPOS:
   trunk:
+    - AdColony
+    - AppLovinSDK
+    - ChartboostSDK
     - FairBidSDK
+    - FBAudienceNetwork
+    - FBSDKCoreKit
+    - UnityAds
 
 EXTERNAL SOURCES:
   fairbid_flutter:
@@ -20,10 +38,16 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  fairbid_flutter: 60cac1d4a5b3dea273aae1ea3970023fde5fcf61
-  FairBidSDK: cc29bc57d1e987de4389106448132f94cc4a4c4c
+  AdColony: 0a1e13349ce430ce29374c665611013fd78f792c
+  AppLovinSDK: e90a0d9b2cee5ece6dad2332fe48fd1e6c15262f
+  ChartboostSDK: c146707d37d6bf2b44aa2e17f34dfd435b9add29
+  fairbid_flutter: 4e1265d4b172de8c2efe492dd5f8c82e1759027e
+  FairBidSDK: 267a78cbb442b40de50a87fdceb146734cacbbf9
+  FBAudienceNetwork: 648648b13d8ea3d39676542dece2b04dbe867497
+  FBSDKCoreKit: 8ad31cd09f793d1d7e84cf20fd6cebfe80ad318d
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  UnityAds: 0b7ecf8df83e8a3d62122a3fcf61e47c8e848f3c
 
-PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
+PODFILE CHECKSUM: 0a510660e6f51ab5e1e492f976687a987b47ec47
 
 COCOAPODS: 1.8.4

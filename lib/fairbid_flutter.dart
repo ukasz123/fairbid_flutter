@@ -1,4 +1,4 @@
-/// Plugin for FairBid 2.x SDK from Fyber
+/// Plugin for FairBid SDK from Fyber
 ///
 /// See [FairBid SDK official documentation](https://developer.fyber.com/fairbid2/).
 ///

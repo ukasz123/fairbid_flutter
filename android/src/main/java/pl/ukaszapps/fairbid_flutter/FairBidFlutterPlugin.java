@@ -24,6 +24,7 @@ import com.fyber.fairbid.ads.banner.BannerListener;
 import com.fyber.fairbid.ads.banner.BannerOptions;
 import com.fyber.fairbid.ads.rewarded.RewardedOptions;
 import com.fyber.fairbid.internal.Constants;
+import com.fyber.fairbid.internal.Framework;
 import com.fyber.fairbid.user.Gender;
 import com.fyber.fairbid.user.UserInfo;
 
@@ -53,6 +54,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
         FairBidFlutterPlugin instance = new FairBidFlutterPlugin(registrar);
+
         MethodChannel channel = new MethodChannel(registrar.messenger(), "pl.ukaszapps.fairbid_flutter");
         channel.setMethodCallHandler(instance);
         registrar.platformViewRegistry().registerViewFactory("bannerView", instance.getBannerAdFactory());
@@ -476,6 +478,8 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         }
 
         debugLogging = tempFlag;
+        Framework.framework = "flutter";
+        Framework.frameworkVersion = BuildConfig.VERSION_NAME;
 
         FairBid sdk = FairBid.configureForAppId(publisherId);
         if (!autoRequesting) {

@@ -14,7 +14,7 @@ showEventsStream(
             Padding(
               child: Text(
                 "Events: $placement",
-                style: Theme.of(context).textTheme.display1,
+                style: Theme.of(context).textTheme.headline4,
               ),
               padding: EdgeInsets.all(8),
             ),

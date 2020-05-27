@@ -27,23 +27,35 @@ rootProject.allprojects {
     }
 }
 
+String getVersion() {
+    File pubspecYAML = project.file('../pubspec.yaml')
+    String pubspecContent = pubspecYAML.text
+    String version = pubspecContent.find(/version: (\d+\.\d+\.\d+)/) { match, version -> return version }
+    return version
+}
+
 apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
     defaultConfig {
+        versionName getVersion() ?: "unknown"
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
 
-    api 'com.fyber:fairbid-sdk:2.6.0'
+    api 'com.fyber:fairbid-sdk:3.2.0'
 
     //noinspection GradleDynamicVersion
     implementation 'androidx.annotation:annotation:1.1.0'

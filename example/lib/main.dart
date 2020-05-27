@@ -10,7 +10,10 @@ import 'package:flutter/services.dart';
 import 'package:fairbid_flutter/fairbid_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  print ('Starting fairbid_flutter example');
+   runApp(MyApp()   );
+}
 
 class MyApp extends StatefulWidget {
   @override
