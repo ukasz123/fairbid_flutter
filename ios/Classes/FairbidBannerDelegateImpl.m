@@ -158,7 +158,7 @@ static NSString *const _AD_TYPE = @"banner";
     
     FYBBannerAdView *bannerView = [ads objectForKey:placement];
     
-    NSLog(@"[FB_Flutter] createWithFrame found banner %lu with frame [%f x %f]", [bannerView hash], bannerView.frame.size.width, bannerView.frame.size.width);
+    NSLog(@"[FB_Flutter] createWithFrame found banner %lu with frame [%f x %f]", [bannerView hash], bannerView.frame.size.width, bannerView.frame.size.height);
     FlutterEventSink metadataSink = [metadataSinks objectForKey:placement];
     if (metadataSink){
         NSArray *size = @[[NSNumber numberWithDouble:bannerView.frame.size.width], [NSNumber numberWithDouble:bannerView.frame.size.height]];
