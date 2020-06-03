@@ -21,7 +21,7 @@ showEventsStream(
             Divider(),
             StreamBuilder<List<MapEntry<AdEventType, DateTime>>>(
               initialData: [],
-              stream: Observable(events)
+              stream: events
                   .map((event) => MapEntry(event, DateTime.now()))
                   .scan((list, event, _) {
                 if (list.length == 5) {

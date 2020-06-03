@@ -133,6 +133,32 @@ static NSString *const _AD_TYPE = @"banner";
     }
 }
 
+//// Native view banners
+- (void)loadBanner:(NSString *)placement width:(NSNumber *)width height:(NSNumber *)height andResult:(FlutterResult)result {
+    
+    FYBBannerAdView *bannerView = [ads objectForKey:placement];
+    if (bannerView){
+        NSLog(@"[FB_Flutter] banner loaded %@",bannerView.options.placementId);
+        CGSize size = bannerView.frame.size;
+        
+        NSArray *sizeArray = @[[NSNumber numberWithDouble:size.width], [NSNumber numberWithDouble:size.height]];
+        NSLog(@"[FB_Flutter] banner loaded %@ [%@]",bannerView.options.placementId, sizeArray);
+        FlutterEventSink metadataSink = [metadataSinks objectForKey:bannerView.options.placementId];
+        if (metadataSink){
+            metadataSink(sizeArray);
+        }
+        result( sizeArray );
+        // return early
+        return;
+    }
+    
+    FYBBannerOptions *bannerOptions = [[FYBBannerOptions alloc] init];
+    bannerOptions.placementId = placement;
+    NSLog(@"[FB_Flutter] Load banner %@ (%@, %@)", placement, width, height);
+    [self registerResultCallback:result forPlacement:placement];
+    [FYBBanner requestWithOptions:bannerOptions];
+}
+
 - (void)destroyBanner:(NSString *)placement {
     FYBBannerAdView *bannerView = [ads objectForKey:placement];
     if (bannerView){

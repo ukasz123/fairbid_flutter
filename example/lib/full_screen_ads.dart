@@ -112,14 +112,14 @@ class _FullScreenAdsState extends State<FullScreenAds> {
       request = () => rewardedAd.request();
       show = () =>
           rewardedAd.showWithSSR(serverSideRewarding: {"option1": "value1"});
-      available = Observable.fromFuture(rewardedAd.isAvailable)
+      available = rewardedAd.isAvailable.asStream()
           .concatWith([rewardedAd.availabilityStream]);
       events = rewardedAd.simpleEvents;
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
       show = () => interstitialAd.show();
-      available = Observable.fromFuture(interstitialAd.isAvailable)
+      available = interstitialAd.isAvailable.asStream()
           .concatWith([interstitialAd.availabilityStream]);
       events = interstitialAd.simpleEvents;
     }

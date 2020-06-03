@@ -7,13 +7,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.fyber.fairbid.ads.CreativeSize;
+import com.fyber.fairbid.ads.ImpressionData;
 import com.fyber.fairbid.ads.banner.BannerAdView;
+import com.fyber.fairbid.ads.banner.BannerError;
+import com.fyber.fairbid.ads.banner.BannerListener;
 import com.fyber.fairbid.ads.banner.BannerOptions;
 
 import java.util.ArrayList;
@@ -30,7 +34,7 @@ import io.flutter.plugin.platform.PlatformViewFactory;
 import static com.fyber.fairbid.ads.CreativeSize.SMART_BANNER;
 import static pl.ukaszapps.fairbid_flutter.FairBidFlutterPlugin.debugLogging;
 
-final class BannerAdsFactory extends PlatformViewFactory {
+final class BannerAdsFactory extends PlatformViewFactory implements BannerListener {
 
     private static final String TAG = "FlutterBannerFactory";
     private Map<String, BannerAdView> adsCache = new ConcurrentHashMap<>();
@@ -45,7 +49,11 @@ final class BannerAdsFactory extends PlatformViewFactory {
             @Override
             public void onListen(Object o, EventChannel.EventSink eventSink) {
                 String placement = (String) o;
-                metadataSinks.put(placement, eventSink);
+
+                EventChannel.EventSink previous = metadataSinks.put(placement, eventSink);
+                if (previous != null){
+                    previous.endOfStream();
+                }
                 BannerAdView adView = adsCache.get(placement);
                 if (adView != null) {
                     eventSink.success(getBannerMeasurements(adView));
@@ -71,7 +79,10 @@ final class BannerAdsFactory extends PlatformViewFactory {
         if (!TextUtils.isEmpty(placement) && TextUtils.isDigitsOnly(placement)) {
             final BannerAdView cachedBanner = adsCache.get(placement);
             if (cachedBanner != null) {
-
+                ViewParent parent =cachedBanner.getParent();
+                if (parent != null){
+                    ((ViewGroup) parent).removeView(cachedBanner);
+                }
                 EventChannel.EventSink metadaChannel = metadataSinks.get(placement);
                 if (metadaChannel != null) {
                     ArrayList<Double> size = getBannerMeasurements(cachedBanner);
@@ -170,6 +181,35 @@ final class BannerAdsFactory extends PlatformViewFactory {
         }
         bannerView.load(placementId, true);
         this.set(placement, bannerView);
+    }
+
+    @Override
+    public void onError(@NonNull String placementId, BannerError bannerError) {
+        set(placementId, null);
+    }
+
+    @Override
+    public void onLoad(@NonNull String s) {
+
+    }
+
+    @Override
+    public void onShow(@NonNull String placementId, @NonNull ImpressionData impressionData) {
+        BannerAdView adView = adsCache.get(placementId);
+        EventChannel.EventSink sizeSink = metadataSinks.get(placementId);
+        if (adView != null && sizeSink != null){
+            sizeSink.success(getBannerMeasurements(adView));
+        }
+    }
+
+    @Override
+    public void onClick(@NonNull String s) {
+
+    }
+
+    @Override
+    public void onRequestStart(@NonNull String s) {
+
     }
 
     private static class DefaultPlatformView implements PlatformView {

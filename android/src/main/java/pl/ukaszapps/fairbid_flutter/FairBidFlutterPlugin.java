@@ -464,7 +464,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         resultBannerListener = new BannerCreationResultListener();
         Interstitial.setInterstitialListener((new InterstitialEventProducer(eventSender)));
         Rewarded.setRewardedListener((new RewardedEventProducer(eventSender)));
-        Banner.setBannerListener(new CombinedBannerListener(new BannerListener[]{new BannerEventProducer(eventSender), resultBannerListener}));
+        Banner.setBannerListener(new CombinedBannerListener(new BannerListener[]{new BannerEventProducer(eventSender), resultBannerListener, this.getBannerAdFactory()}));
         result.success(true);
     }
 

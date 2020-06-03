@@ -24,18 +24,13 @@ class BannerCreationResultListener implements BannerListener {
         Log.d("CreationL", "onError: "+s);
         final MethodChannel.Result callback = resultCallbacks.remove(s);
         if (callback != null) {
-            runOnMain(new Runnable() {
-                @Override
-                public void run() {
-                    callback.error(
-                            (bannerError.getFailure() != null) ? bannerError.getFailure()
-                                                                            .name() : "unknown",
-                            (bannerError.getErrorMessage() != null) ? bannerError
-                                    .getErrorMessage() : "no message",
-                            null
-                    );
-                }
-            });
+            runOnMain(() -> callback.error(
+                    (bannerError.getFailure() != null) ? bannerError.getFailure()
+                                                                    .name() : "unknown",
+                    (bannerError.getErrorMessage() != null) ? bannerError
+                            .getErrorMessage() : "no message",
+                    null
+            ));
         }
     }
 
@@ -44,12 +39,7 @@ class BannerCreationResultListener implements BannerListener {
         Log.d("CreationL", "onLoad: "+s);
         final MethodChannel.Result callback = resultCallbacks.remove(s);
         if (callback != null) {
-            runOnMain(new Runnable() {
-                @Override
-                public void run() {
-                    callback.success("A");
-                }
-            });
+            runOnMain(() -> callback.success(s));
         }
     }
 

@@ -25,6 +25,8 @@ typedef void (^ EventSender)(NSString *type, NSString *placementId, NSString *ev
 
 - (void)registerResultCallback:(FlutterResult)result forPlacement:(NSString *) placementId;
 
+- (void)loadBanner:(NSString *)placement width:(NSNumber *)width height:(NSNumber *)height andResult:(FlutterResult)result;
+
 - (void)destroyBanner:(NSString *)placementId;
 
 - (id)initWith:(NSObject<FlutterBinaryMessenger> *)messenger;

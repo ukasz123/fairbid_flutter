@@ -5,20 +5,27 @@ import 'package:fairbid_flutter/src/internal.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 
-import '../fairbid_flutter.dart';
+import 'package:fairbid_flutter/fairbid_flutter.dart';
 
 // shared channel
-const MethodChannel _channel = FairBidInternal.methodCallChannel;
+const MethodChannel _methodChannel = FairBidInternal.methodCallChannel;
 
 const EventChannel _metadataChannel =
     EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
 
 enum _BannerType { BANNER, RECTANGLE }
 
+/// Builds widget in case error while requesting a banner fill.
 typedef Widget ErrorWidgetBuilder(BuildContext context, Object error);
 
-/// ⚠️This is an **experimental feature**. Use with caution as it may lead to fraud-like behavior of the app.
+/// ⚠️This is an **experimental feature**. Use with caution.
+///
+/// Presents native banner for the given placement.
+/// **IMPORTANT**: You can present only one BannerView per placement on the screen at any given moment.
+///
+/// It depends on Platform Views. See documentation for [UiKitView](https://api.flutter.dev/flutter/widgets/UiKitView-class.html) and [AndroidView](https://api.flutter.dev/flutter/widgets/AndroidView-class.html) for limitations and necessary setup.
 @experimental
 class BannerView extends StatelessWidget {
   final String placement;
@@ -34,8 +41,16 @@ class BannerView extends StatelessWidget {
       this.placeholderBuilder,
       this.errorWidgetBuilder,
       this.type})
-      : super(key: key);
+      : assert(placement != null),
+        assert(sdk != null),
+        assert(type != null),
+        super(key: key);
 
+  /// Creates a widget that embeds a rectangle banner for a [placement].
+  ///
+  /// Tries to create a banner with aspect ratio closer to 1:1 than for regular banners.
+  ///
+  /// ⚠️Rectangle size banners are NOT supported by FairBid SDK yet.
   factory BannerView.rectangle(String placement, FairBid sdk,
           {WidgetBuilder placeholderBuilder,
           ErrorWidgetBuilder errorWidgetBuilder}) =>
@@ -47,6 +62,14 @@ class BannerView extends StatelessWidget {
         type: _BannerType.RECTANGLE,
       );
 
+  /// Creates a widget that embeds a regular banner for a [placement].
+  ///
+  /// Tries to create a banner view for a [placement] using given [sdk].
+  /// While loading it can show widget built with [placeholderBuilder].
+  /// In case of error happening it presents the widget built with [errorWidgetBuilder].
+  /// 
+  /// The widget would take all of the available width and enough height to present a native view.
+  /// The expected height of the banner would be one of the following values: 50, 60. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
   factory BannerView.banner(String placement, FairBid sdk,
           {WidgetBuilder placeholderBuilder,
           ErrorWidgetBuilder errorWidgetBuilder}) =>
@@ -113,6 +136,8 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
   static final _messageCodec = const StandardMessageCodec();
   static final _viewType = "bannerView";
 
+  _FBBannerFactory _bannerFactory;
+
   Future<dynamic> _loadFuture;
 
   Stream<List<double>> _sizeStream;
@@ -124,96 +149,180 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
   @override
   void initState() {
     super.initState();
-    _loadFuture = widget.sdk.started.then((value) {
-      if (value) {
-        print('Loading banner: $bannerParams');
-        return _channel.invokeMethod<dynamic>(
-          "loadBanner",
-          bannerParams,
-        );
-      } else {
-        return Future.error('SDK not started properly');
-      }
-    });
-    _sizeStream = _metadataChannel
-        .receiveBroadcastStream(widget.placement)
-        .map((data) => (data as List<dynamic>).cast<double>())
-        .distinct((l, r) =>
-            l.length == r.length &&
-            l.asMap().entries.fold(true,
-                (previousValue, element) => element.value == r[element.key]))
-        .map((data) {
-          print('Metadata incoming: $data');
-          return data;
-        })
-        .where((data) => data[0] > 0.0 && data[1] > 0.0)
-        .asBroadcastStream();
+
+    _bannerFactory = _FBBannerFactory(widget.sdk);
+    _loadFuture = _bannerFactory.load(bannerParams);
+    _sizeStream = _bannerFactory.sizeStream(widget.placement);
   }
 
   @override
   void dispose() {
-        print('Destroying banner: $bannerParams');
-    _channel.invokeMethod("destroyBanner", <String, dynamic>{
-      "placement": widget.placement,
-    });
+    _bannerFactory.dispose(widget.placement);
 
     super.dispose();
   }
 
+  Widget _nativeView;
+  Widget get nativeView {
+    if (_nativeView == null) {
+      if (Platform.isAndroid) {
+        _nativeView = AndroidView(
+          viewType: _viewType,
+          creationParams: bannerParams,
+          creationParamsCodec: _messageCodec,
+        );
+      } else {
+        _nativeView = UiKitView(
+          viewType: _viewType,
+          creationParams: bannerParams,
+          creationParamsCodec: _messageCodec,
+        );
+      }
+    }
+    return _nativeView;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<dynamic>(
-      future: _loadFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          print("Banner ${widget.placement} loaded: ${snapshot.data}");
-
-          PlatformViewCreatedCallback callback =
-              (id) => print("Banner ${widget.placement} view created: $id");
-          Widget nativeView;
-          if (Platform.isAndroid) {
-            nativeView = AndroidView(key: ValueKey("FB_ban_${widget.placement}"),
-              onPlatformViewCreated: callback,
-              viewType: _viewType,
-              creationParams: bannerParams,
-              creationParamsCodec: _messageCodec,
-            );
+    return StreamBuilder<List<double>>(
+        stream: _loadFuture.asStream().asyncExpand((_) => _sizeStream),
+        builder: (context, streamSnapshot) {
+          if (streamSnapshot.hasData) {
+            var size = Size(streamSnapshot.data[0], streamSnapshot.data[0]);
+            if (size.isEmpty) {
+              return widget.placeholderBuilder != null
+                  ? widget.placeholderBuilder(context)
+                  : Container();
+            } else {
+              return Container(
+                width: streamSnapshot.data[0],
+                height: streamSnapshot.data[1],
+                child: nativeView,
+              );
+            }
+          } else if (streamSnapshot.hasError) {
+            if (widget.errorWidgetBuilder != null) {
+              return widget.errorWidgetBuilder(context, streamSnapshot.error);
+            }
           } else {
-            nativeView = UiKitView(key: ValueKey("FB_ban_${widget.placement}"),
-              viewType: _viewType,
-              creationParams: bannerParams,
-              creationParamsCodec: _messageCodec,
-              onPlatformViewCreated: callback,
-            );
+            if (widget.placeholderBuilder != null) {
+              return widget.placeholderBuilder(context);
+            }
           }
-          return StreamBuilder<List<double>>(
-              stream: _sizeStream,
-              initialData: [0, 0],
-              builder: (context, snapshot) {
-                print(
-                    'Showing native view inside ${snapshot.data[0]}x${snapshot.data[1]} box');
-                var size = Size(snapshot.data[0], snapshot.data[0]);
-                if (size.isEmpty) {
-                  return widget.placeholderBuilder != null? widget.placeholderBuilder(context) : Container();
-                } else {
-                  return Container(
-                    width: snapshot.data[0],
-                    height: snapshot.data[1],
-                    child: nativeView,
-                  );
-                }
-              });
-        } else if (snapshot.hasError) {
-          if (widget.errorWidgetBuilder != null) {
-            return widget.errorWidgetBuilder(context, snapshot.error);
-          }
+          return Container();
+        });
+  }
+}
+
+class _FBBannerFactory {
+  static _FBBannerFactory _singleton;
+
+  Timer delayTimer;
+
+  Timer garbageCollector;
+
+  Map<String, Stream<List<double>>> streamsCache = {};
+  _FBBannerFactory._(this.sdk);
+  factory _FBBannerFactory(FairBid sdk) {
+    if (_singleton == null) {
+      _singleton = _FBBannerFactory._(sdk);
+    }
+    return _singleton;
+  }
+  final FairBid sdk;
+  final Map<String, _FBBannerFutureHolder> loadedBanners = {};
+
+  Future<dynamic> load(Map<String, dynamic> bannerParams) {
+    String placementId = bannerParams['placement'];
+
+    _FBBannerFutureHolder futureHolder = loadedBanners[placementId];
+    if (futureHolder == null || futureHolder.error != null) {
+      Future<dynamic> future = sdk.started.then((value) {
+        if (value) {
+          return _methodChannel.invokeMethod<dynamic>(
+            "loadBanner",
+            bannerParams,
+          );
         } else {
-          if (widget.placeholderBuilder != null) {
-            return widget.placeholderBuilder(context);
-          }
+          return Future.error('SDK not started properly');
         }
-        return Container();
-      },
-    );
+      });
+      loadedBanners[placementId] = _FBBannerFutureHolder(future, placementId)
+        ..refCount = (futureHolder?.refCount ?? 0) + 1;
+      return future;
+    } else {
+      futureHolder.refCount++;
+      if (futureHolder.isFinished && futureHolder.isSuccess) {
+        return Future.value(futureHolder.value);
+      } else {
+        return futureHolder.pending;
+      }
+    }
+  }
+
+  void dispose(String placementId) {
+    _FBBannerFutureHolder futureHolder = loadedBanners[placementId];
+    if (futureHolder != null) {
+      futureHolder.refCount--;
+      if (garbageCollector == null) {
+        garbageCollector = Timer(const Duration(seconds: 8), () {
+          garbageCollector = null;
+          var toRemove = loadedBanners.values
+              .where((holder) => holder.refCount <= 0)
+              .toList(growable: false);
+          loadedBanners.removeWhere((key, holder) => holder.refCount <= 0);
+          toRemove.forEach((element) {
+            _methodChannel.invokeMethod<dynamic>(
+              "destroyBanner",
+              {"placement": element.placementId},
+            );
+          });
+        });
+      }
+    }
+  }
+
+  Stream<List<double>> sizeStream(String placementId) {
+    Stream<List<double>> s = streamsCache[placementId];
+    if (s == null) {
+      s = _metadataChannel
+          .receiveBroadcastStream(placementId)
+          .map((data) => (data as List<dynamic>).cast<double>())
+          // .distinct((l, r) =>
+          //     l.length == r.length &&
+          //     l.asMap().entries.fold(true,
+          //         (previousValue, element) => element.value == r[element.key]))
+          .where((data) => data[0] > 0.0 && data[1] > 0.0)
+          .shareValue();
+      streamsCache[placementId] = s;
+    }
+    return s;
+  }
+}
+
+class _FBBannerFutureHolder {
+  Future<dynamic> pending;
+  dynamic value;
+  int refCount = 0;
+  Future<dynamic> error;
+
+  String placementId;
+  _FBBannerFutureHolder(Future<dynamic> pending, this.placementId) {
+    this.pending = pending.then((value) {
+      this.value = value;
+      this.pending = null;
+    }, onError: (error, stacktrace) {
+      this.error = Future.error(error, stacktrace);
+      this.pending = null;
+      return this.error;
+    });
+  }
+
+  bool get isFinished => pending == null;
+  bool get isSuccess => value != null;
+
+  @override
+  String toString() {
+    return "finished: $isFinished, success: $isSuccess, value: $value";
   }
 }

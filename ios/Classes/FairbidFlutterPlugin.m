@@ -319,11 +319,8 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSNumber *width = arguments[@"width"];
     NSNumber *height = arguments[@"height"];
     
-    FYBBannerOptions *bannerOptions = [[FYBBannerOptions alloc] init];
-    bannerOptions.placementId = placement;
-    NSLog(@"[FB_Flutter] Load banner %@ (%@, %@)", placement, width, height);
-    [_bannerDelegate registerResultCallback:result forPlacement:placement];
-    [FYBBanner requestWithOptions:bannerOptions];
+    [_bannerDelegate loadBanner:placement width:width height:height andResult: result];
+    
 }
 
 - (void)destroyBanner:(NSDictionary *)arguments result:(FlutterResult)result {
