@@ -1,3 +1,8 @@
+### 0.8.0-dev.1
+* Native BannerView has been rewritten
+** Added dependency to RxDart
+** Example app for testing native banners has been provided
+
 ### 0.7.0 (SDK 3.2.0)
 * Update dependencies to **FairBid 3.2.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk)),
     * **[Breaking change]** Add required `compileOptions` section to Android build scripts
