@@ -27,20 +27,12 @@ rootProject.allprojects {
     }
 }
 
-String getVersion() {
-    File pubspecYAML = project.file('../pubspec.yaml')
-    String pubspecContent = pubspecYAML.text
-    String version = pubspecContent.find(/version: (\d+\.\d+\.\d+)/) { match, version -> return version }
-    return version
-}
-
 apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
     defaultConfig {
-        versionName getVersion() ?: "unknown"
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

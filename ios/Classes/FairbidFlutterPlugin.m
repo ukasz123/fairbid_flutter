@@ -74,17 +74,9 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)startSdkAndInitListeners:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString *publisherId = arguments[@"publisherId"];
     
-    NSString *pluginVersion = nil;
+    NSString *pluginVersion = arguments[@"pluginVersion"];
+    // TODO: implement setting the plugin data
     
-    NSBundle *pluginBundle = [NSBundle bundleForClass:[FairBidFlutterPlugin class]];
-    NSDictionary<NSString *,id> *pluginInfo = pluginBundle.infoDictionary;
-    if (pluginInfo != nil) {
-        pluginVersion = pluginInfo[@"CFBundleShortVersionString"];
-    }
-    if (pluginVersion == nil){
-        pluginVersion = @"unknown";
-    }
-    NSLog(@"[FB_Flutter] Starting plugin %@", pluginVersion);
     if ([FairBid isStarted]) {
         result([NSNumber numberWithBool:NO]);
         return;

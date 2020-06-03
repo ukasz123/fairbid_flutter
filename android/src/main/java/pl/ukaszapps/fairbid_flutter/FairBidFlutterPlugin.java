@@ -424,7 +424,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         debugLogging = tempFlag;
         Framework.framework = "flutter";
-        Framework.frameworkVersion = BuildConfig.VERSION_NAME;
+        Framework.frameworkVersion = call.argument("pluginVersion");
 
         FairBid sdk = FairBid.configureForAppId(publisherId);
         if (!autoRequesting) {
