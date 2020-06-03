@@ -2,6 +2,9 @@ import 'package:fairbid_flutter/fairbid_flutter.dart';
 import 'package:flutter/material.dart';
 
 class BannerViewAds extends StatefulWidget {
+  final FairBid sdk;
+
+  const BannerViewAds({Key key, @required this.sdk}) : super(key: key);
   @override
   _BannerViewAdsState createState() => _BannerViewAdsState();
 }
@@ -52,22 +55,30 @@ class _BannerViewAdsState extends State<BannerViewAds> {
         ),
         Divider(),
       ]..addAll(
-          _placements.map((placement) => Dismissible(
+          _placements.map(
+            (placement) => Dismissible(
               key: ValueKey(placement),
               onDismissed: (_) => setState(() => _placements.remove(placement)),
-              child: Column(children: [
-                FittedBox(child: Text(placement)),
-                Container(
-                  alignment: Alignment.center,
-                  color: Color.fromARGB(124, 100, 200, 0),
-                  child: BannerView(
-                    placement: placement,
+              child: Column(
+                children: [
+                  FittedBox(child: Text(placement)),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Color.fromARGB(124, 100, 200, 0),
+                    child: BannerView.rectangle(
+                      placement,
+                      widget.sdk,
+                      errorWidgetBuilder: (c, error)=>Center(child:Text("$error")),
+                      placeholderBuilder: (c)=>Placeholder(),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 2,
-                )
-              ]))),
+                  SizedBox(
+                    height: 2,
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
     );
   }

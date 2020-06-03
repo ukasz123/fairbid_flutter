@@ -74,17 +74,9 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)startSdkAndInitListeners:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString *publisherId = arguments[@"publisherId"];
     
-    NSString *pluginVersion = nil;
+    NSString *pluginVersion = arguments[@"pluginVersion"];
+    // TODO: implement setting the plugin data
     
-    NSBundle *pluginBundle = [NSBundle bundleForClass:[FairBidFlutterPlugin class]];
-    NSDictionary<NSString *,id> *pluginInfo = pluginBundle.infoDictionary;
-    if (pluginInfo != nil) {
-        pluginVersion = pluginInfo[@"CFBundleShortVersionString"];
-    }
-    if (pluginVersion == nil){
-        pluginVersion = @"unknown";
-    }
-    NSLog(@"[FB_Flutter] Starting plugin %@", pluginVersion);
     if ([FairBid isStarted]) {
         result([NSNumber numberWithBool:NO]);
         return;
@@ -319,11 +311,8 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSNumber *width = arguments[@"width"];
     NSNumber *height = arguments[@"height"];
     
-    FYBBannerOptions *bannerOptions = [[FYBBannerOptions alloc] init];
-    bannerOptions.placementId = placement;
-    NSLog(@"[FB_Flutter] Load banner %@ (%@, %@)", placement, width, height);
-    [_bannerDelegate registerResultCallback:result forPlacement:placement];
-    [FYBBanner requestWithOptions:bannerOptions];
+    [_bannerDelegate loadBanner:placement width:width height:height andResult: result];
+    
 }
 
 - (void)destroyBanner:(NSDictionary *)arguments result:(FlutterResult)result {

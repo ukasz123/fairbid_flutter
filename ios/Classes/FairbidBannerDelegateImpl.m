@@ -133,6 +133,32 @@ static NSString *const _AD_TYPE = @"banner";
     }
 }
 
+//// Native view banners
+- (void)loadBanner:(NSString *)placement width:(NSNumber *)width height:(NSNumber *)height andResult:(FlutterResult)result {
+    
+    FYBBannerAdView *bannerView = [ads objectForKey:placement];
+    if (bannerView){
+        NSLog(@"[FB_Flutter] banner loaded %@",bannerView.options.placementId);
+        CGSize size = bannerView.frame.size;
+        
+        NSArray *sizeArray = @[[NSNumber numberWithDouble:size.width], [NSNumber numberWithDouble:size.height]];
+        NSLog(@"[FB_Flutter] banner loaded %@ [%@]",bannerView.options.placementId, sizeArray);
+        FlutterEventSink metadataSink = [metadataSinks objectForKey:bannerView.options.placementId];
+        if (metadataSink){
+            metadataSink(sizeArray);
+        }
+        result( sizeArray );
+        // return early
+        return;
+    }
+    
+    FYBBannerOptions *bannerOptions = [[FYBBannerOptions alloc] init];
+    bannerOptions.placementId = placement;
+    NSLog(@"[FB_Flutter] Load banner %@ (%@, %@)", placement, width, height);
+    [self registerResultCallback:result forPlacement:placement];
+    [FYBBanner requestWithOptions:bannerOptions];
+}
+
 - (void)destroyBanner:(NSString *)placement {
     FYBBannerAdView *bannerView = [ads objectForKey:placement];
     if (bannerView){
@@ -158,7 +184,7 @@ static NSString *const _AD_TYPE = @"banner";
     
     FYBBannerAdView *bannerView = [ads objectForKey:placement];
     
-    NSLog(@"[FB_Flutter] createWithFrame found banner %lu with frame [%f x %f]", [bannerView hash], bannerView.frame.size.width, bannerView.frame.size.width);
+    NSLog(@"[FB_Flutter] createWithFrame found banner %lu with frame [%f x %f]", [bannerView hash], bannerView.frame.size.width, bannerView.frame.size.height);
     FlutterEventSink metadataSink = [metadataSinks objectForKey:placement];
     if (metadataSink){
         NSArray *size = @[[NSNumber numberWithDouble:bannerView.frame.size.width], [NSNumber numberWithDouble:bannerView.frame.size.height]];

@@ -1,20 +1,12 @@
-require 'yaml'
-
-# Returns the version number for a package.json file
-pkg_version = lambda do 
-  path = File.join(__dir__, '..', 'pubspec.yaml')
-  content = YAML.load(File.read(path))
-  content["version"]
-end
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
   s.name             = 'fairbid_flutter'
-  s.version          = pkg_version.call
-  s.summary          = 'Fyber FairBid for Flutter'
+  s.version          = '0.0.1'
+  s.summary          = 'Fyber FairBid 2 for Flutter'
   s.description      = <<-DESC
-Flutter plugin for FairBid
+Flutter plugin for FairBid 2.x.x
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }

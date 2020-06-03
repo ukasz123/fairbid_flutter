@@ -146,7 +146,7 @@ class _MyAppState extends State<MyApp> {
                         "Experimental",
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
-                      content: _sdk != null ? BannerViewAds() : Container(),
+                      content: _sdk != null ? BannerViewAds(sdk: _sdk) : Container(),
                     ),
                     Step(
                       isActive: _sdk != null,
@@ -248,11 +248,11 @@ class ImpressionPresenter extends StatelessWidget {
         for (var index = 0; index < adTypes.length; index++)
           StreamBuilder<int>(
             initialData: 0,
-            stream: Observable.concat([
-              Observable.fromFuture(initialImpressions[index]),
-              Observable(impressions
+            stream: Rx.concat([
+              initialImpressions[index].asStream(),
+              impressions
                   .where((imp) => imp.placementType == adTypes[index])
-                  .map((imp) => imp.impressionDepth))
+                  .map((imp) => imp.impressionDepth)
             ]),
             builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
               return Chip(label: Text('${snapshot.data}'));

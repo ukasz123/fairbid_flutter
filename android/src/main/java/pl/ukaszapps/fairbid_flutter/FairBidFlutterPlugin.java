@@ -40,17 +40,18 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
-import static com.fyber.fairbid.ads.CreativeSize.SMART_BANNER;
 
 public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandler {
     private BannerAdsFactory bannerAdFactoryInstance;
+    @SuppressWarnings("FieldCanBeLocal")
     private EventChannel eventChannel;
     private EventChannel.EventSink eventSink;
     private final PluginRegistry.Registrar registrar;
     private static final String TAG = "FairBidFlutter";
     static boolean debugLogging = false;
 
-    private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private BannerCreationResultListener resultBannerListener;
 
     public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
         FairBidFlutterPlugin instance = new FairBidFlutterPlugin(registrar);
@@ -62,7 +63,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     private BannerAdsFactory getBannerAdFactory() {
         if (bannerAdFactoryInstance == null) {
-            bannerAdFactoryInstance = new BannerAdsFactory(this.registrar.messenger(), this.registrar.context().getApplicationContext());
+            bannerAdFactoryInstance = new BannerAdsFactory(this.registrar.messenger());
         }
         return bannerAdFactoryInstance;
     }
@@ -174,88 +175,32 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         Object args = call.arguments;
         Activity activity = this.registrar.activity();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH) {
-            result.error("Native views are not supported on that API level", null, null);
+            result.error("Unsupported operation", "Native views are not supported on that API level", "In-view banners require at least Android API 20 (Kitkat Watch)");
         }
         if (args != null) {
             Map arguments = (Map) args;
 
-            String placement = (String) arguments.get("placement");
-            assert placement != null;
-            int placementId = Integer.parseInt(placement);
+            final String placement = (String) arguments.get("placement");
             final Integer requestedWidth = (Integer) arguments.get("width");
             final Integer requestedHeight = (Integer) arguments.get("height");
-            if (debugLogging) {
-                Log.d(TAG, "creating banner '" + placement + "' for size (" + requestedWidth + ", " + requestedHeight + ") ");
+            assert placement != null;
+
+            if (!this.getBannerAdFactory().hasBanner(placement)) {
+                if (debugLogging) {
+                    Log.d(TAG,
+                          "creating banner '" + placement + "' for size (" + requestedWidth + ", " + requestedHeight + ") "
+                    );
+                }
+                resultBannerListener.registerCallback(placement, result);
+                this.getBannerAdFactory().createBannerView(activity, placement, requestedWidth, requestedHeight);
+
+            } else {
+                runOnMain(() -> {
+                    ArrayList<Double> size = BannerAdsFactory.getBannerMeasurements(
+                            getBannerAdFactory().get(placement));
+                    result.success(size);
+                });
             }
-            final BannerAdView bannerView = new BannerAdView(activity, placementId);
-            bannerView.setBackgroundResource(android.R.color.transparent);
-            final BannerOptions bannerOptions = new BannerOptions();
-            CreativeSize.Builder sizeBuilder = CreativeSize.Builder.newBuilder();
-            int tempWidth = ViewGroup.LayoutParams.MATCH_PARENT;
-            if (requestedWidth != null) {
-                tempWidth = ((Number) (requestedWidth)).intValue();
-                sizeBuilder.withWidth(tempWidth);
-            }
-            int tempHeight = ViewGroup.LayoutParams.MATCH_PARENT ;
-            if (requestedHeight != null) {
-                tempHeight = ((Number) (requestedHeight)).intValue();
-                sizeBuilder.withHeight(tempHeight);
-            }
-
-            bannerView.setBannerOptions(bannerOptions.setFallbackSize(SMART_BANNER));
-            FrameLayout bannerFrame = new FrameLayout(activity );
-            ViewGroup.LayoutParams bannerFrameLayoutParams = new ViewGroup.LayoutParams(tempWidth, tempHeight);
-            bannerFrame.setLayoutParams(bannerFrameLayoutParams);
-            bannerOptions.placeInContainer(bannerFrame);
-            Log.d(TAG, String.format("placing banner in the frame (%d, %d)", tempWidth, tempHeight));
-            bannerView.setBannerListener(
-                    new BannerListener() {
-                        @Override
-                        public void onError(@NonNull final String placement, final BannerError bannerError) {
-                            runOnMain(new Runnable() {
-                                @Override
-                                public void run() {
-                                    result.error(
-                                            (bannerError.getFailure() != null) ? bannerError.getFailure().name() : "unknown",
-                                            (bannerError.getErrorMessage() != null) ? bannerError.getErrorMessage() : "no message",
-                                            null
-                                    );
-//                                    sendEvent(Constants.AdType.BANNER, placement, "error", null, bannerError.getErrorMessage());
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onLoad(@NonNull final String placement) {
-                            runOnMain(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ArrayList<Double> size = BannerAdsFactory.getBannerMeasurements(bannerView);
-                                    result.success(size);
-//                                    sendEvent(Constants.AdType.BANNER, placement, "load", null);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onShow(@NonNull String placement, @NonNull ImpressionData impressionData) {
-                            sendEvent(Constants.AdType.BANNER, placement, "show", impressionData);
-                        }
-
-                        @Override
-                        public void onClick(@NonNull String placement) {
-
-                            sendEvent(Constants.AdType.BANNER, placement, "click", null);
-                        }
-
-                        @Override
-                        public void onRequestStart(@NonNull String placement) {
-                            sendEvent(Constants.AdType.BANNER, placement, "request", null);
-                        }
-                    }
-            );
-            bannerView.load(placementId, true);
-            this.getBannerAdFactory().set(placement, bannerView);
         } else {
             result.error("Invalid arguments", "Arguments MUST NOT be empty", null);
         }
@@ -479,7 +424,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         debugLogging = tempFlag;
         Framework.framework = "flutter";
-        Framework.frameworkVersion = BuildConfig.VERSION_NAME;
+        Framework.frameworkVersion = call.argument("pluginVersion");
 
         FairBid sdk = FairBid.configureForAppId(publisherId);
         if (!autoRequesting) {
@@ -512,15 +457,14 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         }));
 
         // registering callbacks
-        EventSender eventSender = (new EventSender() {
-            public final void send(@NonNull Constants.AdType adType, @NonNull String placementName, @NonNull String eventName, @Nullable ImpressionData impressionData, Object[] extras) {
-                FairBidFlutterPlugin self = FairBidFlutterPlugin.this;
-                self.sendEvent(adType, placementName, eventName, impressionData, extras);
-            }
+        EventSender eventSender = ((adType, placementName, eventName, impressionData, extras) -> {
+            FairBidFlutterPlugin self = FairBidFlutterPlugin.this;
+            self.sendEvent(adType, placementName, eventName, impressionData, extras);
         });
+        resultBannerListener = new BannerCreationResultListener();
         Interstitial.setInterstitialListener((new InterstitialEventProducer(eventSender)));
         Rewarded.setRewardedListener((new RewardedEventProducer(eventSender)));
-        Banner.setBannerListener(new BannerEventProducer(eventSender));
+        Banner.setBannerListener(new CombinedBannerListener(new BannerListener[]{new BannerEventProducer(eventSender), resultBannerListener, this.getBannerAdFactory()}));
         result.success(true);
     }
 
@@ -548,7 +492,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     }
 
-    private void runOnMain(Runnable runnable) {
+    static void runOnMain(Runnable runnable) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             runnable.run();
         } else {
