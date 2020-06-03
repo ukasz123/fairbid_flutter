@@ -20,7 +20,9 @@ class FairBidInternal {
 
   static const MethodChannel methodCallChannel = _channel;
 
-  static final Map<String, dynamic> _baseStartArguments = {"pluginVersion": packageVersion};
+  static final Map<String, dynamic> _baseStartArguments = {
+    "pluginVersion": packageVersion
+  };
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -57,9 +59,11 @@ class FairBidInternal {
   }
 
   Future<bool> _start(Map<String, dynamic> arguments) async {
-    _channel.invokeMethod("startSdk", Map<String, dynamic>.from(_baseStartArguments)..addAll( arguments)).then(
-        (started) => _started.complete(started),
-        onError: (e) => _started.completeError(e));
+    _channel
+        .invokeMethod("startSdk",
+            Map<String, dynamic>.from(_baseStartArguments)..addAll(arguments))
+        .then((started) => _started.complete(started),
+            onError: (e) => _started.completeError(e));
     return _started.future;
   }
 

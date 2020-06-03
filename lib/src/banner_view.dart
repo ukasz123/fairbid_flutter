@@ -67,7 +67,7 @@ class BannerView extends StatelessWidget {
   /// Tries to create a banner view for a [placement] using given [sdk].
   /// While loading it can show widget built with [placeholderBuilder].
   /// In case of error happening it presents the widget built with [errorWidgetBuilder].
-  /// 
+  ///
   /// The widget would take all of the available width and enough height to present a native view.
   /// The expected height of the banner would be one of the following values: 50, 60. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
   factory BannerView.banner(String placement, FairBid sdk,
