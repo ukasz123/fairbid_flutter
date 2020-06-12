@@ -1,3 +1,6 @@
+### 0.8.0-dev.2
+* Update dependencies to **FairBid 3.2.1** (Official changelog: [iOS only](https://dev-ios.fyber.com/docs/fairbid-sdk#version-321))
+
 ### 0.8.0-dev.1
 * Native BannerView has been rewritten
 ** Added dependency to RxDart
