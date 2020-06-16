@@ -242,7 +242,12 @@ class _FBBannerFactory {
           return _methodChannel.invokeMethod<dynamic>(
             "loadBanner",
             bannerParams,
-          );
+          ).catchError((e, s){
+            if (e is PlatformException) {
+              return Future.error('Banner not loaded (${e.code})', s);
+            }
+            return Future.error('Banner not loaded', s);
+          });
         } else {
           return Future.error('SDK not started properly');
         }
@@ -275,7 +280,7 @@ class _FBBannerFactory {
             _methodChannel.invokeMethod<dynamic>(
               "destroyBanner",
               {"placement": element.placementId},
-            );
+            ).catchError((e){});
           });
         });
       }
