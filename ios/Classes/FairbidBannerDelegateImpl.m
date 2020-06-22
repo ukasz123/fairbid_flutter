@@ -3,7 +3,7 @@
 //  fairbid_flutter
 //
 #import <Foundation/Foundation.h>
-#import "FairBidFlutterPlugin.h"
+#import "FairbidFlutterPlugin.h"
 #import <Flutter/Flutter.h>
 
 
@@ -178,8 +178,8 @@ static NSString *const _AD_TYPE = @"banner";
     
     NSDictionary *arguments = args;
     NSString *placement = arguments[@"placement"];
-    NSNumber *width = arguments[@"width"];
-    NSNumber *height = arguments[@"height"];
+    // NSNumber *width = arguments[@"width"];
+    // NSNumber *height = arguments[@"height"];
     NSLog(@"[FB_Flutter] createWithFrame %@ for frame [%f x %f]", placement, frame.size.width, frame.size.height);
     
     FYBBannerAdView *bannerView = [ads objectForKey:placement];

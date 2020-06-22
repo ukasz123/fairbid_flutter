@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FairBidFlutterPlugin.h"
+#import "FairbidFlutterPlugin.h"
 
 @interface EventProducingRewardedDelegateImpl ()
 
