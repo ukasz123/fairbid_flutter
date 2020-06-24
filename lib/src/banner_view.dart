@@ -239,10 +239,24 @@ class _FBBannerFactory {
     if (futureHolder == null || futureHolder.error != null) {
       Future<dynamic> future = sdk.started.then((value) {
         if (value) {
-          return _methodChannel.invokeMethod<dynamic>(
-            "loadBanner",
-            bannerParams,
-          );
+          try {
+            return _methodChannel
+                .invokeMethod<dynamic>(
+              "loadBanner",
+              bannerParams,
+            )
+                .catchError((e, s) {
+              if (e is PlatformException) {
+                return Future.error('Banner not loaded (${e.code})', s);
+              }
+              return Future.error('Banner not loaded', s);
+            });
+          } catch (e, s) {
+            if (e is PlatformException) {
+              return Future.error('Banner not loaded (${e.code})', s);
+            }
+            return Future.error('Banner not loaded', s);
+          }
         } else {
           return Future.error('SDK not started properly');
         }
@@ -275,7 +289,7 @@ class _FBBannerFactory {
             _methodChannel.invokeMethod<dynamic>(
               "destroyBanner",
               {"placement": element.placementId},
-            );
+            ).catchError((e) {});
           });
         });
       }

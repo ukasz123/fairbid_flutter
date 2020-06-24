@@ -1,4 +1,4 @@
-#import "FairBidFlutterPlugin.h"
+#import "FairbidFlutterPlugin.h"
 
 @implementation FairBidFlutterPlugin
 
@@ -74,7 +74,7 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)startSdkAndInitListeners:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString *publisherId = arguments[@"publisherId"];
     
-    NSString *pluginVersion = arguments[@"pluginVersion"];
+    // NSString *pluginVersion = arguments[@"pluginVersion"];
     // TODO: implement setting the plugin data
     
     if ([FairBid isStarted]) {
