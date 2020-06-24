@@ -1,3 +1,5 @@
+### 0.8.0-dev.4
+
 ### 0.8.0-dev.3
 * Update dependencies to **FairBid 3.3.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-330), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-330))
 
