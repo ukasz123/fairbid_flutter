@@ -1,16 +1,25 @@
 PODS:
   - AdColony (4.1.2)
-  - AppLovinSDK (6.11.0)
-  - ChartboostSDK (8.1.0)
-  - fairbid_flutter (0.7.0):
-    - FairBidSDK (~> 3.2.0)
+  - AppLovinSDK (6.12.8)
+  - fairbid_flutter (0.0.1):
+    - FairBidSDK (~> 3.3.0)
     - Flutter
-  - FairBidSDK (3.2.0)
+  - FairBidSDK (3.3.0)
   - FBAudienceNetwork (5.9.0):
     - FBSDKCoreKit/Basics (>= 5.6.0)
-  - FBSDKCoreKit/Basics (7.0.0)
+  - FBSDKCoreKit/Basics (7.1.1)
   - Flutter (1.0.0)
-  - UnityAds (3.3.0)
+  - MintegralAdSDK (6.1.0.0):
+    - MintegralAdSDK/NativeAd (= 6.1.0.0)
+  - MintegralAdSDK/BidInterstitialVideoAd (6.1.0.0):
+    - MintegralAdSDK/BidNativeAd
+  - MintegralAdSDK/BidNativeAd (6.1.0.0)
+  - MintegralAdSDK/InterstitialVideoAd (6.1.0.0):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/NativeAd (6.1.0.0)
+  - MintegralAdSDK/RewardVideoAd (6.1.0.0):
+    - MintegralAdSDK/NativeAd
+  - UnityAds (3.4.2)
   - Verizon-Ads-Core (2.0.0)
   - Verizon-Ads-InlinePlacement (1.3.0)
   - Verizon-Ads-InlineWebAdapter (1.3.0)
@@ -44,25 +53,30 @@ PODS:
   - Verizon-Ads-VideoPlayer (1.4.0)
   - Verizon-Ads-WebController (1.2.0)
   - Verizon-Ads-WebView (1.3.0)
+  - VungleSDK-iOS (6.5.2)
 
 DEPENDENCIES:
   - AdColony (= 4.1.2)
-  - AppLovinSDK (= 6.11.0)
-  - ChartboostSDK (= 8.1.0)
+  - AppLovinSDK (= 6.12.8)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
   - FBAudienceNetwork (= 5.9.0)
   - Flutter (from `Flutter`)
-  - UnityAds (= 3.3.0)
+  - MintegralAdSDK (= 6.1.0.0)
+  - MintegralAdSDK/BidInterstitialVideoAd (= 6.1.0.0)
+  - MintegralAdSDK/InterstitialVideoAd (= 6.1.0.0)
+  - MintegralAdSDK/RewardVideoAd (= 6.1.0.0)
+  - UnityAds (= 3.4.2)
   - Verizon-Ads-StandardEdition (= 1.5.0)
+  - VungleSDK-iOS (= 6.5.2)
 
 SPEC REPOS:
   trunk:
     - AdColony
     - AppLovinSDK
-    - ChartboostSDK
     - FairBidSDK
     - FBAudienceNetwork
     - FBSDKCoreKit
+    - MintegralAdSDK
     - UnityAds
     - Verizon-Ads-Core
     - Verizon-Ads-InlinePlacement
@@ -81,6 +95,7 @@ SPEC REPOS:
     - Verizon-Ads-VideoPlayer
     - Verizon-Ads-WebController
     - Verizon-Ads-WebView
+    - VungleSDK-iOS
 
 EXTERNAL SOURCES:
   fairbid_flutter:
@@ -90,14 +105,14 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AdColony: 0a1e13349ce430ce29374c665611013fd78f792c
-  AppLovinSDK: e90a0d9b2cee5ece6dad2332fe48fd1e6c15262f
-  ChartboostSDK: c146707d37d6bf2b44aa2e17f34dfd435b9add29
-  fairbid_flutter: 4e1265d4b172de8c2efe492dd5f8c82e1759027e
-  FairBidSDK: 267a78cbb442b40de50a87fdceb146734cacbbf9
+  AppLovinSDK: 0699feee7a8a3e55dc3a52e07d1b51cae0d27d56
+  fairbid_flutter: 906c01dd53641e8b8c0c128de63a8caf6b2a9ef3
+  FairBidSDK: c1e73be6af7915623f6d7c6f14690e657f1d54ba
   FBAudienceNetwork: 648648b13d8ea3d39676542dece2b04dbe867497
-  FBSDKCoreKit: 8ad31cd09f793d1d7e84cf20fd6cebfe80ad318d
+  FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  UnityAds: 0b7ecf8df83e8a3d62122a3fcf61e47c8e848f3c
+  MintegralAdSDK: 086873cf6af58a7cec10fd1446ba41f5f55c6c11
+  UnityAds: db0da29fa3a7e519bceea56693909df0dd83caa5
   Verizon-Ads-Core: 4c30b7ada9a97e79e398f419b6d60159a8adab41
   Verizon-Ads-InlinePlacement: 6f1c64b3cc7a2ed0b22a12807f62abd61f6616a6
   Verizon-Ads-InlineWebAdapter: 1ec27a817365fc0d535791b4702b44f527ce89c0
@@ -115,7 +130,8 @@ SPEC CHECKSUMS:
   Verizon-Ads-VideoPlayer: ef7de905e9972367cc710047a282dbf7e4c04cdd
   Verizon-Ads-WebController: da4fa161e61974f8a9f7e159381d518b84086588
   Verizon-Ads-WebView: ed2cbe419bc41377c67c4a937d0573fbe5db6e4b
+  VungleSDK-iOS: b39f80d93c342cb07f9d83ab1105817ddcb61b72
 
-PODFILE CHECKSUM: ec3c4d69fdc607cc2da9e10216ba54bc711b0301
+PODFILE CHECKSUM: 47a8dbb06b9608995a1f1b70c9301d4cca45a47c
 
 COCOAPODS: 1.8.4
