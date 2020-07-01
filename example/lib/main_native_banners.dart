@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fairbid_flutter/fairbid_flutter.dart';
+import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,8 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     _placementIdController = TextEditingController();
-    _sdk = FairBid.forOptions(
-        Options(appId: _appId));
+    _sdk = FairBid.forOptions(Options(appId: _appId));
     _sub = _sdk.events
         .map((event) => '${event.eventType}: ${event.payload}')
         .listen((event) {
@@ -52,9 +51,11 @@ class _MyAppState extends State<MyApp> {
           FutureBuilder<bool>(
               future: _sdk.started,
               builder: (context, snapshot) => CheckboxListTile(
-                  title: GestureDetector(child: Text('Started'), onTap: (){
-                    _sdk.showTestSuite();
-                  }),
+                  title: GestureDetector(
+                      child: Text('Started'),
+                      onTap: () {
+                        _sdk.showTestSuite();
+                      }),
                   value: snapshot.data ?? false,
                   onChanged: null)),
           Divider(),
@@ -69,19 +70,29 @@ class _MyAppState extends State<MyApp> {
           SizedBox(height: 8),
           Expanded(
             child: ListView.builder(
-                itemCount: _placements.length*5,
+                itemCount: _placements.length * 5,
                 itemBuilder: (context, index) {
                   var modulo = index % 5;
-                  if (modulo == 0){
-                  var realIndex = (index/5).floor();
-                  var placement = _placements[realIndex];
-                  return Dismissible(child: _bannerContainer(placement), key: ValueKey('$placement$realIndex',), onDismissed: (_){
-                    setState(() {
-                      _placements.removeAt(realIndex);
-                    });
-                  },);
+                  if (modulo == 0) {
+                    var realIndex = (index / 5).floor();
+                    var placement = _placements[realIndex];
+                    return Dismissible(
+                      child: _bannerContainer(placement),
+                      key: ValueKey(
+                        '$placement$realIndex',
+                      ),
+                      onDismissed: (_) {
+                        setState(() {
+                          _placements.removeAt(realIndex);
+                        });
+                      },
+                    );
                   } else {
-                    return Container(height: 68, color: Color.fromARGB(0xff, 0xaa&(index*17), (index*13) % 255, 0xff&(index * 19)),);
+                    return Container(
+                      height: 68,
+                      color: Color.fromARGB(0xff, 0xaa & (index * 17),
+                          (index * 13) % 255, 0xff & (index * 19)),
+                    );
                   }
                 }),
           )
@@ -113,9 +124,9 @@ class BannerContainer extends StatelessWidget {
   final String id;
 
   Widget _errorBuilder(context, error) => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Text('Error:\n$error'),
-  );
+        padding: const EdgeInsets.all(8.0),
+        child: Text('Error:\n$error'),
+      );
   Widget _placeholderBuilder(context) => SizedBox(
         height: 45,
         child: Padding(
@@ -139,7 +150,6 @@ class BannerContainer extends StatelessWidget {
         ),
         Container(
           padding: EdgeInsets.symmetric(vertical: 4),
-          color: Color(0xffa4a4a4 & name.hashCode),
           alignment: Alignment.center,
           child: BannerView.banner(
             id,
