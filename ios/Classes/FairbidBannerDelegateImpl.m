@@ -22,10 +22,6 @@
         _bannerView = banner;
         _frameView = [[UIView alloc] initWithFrame: frame];
         [_frameView addSubview: banner];
-        _frameView.backgroundColor = [UIColor colorWithRed:66.0f/255.0f
-                                                     green:79.0f/255.0f
-                                                      blue:91.0f/255.0f
-                                                     alpha:1.0f];
     }
     return self;
 }
