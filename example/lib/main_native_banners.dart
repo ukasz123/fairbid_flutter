@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fairbid_flutter/fairbid_flutter.dart';
-import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,12 +12,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   FairBid _sdk;
-
   StreamSubscription<String> _sub;
   List<String> _placements = [];
-
   TextEditingController _placementIdController;
-
   Map<String, Widget> bannersCache = {};
 
   //TODO update me
@@ -48,96 +44,139 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(),
         body: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          FutureBuilder<bool>(
-              future: _sdk.started,
-              builder: (context, snapshot) => CheckboxListTile(
-                  title: GestureDetector(
-                      child: Text('Started'),
-                      onTap: () {
-                        _sdk.showTestSuite();
-                      }),
-                  value: snapshot.data ?? false,
-                  onChanged: null)),
+          _buildTestSuiteTile(),
           Divider(),
-          ListTile(
-              title: TextFormField(
-                controller: _placementIdController,
-                keyboardType: TextInputType.number,
-              ),
-              trailing: IconButton(
-                  icon: Icon(Icons.thumb_up), onPressed: _addPlacement)),
+          _buildNewPlacementTile(),
           Divider(),
           SizedBox(height: 8),
-          Expanded(
-            child: ListView.builder(
-                itemCount: _placements.length * 5,
-                itemBuilder: (context, index) {
-                  var modulo = index % 5;
-                  if (modulo == 0) {
-                    var realIndex = (index / 5).floor();
-                    var placement = _placements[realIndex];
-                    return Dismissible(
-                      child: _bannerContainer(placement),
-                      key: ValueKey(
-                        '$placement$realIndex',
-                      ),
-                      onDismissed: (_) {
-                        setState(() {
-                          _placements.removeAt(realIndex);
-                        });
-                      },
-                    );
-                  } else {
-                    return Container(
-                      height: 68,
-                      color: Color.fromARGB(0xff, 0xaa & (index * 17),
-                          (index * 13) % 255, 0xff & (index * 19)),
-                    );
-                  }
-                }),
-          )
+          _buildNativeBannerList()
         ]),
       ),
     );
   }
 
-  void _addPlacement() {
-    var placementId = _placementIdController.value.text;
-    _placements.insert(0, placementId);
-    _placementIdController.clear();
-    setState(() {});
+  Widget _buildTestSuiteTile() {
+    return FutureBuilder<bool>(
+      future: _sdk.started,
+      builder: (context, snapshot) => CheckboxListTile(
+        title: GestureDetector(
+            child: Text('SDK Started - Tap for Test Suite'),
+            onTap: () {
+              _sdk.showTestSuite();
+            }),
+        value: snapshot.data ?? false,
+        onChanged: null,
+      ),
+    );
   }
 
-  Widget _bannerContainer(String placement) {
-    Widget banner = bannersCache[placement];
+  Widget _buildNewPlacementTile() {
+    return ListTile(
+      title: TextFormField(
+        decoration: const InputDecoration(labelText: 'New Placement ID:'),
+        controller: _placementIdController,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.done,
+        onFieldSubmitted: (_) => _addPlacement(),
+      ),
+      trailing: IconButton(
+        icon: Icon(Icons.add_box),
+        onPressed: _addPlacement,
+      ),
+    );
+  }
+
+  Widget _buildNativeBannerList() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: _placements.length * 5,
+        itemBuilder: (context, index) {
+          var modulo = index % 5;
+          if (modulo == 0) {
+            var realIndex = (index / 5).floor();
+            var placementId = _placements[realIndex];
+            return _buildNativeBannerListItem(placementId, realIndex);
+          } else {
+            return _buildColoredSpacerListItem(index);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildColoredSpacerListItem(int index) {
+    return GestureDetector(
+      onTap: _dismissKeyboard,
+      child: Container(
+        height: 68,
+        color: Color.fromARGB(
+          0xff,
+          0xaa & (index * 17),
+          (index * 13) % 255,
+          0xff & (index * 19),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNativeBannerListItem(String placementId, int realIndex) {
+    return Dismissible(
+      child: _buildBannerContainer(placementId),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: AlignmentDirectional.centerEnd,
+        color: Colors.red,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+          child: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      key: ValueKey('$placementId$realIndex'),
+      onDismissed: (_) {
+        setState(() {
+          _placements.removeAt(realIndex);
+        });
+      },
+    );
+  }
+
+  Widget _buildBannerContainer(String placementId) {
+    Widget banner = bannersCache[placementId];
     if (banner == null) {
-      banner = BannerContainer(_sdk, name: placement, id: placement);
-      bannersCache[placement] = banner;
+      banner = BannerContainer(_sdk, id: placementId);
+      bannersCache[placementId] = banner;
     }
     return banner;
+  }
+
+  void _addPlacement() {
+    final placementId = _placementIdController.value.text;
+    _placementIdController.clear();
+    _dismissKeyboard();
+    setState(() {
+      _placements.insert(0, placementId);
+    });
+  }
+
+  void _dismissKeyboard() {
+    final currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.focusedChild?.unfocus();
+    }
   }
 }
 
 class BannerContainer extends StatelessWidget {
-  final FairBid _sdk;
-  final String name;
-  final String id;
-
-  Widget _errorBuilder(context, error) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text('Error:\n$error'),
-      );
-  Widget _placeholderBuilder(context) => SizedBox(
-        height: 45,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(child: LinearProgressIndicator()),
-        ),
-      );
-
-  BannerContainer(this._sdk, {@required this.name, @required String id})
+  BannerContainer(this._sdk, {@required String id})
       : this.id = id,
         super(key: ValueKey(id));
+
+  final FairBid _sdk;
+  final String id;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -146,7 +185,7 @@ class BannerContainer extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text('$name ($id)'),
+          child: Text('Placement $id'),
         ),
         Container(
           padding: EdgeInsets.symmetric(vertical: 4),
@@ -161,4 +200,17 @@ class BannerContainer extends StatelessWidget {
       ],
     );
   }
+
+  Widget _errorBuilder(context, error) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('Error:\n$error'),
+      );
+
+  Widget _placeholderBuilder(context) => SizedBox(
+        height: 45,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(child: LinearProgressIndicator()),
+        ),
+      );
 }
