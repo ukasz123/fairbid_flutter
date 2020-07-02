@@ -81,11 +81,11 @@ target 'Runner' do
   pod 'UnityAds', '3.4.2'
   pod 'Verizon-Ads-StandardEdition', '1.5.0'
   pod 'VungleSDK-iOS', '6.5.2'
-  pod 'MintegralAdSDK', '6.1.0.0'
-  
+  pod 'MintegralAdSDK', '6.1.0.0'  
   pod 'MintegralAdSDK/RewardVideoAd', '6.1.0.0'
   pod 'MintegralAdSDK/InterstitialVideoAd', '6.1.0.0'
   pod 'MintegralAdSDK/BidInterstitialVideoAd', '6.1.0.0'
+  pod 'IronSourceSDK', '6.16.0.0'
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.

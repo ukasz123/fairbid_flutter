@@ -9,6 +9,7 @@ PODS:
     - FBSDKCoreKit/Basics (>= 5.6.0)
   - FBSDKCoreKit/Basics (7.1.1)
   - Flutter (1.0.0)
+  - IronSourceSDK (6.16.0.0)
   - MintegralAdSDK (6.1.0.0):
     - MintegralAdSDK/NativeAd (= 6.1.0.0)
   - MintegralAdSDK/BidInterstitialVideoAd (6.1.0.0):
@@ -61,6 +62,7 @@ DEPENDENCIES:
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
   - FBAudienceNetwork (= 5.9.0)
   - Flutter (from `Flutter`)
+  - IronSourceSDK (= 6.16.0.0)
   - MintegralAdSDK (= 6.1.0.0)
   - MintegralAdSDK/BidInterstitialVideoAd (= 6.1.0.0)
   - MintegralAdSDK/InterstitialVideoAd (= 6.1.0.0)
@@ -76,6 +78,7 @@ SPEC REPOS:
     - FairBidSDK
     - FBAudienceNetwork
     - FBSDKCoreKit
+    - IronSourceSDK
     - MintegralAdSDK
     - UnityAds
     - Verizon-Ads-Core
@@ -111,6 +114,7 @@ SPEC CHECKSUMS:
   FBAudienceNetwork: 648648b13d8ea3d39676542dece2b04dbe867497
   FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  IronSourceSDK: 60f16cbdc91777e554f110a4d556c6aec2347609
   MintegralAdSDK: 086873cf6af58a7cec10fd1446ba41f5f55c6c11
   UnityAds: db0da29fa3a7e519bceea56693909df0dd83caa5
   Verizon-Ads-Core: 4c30b7ada9a97e79e398f419b6d60159a8adab41
@@ -132,6 +136,6 @@ SPEC CHECKSUMS:
   Verizon-Ads-WebView: ed2cbe419bc41377c67c4a937d0573fbe5db6e4b
   VungleSDK-iOS: b39f80d93c342cb07f9d83ab1105817ddcb61b72
 
-PODFILE CHECKSUM: 47a8dbb06b9608995a1f1b70c9301d4cca45a47c
+PODFILE CHECKSUM: 187ffbc128f36ef71e05ebbb3dd9553611382fcb
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3
