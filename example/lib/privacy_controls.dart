@@ -34,7 +34,7 @@ class GDPRControls extends StatelessWidget {
                 ccpaString: "IABCompliantConstentString");
             print("CCPA String updated");
           },
-          child: Text("Grant GDPR consent"),
+          child: Text("Update CCPA consent"),
         ),
         OutlineButton(
           onPressed: () async {
