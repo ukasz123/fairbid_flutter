@@ -1,4 +1,7 @@
 ### 0.8.0-dev.4
+* Update dependencies to **FairBid 3.4.1** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-341), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-341))
+* Changed BannerView API:
+** removed unsupported `rectangle` version
 
 ### 0.8.0-dev.3
 * Update dependencies to **FairBid 3.3.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-330), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-330))

@@ -51,7 +51,7 @@ class BannerView extends StatelessWidget {
   /// Tries to create a banner with aspect ratio closer to 1:1 than for regular banners.
   ///
   /// ⚠️Rectangle size banners are NOT supported by FairBid SDK yet.
-  factory BannerView.rectangle(String placement, FairBid sdk,
+  factory BannerView._rectangle(String placement, FairBid sdk,
           {WidgetBuilder placeholderBuilder,
           ErrorWidgetBuilder errorWidgetBuilder}) =>
       BannerView._(
@@ -69,8 +69,9 @@ class BannerView extends StatelessWidget {
   /// In case of error happening it presents the widget built with [errorWidgetBuilder].
   ///
   /// The widget would take all of the available width and enough height to present a native view.
-  /// The expected height of the banner would be one of the following values: 50, 60. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
-  factory BannerView.banner(String placement, FairBid sdk,
+  /// The expected height of the banner would be one of the following values: 50 for phones, 90 for tablets. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
+  /// The expected width of the banner is: 320 for phones and 728 for tablets although real values may vary.
+  factory BannerView(String placement, FairBid sdk,
           {WidgetBuilder placeholderBuilder,
           ErrorWidgetBuilder errorWidgetBuilder}) =>
       BannerView._(
@@ -83,8 +84,13 @@ class BannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // height is fixed value depending on banner type
-    double height = (type == _BannerType.BANNER ? 60 : 250);
+    double height = 50.0;
+    
+    if (type == _BannerType.BANNER) {
+      bool isTablet = MediaQuery.of(context).size.shortestSide > 600.0;
+      height = isTablet ? 90 : 50;
+    }
+    // since FairBid 3.4.0 banner size depends on the device type
     return LayoutBuilder(builder: (context, constraints) {
       final viewConstraints = <String, int>{};
       viewConstraints["height"] =

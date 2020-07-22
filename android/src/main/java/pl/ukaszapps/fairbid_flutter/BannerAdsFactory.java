@@ -31,7 +31,6 @@ import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 
-import static com.fyber.fairbid.ads.CreativeSize.SMART_BANNER;
 import static pl.ukaszapps.fairbid_flutter.FairBidFlutterPlugin.debugLogging;
 
 final class BannerAdsFactory extends PlatformViewFactory implements BannerListener {
@@ -165,7 +164,6 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
             sizeBuilder.withHeight(tempHeight);
         }
 
-        bannerView.setBannerOptions(bannerOptions.setFallbackSize(SMART_BANNER));
         FrameLayout bannerFrame = new FrameLayout(activity);
         FrameLayout.LayoutParams bannerFrameLayoutParams = new FrameLayout.LayoutParams(
                 (int) (tempWidth * metrics.density),
@@ -242,6 +240,9 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
         @Override
         public View getView() {
+            if (debugLogging) {
+                Log.d(TAG, "getView Banner");
+            }
             return bannerView;
         }
 

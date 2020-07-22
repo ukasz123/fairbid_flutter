@@ -190,7 +190,7 @@ class BannerContainer extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(vertical: 4),
           alignment: Alignment.center,
-          child: BannerView.banner(
+          child: BannerView(
             id,
             _sdk,
             errorWidgetBuilder: _errorBuilder,

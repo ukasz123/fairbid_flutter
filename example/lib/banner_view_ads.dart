@@ -65,7 +65,7 @@ class _BannerViewAdsState extends State<BannerViewAds> {
                   Container(
                     alignment: Alignment.center,
                     color: Color.fromARGB(124, 100, 200, 0),
-                    child: BannerView.rectangle(
+                    child: BannerView(
                       placement,
                       widget.sdk,
                       errorWidgetBuilder: (c, error)=>Center(child:Text("$error")),
