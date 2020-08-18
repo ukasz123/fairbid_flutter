@@ -1,6 +1,6 @@
 #import "FairbidFlutterPlugin.h"
 
-@implementation FairBidFlutterPlugin
+@implementation FairbidFlutterPlugin
 
 static NSString *const  PLACEMENT_KEY = @"placement";
 static NSString *const  AD_TYPE_KEY = @"adType";
@@ -13,7 +13,7 @@ static NSString *const  BANNER_KEY = @"banner";
     FlutterMethodChannel *channel = [FlutterMethodChannel
         methodChannelWithName:@"pl.ukaszapps.fairbid_flutter"
         binaryMessenger:[registrar messenger]];
-    FairBidFlutterPlugin *instance = [[FairBidFlutterPlugin alloc] initWithRegistrar:registrar];
+    FairbidFlutterPlugin *instance = [[FairbidFlutterPlugin alloc] initWithRegistrar:registrar];
 
     [registrar addMethodCallDelegate:instance channel:channel];
 }
