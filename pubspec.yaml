@@ -33,4 +33,4 @@ flutter:
         package: pl.ukaszapps.fairbid_flutter
         pluginClass: FairBidFlutterPlugin
       ios:
-        pluginClass: FairBidFlutterPlugin
+        pluginClass: FairbidFlutterPlugin
