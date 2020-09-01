@@ -75,8 +75,8 @@ target 'Runner' do
   end
 
   # Mediated network pods
-  pod 'AdColony', '4.1.2'
-  pod 'AppLovinSDK', '6.12.8'
+  pod 'AdColony', '4.2.0'
+  pod 'AppLovinSDK', '6.13.3'
   pod 'FBAudienceNetwork', '5.10.1'
   pod 'UnityAds', '3.4.2'
   pod 'Verizon-Ads-StandardEdition', '1.5.0'
@@ -85,7 +85,7 @@ target 'Runner' do
   pod 'MintegralAdSDK/RewardVideoAd', '6.3.3.0'
   pod 'MintegralAdSDK/InterstitialVideoAd', '6.3.3.0'
   pod 'MintegralAdSDK/BidInterstitialVideoAd', '6.3.3.0'
-  pod 'IronSourceSDK', '6.17.0.0'
+  pod 'IronSourceSDK', '6.18.0.2'
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
