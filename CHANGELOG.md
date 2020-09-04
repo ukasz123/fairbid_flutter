@@ -1,3 +1,9 @@
+### 0.8.0-dev.5
+* Update dependencies to **FairBid 3.5.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-350), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-350))
+** AdColony banner support
+** Improved auto-request behaviour
+* iOS plugin implementation updated to support Flutter SDK 1.20
+
 ### 0.8.0-dev.4
 * Update dependencies to **FairBid 3.4.1** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-341), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-341))
 * Changed BannerView API:

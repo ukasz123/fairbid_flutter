@@ -1,6 +1,6 @@
 name: fairbid_flutter
 description: Unofficial Flutter plugin for FairBid SDK - the advertisement mediation platform. Supports banner, interstitial and rewarded video ads.
-version: 0.8.0-dev.4
+version: 0.8.0-dev.5
 homepage: https://github.com/ukasz123/fairbid_flutter
 
 environment:
@@ -33,4 +33,4 @@ flutter:
         package: pl.ukaszapps.fairbid_flutter
         pluginClass: FairBidFlutterPlugin
       ios:
-        pluginClass: FairBidFlutterPlugin
+        pluginClass: FairbidFlutterPlugin
