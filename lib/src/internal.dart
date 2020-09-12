@@ -146,7 +146,7 @@ class FairBidInternal {
 /// Interstitials are static or video ads presented before, during or after the user interacts with your app.
 /// The user can view and then immediately dismiss them. This is a non-rewarded format for the user.
 ///
-/// Official documentation: [iOS](https://dev-ios.fyber.com/docs/interstitial), [Android](https://dev-android.fyber.com/docs/interstitial).
+/// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360010019658-Interstitial), [Android](https://developer.fyber.com/hc/en-us/articles/360010107477-Interstitial).
 class InterstitialAd extends _AdWrapper {
   InterstitialAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.interstitial, placement);
@@ -158,7 +158,7 @@ class InterstitialAd extends _AdWrapper {
 
 /// Rewarded ads are an engaging ad format that shows a short video ad to the user and in exchange the user will earn a reward. The user must consent and watch the video completely through to the end in order to earn the reward.
 ///
-/// Official documentation: [iOS](https://dev-ios.fyber.com/docs/rewarded-ads), [Android](https://dev-android.fyber.com/docs/rewarded-video).
+/// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009935857-Rewarded-Ads), [Android](https://developer.fyber.com/hc/en-us/articles/360010107497-Rewarded-Ads).
 class RewardedAd extends _AdWrapper {
   RewardedAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.rewarded, placement);

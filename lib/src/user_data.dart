@@ -95,7 +95,7 @@ class UserData {
     _updateInstance(_userData);
   }
 
-  /// User's identifier. It is used in [server-side rewarding](https://ui.fyber.com/docs/server-side-rewarding) feature.
+  /// User's identifier. It is used in [server-side rewarding](https://developer.fyber.com/hc/en-us/articles/360009923657-Server-Side-Rewarding) feature.
   ///
   /// > The User ID length must not exceed 256 characters. If it does, the Server Side Reward callback will not contain a User ID value.
   String get id => _userData['id'];

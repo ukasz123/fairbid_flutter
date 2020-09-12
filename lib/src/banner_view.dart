@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:fairbid_flutter/src/internal.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:fairbid_flutter/fairbid_flutter.dart';
@@ -20,13 +19,10 @@ enum _BannerType { BANNER, RECTANGLE }
 /// Builds widget in case error while requesting a banner fill.
 typedef Widget ErrorWidgetBuilder(BuildContext context, Object error);
 
-/// ⚠️This is an **experimental feature**. Use with caution.
-///
 /// Presents native banner for the given placement.
 /// **IMPORTANT**: You can present only one BannerView per placement on the screen at any given moment.
 ///
 /// It depends on Platform Views. See documentation for [UiKitView](https://api.flutter.dev/flutter/widgets/UiKitView-class.html) and [AndroidView](https://api.flutter.dev/flutter/widgets/AndroidView-class.html) for limitations and necessary setup.
-@experimental
 class BannerView extends StatelessWidget {
   final String placement;
   final FairBid sdk;
@@ -50,7 +46,7 @@ class BannerView extends StatelessWidget {
   ///
   /// Tries to create a banner with aspect ratio closer to 1:1 than for regular banners.
   ///
-  /// ⚠️Rectangle size banners are NOT supported by FairBid SDK yet.
+  /// ⚠️ Rectangle size banners are NOT supported by FairBid SDK yet.
   factory BannerView._rectangle(String placement, FairBid sdk,
           {WidgetBuilder placeholderBuilder,
           ErrorWidgetBuilder errorWidgetBuilder}) =>
