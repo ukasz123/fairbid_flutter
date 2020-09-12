@@ -11,8 +11,8 @@ import 'package:fairbid_flutter/fairbid_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 void main() {
-  print ('Starting fairbid_flutter example');
-   runApp(MyApp()   );
+  print('Starting fairbid_flutter example');
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -26,6 +26,8 @@ class _MyAppState extends State<MyApp> {
   FairBid _sdk;
 
   bool _enableLogs = true;
+
+  bool _muteAds = false;
 
   TextEditingController _sdkIdController;
 
@@ -146,7 +148,8 @@ class _MyAppState extends State<MyApp> {
                         "Experimental",
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
-                      content: _sdk != null ? BannerViewAds(sdk: _sdk) : Container(),
+                      content:
+                          _sdk != null ? BannerViewAds(sdk: _sdk) : Container(),
                     ),
                     Step(
                       isActive: _sdk != null,
@@ -200,6 +203,19 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           GDPRControls(),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text("Mute ads"),
+              ),
+              Switch.adaptive(
+                  value: _muteAds,
+                  onChanged: (enable) async {
+                    await FairBid.setMuted(enable);
+                    setState(() => _muteAds = enable);
+                  })
+            ],
+          ),
         ],
       );
 

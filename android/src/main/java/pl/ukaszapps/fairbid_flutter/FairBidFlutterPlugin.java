@@ -113,6 +113,8 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             this.invokeCCPAStringUpdate(call, result);
         } else if (Utils.areEqual(call.method, "clearCCPA")) {
             this.invokeClearCCPAString(result);
+        } else if (Utils.areEqual(call.method, "setMuted")) {
+            this.invokeSetMuted(call, result);
         } else {
             result.notImplemented();
         }
@@ -403,6 +405,13 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         } else {
             result.error("INVALID_ARGUMENTS", null, null);
         }
+    }
+
+
+    private void invokeSetMuted(MethodCall call, MethodChannel.Result result) {
+        boolean mute = call.argument("mute");
+        FairBid.Settings.setMuted(mute);
+        result.success(null);
     }
 
     private void startSdkAndInitListeners(MethodCall call, MethodChannel.Result result) {

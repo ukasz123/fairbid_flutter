@@ -172,7 +172,7 @@ enum PriceAccuracy {
 /// Contains granular details to allow you to analyse and optimize both your ad monetization and user acquisition strategies.
 ///
 /// Relevant only to [AdEventType.show] and [AdEventType.showFailure] events.
-/// Official documentation: [iOS](https://dev-ios.fyber.com/docs/impression-level-data), [Android](https://dev-android.fyber.com/docs/impression-level-data).
+/// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940417-Impression-Level-Data), [Android](https://developer.fyber.com/hc/en-us/articles/360010150517-Impression-Level-Data).
 class ImpressionData {
   /// Accuracy of [netPayout] value.
   final PriceAccuracy priceAccuracy;

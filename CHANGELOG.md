@@ -1,3 +1,10 @@
+### 0.8.0
+* Updated dependencies to **FairBid 3.6.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog#version-3-6-0-0-0), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog#version-3-6-0-0-0))
+* Implementation of `setMuted` method - used to force audio to be turned off when ad is shown
+** This setting is passed to mediated networks that support this feature
+* Documentation links update - all links to official FairBid documentation should use the new website
+* Updated Android example 
+
 ### 0.8.0-dev.5
 * Update dependencies to **FairBid 3.5.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-350), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-350))
 ** AdColony banner support

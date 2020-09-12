@@ -4,12 +4,12 @@ part of 'internal.dart';
 class Options {
   /// The Fyber App ID. Can be found in the App Management Dashboard.
   ///
-  /// For more information visit [official guide](https://ui.fyber.com/docs/adding-placements-for-your-apps).
+  /// For more information visit [official guide](https://developer.fyber.com/hc/en-us/articles/360009974838-Adding-an-App-to-the-Console).
   final String appId;
 
   /// Turns on/off auto-requesting ads feature. Default: `true`.
   ///
-  /// Official articles about auto-requesting feature: [iOS](https://dev-ios.fyber.com/docs/auto-request), [Android](https://dev-android.fyber.com/docs/auto-request).
+  /// Official articles about auto-requesting feature: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940017-Auto-Request), [Android](https://developer.fyber.com/hc/en-us/articles/360010251798-Auto-Request).
   final bool autoRequesting;
 
   /// Turns on/off debug logging of the SDK. Default: `false`.

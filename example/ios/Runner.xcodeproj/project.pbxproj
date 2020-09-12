@@ -232,7 +232,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh",
-				"${PODS_ROOT}/AppLovinSDK/applovin-ios-sdk-6.12.8/AppLovinSDKResources.bundle",
+				"${PODS_ROOT}/AppLovinSDK/applovin-ios-sdk-6.13.3/AppLovinSDKResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (

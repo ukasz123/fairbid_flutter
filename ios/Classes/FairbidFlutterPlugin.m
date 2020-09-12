@@ -66,6 +66,8 @@ BannerDelegateImpl                      *_bannerDelegate;
         [self updateCCPAString:arguments result:result];
     } else if ([@"clearCCPA" isEqualToString:call.method]) {
         [self clearCCPAString:result];
+    } else if ([@"setMuted" isEqualToString:call.method]) {
+        [self setMuted:arguments result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -192,6 +194,14 @@ BannerDelegateImpl                      *_bannerDelegate;
     [[FairBid user] clearIABUSPrivacyString];
     result(nil);
 }
+
+- (void)setMuted:(NSDictionary *)arguments result:(FlutterResult) result {
+    NSNumber        *muteArg = arguments[@"mute"];
+    BOOL            mute = muteArg != nil && [muteArg boolValue];
+    [FairBid settings].muted = mute;
+    result(nil);
+}
+
 
 - (void)getUserData:(FlutterResult)result {
     FYBUserInfo *user = [FairBid user];
