@@ -66,4 +66,7 @@ class FairBid {
   /// Prepares [BannerAd] instance for showing and destroying banner ad
   BannerAd prepareBanner(String placementId) =>
       _delegate.prepareBanner(placementId);
+
+  /// Sets a flag for some mediated networks to show video ads with audio muted or not
+  static Future<void> setMuted(bool muteAds) => FairBidInternal.setMuted(muteAds);
 }

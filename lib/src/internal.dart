@@ -138,6 +138,9 @@ class FairBidInternal {
 
   BannerAd prepareBanner(String placement) =>
       BannerAd._(this, placementId: placement);
+
+  static Future<void> setMuted(bool muteAds) =>
+      _channel.invokeMethod('setMuted', <String, bool>{'mute': muteAds});
 }
 
 /// Interstitials are static or video ads presented before, during or after the user interacts with your app.

@@ -47,7 +47,7 @@ android {
 
 dependencies {
 
-    api 'com.fyber:fairbid-sdk:3.5.0'
+    api 'com.fyber:fairbid-sdk:3.6.+'
 
     //noinspection GradleDynamicVersion
     implementation 'androidx.annotation:annotation:1.1.0'
