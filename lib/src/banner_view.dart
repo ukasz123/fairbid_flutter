@@ -95,11 +95,9 @@ class BannerView extends StatelessWidget {
 
       // we need to tell native code what size of banners it can fit into the view
 
-      if (constraints.hasBoundedWidth) {
-        viewConstraints["width"] = constraints.biggest.width.floor();
-      } else {
-        viewConstraints["width"] = constraints.maxWidth.floor();
-      }
+      // if (constraints.hasBoundedWidth) {
+      //   viewConstraints["width"] = constraints.biggest.width.floor();
+      // } 
 
       return _FBNativeBanner(
         placement: placement,

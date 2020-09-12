@@ -180,7 +180,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             result.error("Unsupported operation", "Native views are not supported on that API level", "In-view banners require at least Android API 20 (Kitkat Watch)");
         }
         if (args != null) {
-            Map arguments = (Map) args;
+            Map<String, Object> arguments = (Map<String, Object>) args;
 
             final String placement = (String) arguments.get("placement");
             final Integer requestedWidth = (Integer) arguments.get("width");
