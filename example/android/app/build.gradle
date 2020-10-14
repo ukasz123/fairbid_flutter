@@ -68,17 +68,17 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
 
     // ad network sdks
-    implementation 'com.adcolony:sdk:4.2.2'
+    implementation 'com.adcolony:sdk:4.2.4'
 
-    implementation 'com.applovin:applovin-sdk:9.13.4'
+    implementation 'com.applovin:applovin-sdk:9.14.3'
 
-    implementation 'com.facebook.android:audience-network-sdk:5.10.1'
+    implementation 'com.facebook.android:audience-network-sdk:6.1.0'
 
-    implementation 'com.ironsource.sdk:mediationsdk:7.0.1.1'
+    implementation 'com.ironsource.sdk:mediationsdk:7.0.2'
 
     implementation 'com.unity3d.ads:unity-ads:3.4.8'
 
-    implementation 'com.vungle:publisher-sdk-android:6.7.0'
+    implementation 'com.vungle:publisher-sdk-android:6.8.0'
     // TODO add AdMob
 
     testImplementation 'junit:junit:4.12'
