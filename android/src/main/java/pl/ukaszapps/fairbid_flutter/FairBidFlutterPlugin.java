@@ -274,7 +274,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         UserInfo.setLocation(location);
 
-        UserInfo.setUserId((String) call.argument("id"));
+        UserInfo.setUserId(call.argument("id"));
 
         result.success(null);
     }
