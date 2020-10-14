@@ -2,6 +2,9 @@
 * Updated dependencies to **FairBid 3.7.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
 * [InMobi SDK|https://www.inmobi.com] support
 
+### 0.8.1-dev.1
+* Banners on Android should not always take whole available space
+
 ### 0.8.0
 * Updated dependencies to **FairBid 3.6.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog#version-3-6-0-0-0), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog#version-3-6-0-0-0))
 * Implementation of `setMuted` method - used to force audio to be turned off when ad is shown

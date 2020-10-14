@@ -153,7 +153,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
         final BannerOptions bannerOptions = new BannerOptions();
         CreativeSize.Builder sizeBuilder = CreativeSize.Builder.newBuilder();
-        int tempWidth = ViewGroup.LayoutParams.MATCH_PARENT;
+        int tempWidth = ViewGroup.LayoutParams.WRAP_CONTENT;
         if (requestedWidth != null) {
             tempWidth = ((Number) (requestedWidth)).intValue();
             sizeBuilder.withWidth(tempWidth);
@@ -166,8 +166,8 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
         FrameLayout bannerFrame = new FrameLayout(activity);
         FrameLayout.LayoutParams bannerFrameLayoutParams = new FrameLayout.LayoutParams(
-                (int) (tempWidth * metrics.density),
-                (int) (tempHeight * metrics.density)
+                tempWidth >= 0 ? (int) (tempWidth * metrics.density) : tempWidth,
+                tempHeight >= 0 ? (int) (tempHeight * metrics.density): tempHeight
         );
         bannerView.setLayoutParams(bannerFrameLayoutParams);
 
@@ -261,7 +261,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
         ViewGroup.LayoutParams bannerAdViewLP = bannerAdView.getLayoutParams();
         if (bannerChild != null) {
-            ViewGroup.LayoutParams temp = bannerAdView.getLayoutParams();
+            ViewGroup.LayoutParams temp = bannerChild.getLayoutParams();
             if (temp != null) {
                 childWidth = temp.width;
                 childWidth = childWidth < 0 ? (bannerAdViewLP != null ? bannerAdViewLP.width : -1) : childWidth;
