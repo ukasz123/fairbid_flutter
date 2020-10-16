@@ -188,7 +188,7 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
         stream: _loadFuture.asStream().asyncExpand((_) => _sizeStream),
         builder: (context, streamSnapshot) {
           if (streamSnapshot.hasData) {
-            var size = Size(streamSnapshot.data[0], streamSnapshot.data[0]);
+            var size = Size(streamSnapshot.data[0], streamSnapshot.data[1]);
             if (size.isEmpty) {
               return widget.placeholderBuilder != null
                   ? widget.placeholderBuilder(context)

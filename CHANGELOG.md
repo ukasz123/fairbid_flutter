@@ -1,3 +1,12 @@
+### 0.8.2
+* Fix issue for Android banners - some banners may not be shown until they were properly measured
+** The implementation enforces the same sizing rules as FairBid SDK does
+* Add missing InMobi dependencies to examples
+
+### 0.8.1
+* Updated dependencies to **FairBid 3.7.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
+* [InMobi SDK|https://www.inmobi.com] support
+
 ### 0.8.1-dev.1
 * Banners on Android should not always take whole available space
 
