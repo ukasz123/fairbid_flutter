@@ -1,5 +1,10 @@
 package pl.ukaszapps.fairbid_flutter;
 
+import android.content.Context;
+import android.content.res.Configuration;
+
+import androidx.annotation.NonNull;
+
 final class Utils {
     public static void checkParameterIsNotNull(Object value, String paramName) {
         if (value == null) {
@@ -28,4 +33,17 @@ final class Utils {
     public static <T> boolean  areEqual(T first, T second){
         return first == null ? second == null : first.equals(second);
     }
+
+
+    /**
+     * Determine if the device is a tablet (i.e. it has a large screen).
+     *
+     * @param context The calling context.
+     */
+    public static boolean isTablet(@NonNull Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
 }
