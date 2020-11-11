@@ -1,13 +1,13 @@
 PODS:
-  - AdColony (4.4.0)
-  - AppLovinSDK (6.14.3)
+  - AdColony (4.4.1.1)
+  - AppLovinSDK (6.14.5)
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (~> 3.7.0)
+    - FairBidSDK (~> 3.8.0)
     - Flutter
-  - FairBidSDK (3.7.0)
-  - FBAudienceNetwork (6.0.0):
+  - FairBidSDK (3.8.0)
+  - FBAudienceNetwork (6.2.0):
     - FBSDKCoreKit/Basics (>= 7.0.1)
-  - FBSDKCoreKit/Basics (8.0.0)
+  - FBSDKCoreKit/Basics (8.1.0)
   - Flutter (1.0.0)
   - InMobiSDK (9.0.7):
     - InMobiSDK/InMobiSDK (= 9.0.7)
@@ -17,7 +17,7 @@ PODS:
     - InMobiSDK/Moat
   - InMobiSDK/Moat (9.0.7):
     - InMobiSDK/Core
-  - IronSourceSDK (7.0.2.0)
+  - IronSourceSDK (7.0.3.0)
   - UnityAds (3.5.0)
   - Verizon-Ads-Core (2.3.0)
   - Verizon-Ads-InlinePlacement (1.4.0):
@@ -95,19 +95,17 @@ PODS:
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-OMSDK (~> 1.6)
     - Verizon-Ads-Support (~> 1.9)
-  - VungleSDK-iOS (6.8.0)
 
 DEPENDENCIES:
-  - AdColony (= 4.4.0)
-  - AppLovinSDK (= 6.14.3)
+  - AdColony (= 4.4.1.1)
+  - AppLovinSDK (= 6.14.5)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
-  - FBAudienceNetwork (= 6.0.0)
+  - FBAudienceNetwork (= 6.2.0)
   - Flutter (from `Flutter`)
   - InMobiSDK (= 9.0.7)
-  - IronSourceSDK (= 7.0.2.0)
+  - IronSourceSDK (= 7.0.3.0)
   - UnityAds (= 3.5.0)
   - Verizon-Ads-StandardEdition (= 1.8.0)
-  - VungleSDK-iOS (= 6.8.0)
 
 SPEC REPOS:
   trunk:
@@ -136,7 +134,6 @@ SPEC REPOS:
     - Verizon-Ads-VideoPlayer
     - Verizon-Ads-WebController
     - Verizon-Ads-WebView
-    - VungleSDK-iOS
 
 EXTERNAL SOURCES:
   fairbid_flutter:
@@ -145,15 +142,15 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  AdColony: 03c713bc6fedcaf3fc92f21f89276bc8a332e9c6
-  AppLovinSDK: cf6599cf6e997c34d2aa4a6e49b5ff627b17183f
-  fairbid_flutter: 6892d7742e07d1121394f14ed45a1fc597479032
-  FairBidSDK: 0bd5f53d7bce26d52f12acc3889e4ca2ac849604
-  FBAudienceNetwork: 39c76716acc24686fbef267d926bd9f278a55dbf
-  FBSDKCoreKit: 9d27fe97a2fa2abe5eeefea8240e837623ab88e0
+  AdColony: a655685ae4a62eb8d6ddffa5fc1436858872a9e7
+  AppLovinSDK: da2bc90688ce98b13c37aa3cfbd040641efbf629
+  fairbid_flutter: 4d993b74be95a8a92b58b80b7a9fa10e83efa94a
+  FairBidSDK: 80812e6c860637321bfe15de47042933236c71ef
+  FBAudienceNetwork: 69193f0362accc40305703fb3265342416971446
+  FBSDKCoreKit: b3ca27e124dae67122d3bb47c8f96800b39986a6
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   InMobiSDK: c3ec3fed998d8431ba31ad16565d102159e3f9e3
-  IronSourceSDK: a728cd265f8f3dbcc15d484b1cdfb2c1c1231fc0
+  IronSourceSDK: 9787d1c3e1d93a03d59edce53eb1f8063f5889b7
   UnityAds: 84b080493348d6995771f171e6bdc3c84b198686
   Verizon-Ads-Core: d817f7fc7f1e69aca9c28c2de4730b8faa6998d0
   Verizon-Ads-InlinePlacement: b0332c74bce5a7478441e44069078a41596b4124
@@ -172,8 +169,7 @@ SPEC CHECKSUMS:
   Verizon-Ads-VideoPlayer: 1ebc69f081819c1fad5d73fde924f873dd62e8a6
   Verizon-Ads-WebController: 9cfa4583aaead8f864d9c8ceab13bbe28c917e85
   Verizon-Ads-WebView: 3801f12f9c0a45c77df221de256ff1e9d959cd72
-  VungleSDK-iOS: bbc198ef21540bde9b9748981b120ae2681738f7
 
-PODFILE CHECKSUM: 44d4b97be519399614cf8fd961fbb8bfa5bde4f8
+PODFILE CHECKSUM: ebc4e6c27edec45ad64344e2c17aa7d5af5cb55a
 
 COCOAPODS: 1.9.3

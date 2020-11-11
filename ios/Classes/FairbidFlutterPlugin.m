@@ -68,6 +68,8 @@ BannerDelegateImpl                      *_bannerDelegate;
         [self clearCCPAString:result];
     } else if ([@"setMuted" isEqualToString:call.method]) {
         [self setMuted:arguments result:result];
+    } else if ([@"changeAutoRequesting" isEqualToString:call.method]) {
+        [self changeAutoRequesting:arguments result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -358,6 +360,30 @@ BannerDelegateImpl                      *_bannerDelegate;
         result([NSNumber numberWithUnsignedLong: FYBRewarded.impressionDepth]);
     } else if ([BANNER_KEY isEqualToString:type]) {
         result([NSNumber numberWithUnsignedLong: FYBBanner.impressionDepth]);
+    }
+}
+
+- (void) changeAutoRequesting:(NSDictionary *)arguments result:(FlutterResult) result {
+    NSNumber        *enableVal = arguments[@"enable"];
+    BOOL            enable = enableVal != nil && [enableVal boolValue];
+    NSString        *type = arguments[AD_TYPE_KEY];
+    NSString        *placement = arguments[@"placement"];
+    if ([INTERSTITIAL_KEY isEqualToString:type]) {
+        if (enable) {
+            [FYBInterstitial enableAutoRequesting:placement];
+        } else {
+            [FYBInterstitial disableAutoRequesting:placement];
+        }
+        result([NSNumber numberWithBool:enable]);
+    } else if ([REWARDED_KEY isEqualToString:type]) {
+        if (enable) {
+            [FYBRewarded enableAutoRequesting:placement];
+        } else {
+            [FYBRewarded disableAutoRequesting:placement];
+        }
+        result([NSNumber numberWithBool:enable]);
+    } else {
+        result(FlutterMethodNotImplemented);
     }
 }
 
