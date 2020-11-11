@@ -105,6 +105,8 @@ class _FullScreenAdsState extends State<FullScreenAds> {
   Widget _buildListItem(BuildContext context, _AdWrapper wrapper) {
     var isRewarded = wrapper is RewardedWrapper;
     AsyncCallback request, show;
+    ValueUpdateMaybe<bool> autoRequestingChange;
+
     Stream<bool> available;
     Stream<AdEventType> events;
     if (isRewarded) {
@@ -112,16 +114,20 @@ class _FullScreenAdsState extends State<FullScreenAds> {
       request = () => rewardedAd.request();
       show = () =>
           rewardedAd.showWithSSR(serverSideRewarding: {"option1": "value1"});
-      available = rewardedAd.isAvailable.asStream()
+      available = rewardedAd.isAvailable
+          .asStream()
           .concatWith([rewardedAd.availabilityStream]);
       events = rewardedAd.simpleEvents;
+      autoRequestingChange = rewardedAd.changeAutoRequesting;
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
       show = () => interstitialAd.show();
-      available = interstitialAd.isAvailable.asStream()
+      available = interstitialAd.isAvailable
+          .asStream()
           .concatWith([interstitialAd.availabilityStream]);
       events = interstitialAd.simpleEvents;
+      autoRequestingChange = interstitialAd.changeAutoRequesting;
     }
     return Dismissible(
       key: ValueKey(wrapper.name),
@@ -147,25 +153,37 @@ class _FullScreenAdsState extends State<FullScreenAds> {
           showAvailable: available,
           showAction: show,
           requestAction: request,
+          toggleAutoRequesting: autoRequestingChange,
         ),
       ),
     );
   }
 }
 
-class AdActions extends StatelessWidget {
+typedef Future<T> ValueUpdateMaybe<T>(T value);
+
+class AdActions extends StatefulWidget {
   final AsyncCallback requestAction;
   final AsyncCallback showAction;
   final Stream<bool> showAvailable;
+  final ValueUpdateMaybe<bool> toggleAutoRequesting;
 
   const AdActions(
       {Key key,
       @required this.requestAction,
       @required this.showAction,
-      this.showAvailable})
+      this.showAvailable,
+      this.toggleAutoRequesting})
       : assert(requestAction != null),
         assert(showAction != null),
         super(key: key);
+
+  @override
+  _AdActionsState createState() => _AdActionsState();
+}
+
+class _AdActionsState extends State<AdActions> {
+  bool autoRequestEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -175,21 +193,30 @@ class AdActions extends StatelessWidget {
       children: <Widget>[
         IconButton(
           tooltip: 'Request ad',
-          onPressed: requestAction,
+          onPressed: widget.requestAction,
           icon: Icon(Icons.file_download),
         ),
         StreamBuilder<bool>(
-            stream: showAvailable,
+            stream: widget.showAvailable,
             builder: (context, snapshot) {
               var available = snapshot.hasData && snapshot.data;
               return IconButton(
                 tooltip: 'Show ad',
                 disabledColor:
                     Theme.of(context).iconTheme.color.withOpacity(0.1),
-                onPressed: available ? showAction : null,
+                onPressed: available ? widget.showAction : null,
                 icon: Icon(Icons.slideshow),
               );
             }),
+        Switch.adaptive(
+          onChanged: (value) async {
+            var result = await widget.toggleAutoRequesting(value);
+            setState(() {
+              autoRequestEnabled = result;
+            });
+          },
+          value: autoRequestEnabled,
+        )
       ],
     );
   }

@@ -29,6 +29,12 @@ abstract class _AdWrapper with _EventsProvider {
   /// Shows the ad for [placementId]. The ad has to be available to make this work. See [isAvailable].
   Future<void> show() => _sdk._show(_type, placementId);
 
+  /// Changes auto-requesting behavior for this [placementId].
+  /// 
+  /// Returnes [Future] that resolves to [autoRequestingEnabled] value when operation succeeds.
+  Future<bool> changeAutoRequesting(bool autoRequestingEnabled) =>
+      _sdk._changeAutoRequesting(_type, placementId, autoRequestingEnabled);
+
   final FairBidInternal _sdk;
 
   final AdType _type;

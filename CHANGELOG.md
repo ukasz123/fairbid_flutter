@@ -1,3 +1,8 @@
+### 0.9.0
+* Updated dependencies to **FairBid 3.8.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
+* Add new `changeAutoRequesting` method to full screen ads (Official documentation: [Android](https://developer.fyber.com/hc/en-us/articles/360010251798-Auto-Request#auto-request-configuration-per-placement-0-2), [iOS](https://developer.fyber.com/hc/en-us/articles/360009940017-Auto-Request#auto-request-configuration-per-placement-0-2))
+** It allows for more precise control over how often placements are requested.
+
 ### 0.8.2
 * Fix issue for Android banners - some banners may not be shown until they were properly measured
 ** The implementation enforces the same sizing rules as FairBid SDK does
