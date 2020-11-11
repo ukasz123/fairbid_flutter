@@ -30,6 +30,8 @@ abstract class _AdWrapper with _EventsProvider {
   Future<void> show() => _sdk._show(_type, placementId);
 
   /// Changes auto-requesting behavior for this [placementId].
+  /// 
+  /// Returnes [Future] that resolves to [autoRequestingEnabled] value when operation succeeds.
   Future<bool> changeAutoRequesting(bool autoRequestingEnabled) =>
       _sdk._changeAutoRequesting(_type, placementId, autoRequestingEnabled);
 
