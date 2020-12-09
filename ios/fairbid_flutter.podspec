@@ -4,7 +4,7 @@
 Pod::Spec.new do |s|
   s.name             = 'fairbid_flutter'
   s.version          = '0.0.1'
-  s.summary          = 'Fyber FairBid 2 for Flutter'
+  s.summary          = 'Fyber FairBid for Flutter'
   s.description      = <<-DESC
 Flutter plugin for FairBid 2.x.x
                        DESC
@@ -16,7 +16,7 @@ Flutter plugin for FairBid 2.x.x
   s.public_header_files = 'Classes/**/*.h'
 
   s.dependency 'Flutter'
-  s.dependency 'FairBidSDK', '~> 3.4.1'
+  s.dependency 'FairBidSDK', '~> 3.8.0'
 
   s.ios.deployment_target = '9.0'
 end

@@ -1,3 +1,33 @@
+### 0.9.0
+* Updated dependencies to **FairBid 3.8.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
+* Add new `changeAutoRequesting` method to full screen ads (Official documentation: [Android](https://developer.fyber.com/hc/en-us/articles/360010251798-Auto-Request#auto-request-configuration-per-placement-0-2), [iOS](https://developer.fyber.com/hc/en-us/articles/360009940017-Auto-Request#auto-request-configuration-per-placement-0-2))
+** It allows for more precise control over how often placements are requested.
+
+### 0.8.2
+* Fix issue for Android banners - some banners may not be shown until they were properly measured
+** The implementation enforces the same sizing rules as FairBid SDK does
+* Add missing InMobi dependencies to examples
+
+### 0.8.1
+* Updated dependencies to **FairBid 3.7.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
+* [InMobi SDK|https://www.inmobi.com] support
+
+### 0.8.1-dev.1
+* Banners on Android should not always take whole available space
+
+### 0.8.0
+* Updated dependencies to **FairBid 3.6.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog#version-3-6-0-0-0), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog#version-3-6-0-0-0))
+* Implementation of `setMuted` method - used to force audio to be turned off when ad is shown
+** This setting is passed to mediated networks that support this feature
+* Documentation links update - all links to official FairBid documentation should use the new website
+* Updated Android example 
+
+### 0.8.0-dev.5
+* Update dependencies to **FairBid 3.5.0** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-350), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-350))
+** AdColony banner support
+** Improved auto-request behaviour
+* iOS plugin implementation updated to support Flutter SDK 1.20
+
 ### 0.8.0-dev.4
 * Update dependencies to **FairBid 3.4.1** (Official changelog: [Android](https://dev-android.fyber.com/docs/fairbid-sdk#version-341), [iOS](https://dev-ios.fyber.com/docs/fairbid-sdk#version-341))
 * Changed BannerView API:

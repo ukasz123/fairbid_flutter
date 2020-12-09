@@ -113,6 +113,10 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             this.invokeCCPAStringUpdate(call, result);
         } else if (Utils.areEqual(call.method, "clearCCPA")) {
             this.invokeClearCCPAString(result);
+        } else if (Utils.areEqual(call.method, "setMuted")) {
+            this.invokeSetMuted(call, result);
+        } else if (Utils.areEqual(call.method, "changeAutoRequesting")) {
+            this.invokeChangeAutoRequesting(call, result);
         } else {
             result.notImplemented();
         }
@@ -178,7 +182,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             result.error("Unsupported operation", "Native views are not supported on that API level", "In-view banners require at least Android API 20 (Kitkat Watch)");
         }
         if (args != null) {
-            Map arguments = (Map) args;
+            Map<String, Object> arguments = (Map<String, Object>) args;
 
             final String placement = (String) arguments.get("placement");
             final Integer requestedWidth = (Integer) arguments.get("width");
@@ -188,7 +192,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             if (!this.getBannerAdFactory().hasBanner(placement)) {
                 if (debugLogging) {
                     Log.d(TAG,
-                          "creating banner '" + placement + "' for size (" + requestedWidth + ", " + requestedHeight + ") "
+                            "creating banner '" + placement + "' for size (" + requestedWidth + ", " + requestedHeight + ") "
                     );
                 }
                 resultBannerListener.registerCallback(placement, result);
@@ -272,7 +276,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         UserInfo.setLocation(location);
 
-        UserInfo.setUserId((String) call.argument("id"));
+        UserInfo.setUserId(call.argument("id"));
 
         result.success(null);
     }
@@ -341,7 +345,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             sendEvent(Constants.AdType.REWARDED, placement, "unavailable", null);
         }
         if ("interstitial".equals(type)) {
-            sendEvent(Constants.AdType.INTERSTITIAL, placement, "unavailable",null);
+            sendEvent(Constants.AdType.INTERSTITIAL, placement, "unavailable", null);
         }
 
 
@@ -398,10 +402,43 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             result.success(Rewarded.getImpressionDepth());
         } else if ("interstitial".equals(type)) {
             result.success(Interstitial.getImpressionDepth());
-        } else if ("banner".equals(type)){
+        } else if ("banner".equals(type)) {
             result.success(Banner.getImpressionDepth());
         } else {
             result.error("INVALID_ARGUMENTS", null, null);
+        }
+    }
+
+
+    private void invokeSetMuted(MethodCall call, MethodChannel.Result result) {
+        boolean mute = call.argument("mute");
+        FairBid.Settings.setMuted(mute);
+        result.success(null);
+    }
+
+    private void invokeChangeAutoRequesting(MethodCall call, MethodChannel.Result result) {
+        String type = call.argument("adType");
+        String placement = call.argument("placement");
+        boolean enableAutoRequesting = call.argument("enable");
+        switch (type) {
+            case "rewarded":
+                if (enableAutoRequesting) {
+                    Rewarded.enableAutoRequesting(placement);
+                } else {
+                    Rewarded.disableAutoRequesting(placement);
+                }
+                result.success(enableAutoRequesting);
+                break;
+            case "interstitial":
+                if (enableAutoRequesting) {
+                    Interstitial.enableAutoRequesting(placement);
+                } else {
+                    Interstitial.disableAutoRequesting(placement);
+                }
+                result.success(enableAutoRequesting);
+                break;
+            default:
+                result.notImplemented();
         }
     }
 
@@ -424,7 +461,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         debugLogging = tempFlag;
         Framework.framework = "flutter";
-        Framework.frameworkVersion = call.argument("pluginVersion");
+        Framework.pluginVersion = call.argument("pluginVersion");
 
         FairBid sdk = FairBid.configureForAppId(publisherId);
         if (!autoRequesting) {
@@ -482,7 +519,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             if (extras != null) {
                 eventData.addAll(Arrays.asList(extras));
             }
-            runOnMain(new Runnable(){
+            runOnMain(new Runnable() {
                 @Override
                 public void run() {
                     sink.success(eventData);

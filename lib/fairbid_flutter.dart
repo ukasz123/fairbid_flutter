@@ -1,6 +1,6 @@
 /// Plugin for FairBid SDK from Fyber
 ///
-/// See [FairBid SDK official documentation](https://developer.fyber.com/fairbid2/).
+/// See [FairBid SDK official documentation](https://developer.fyber.com/hc/en-us/categories/360001778457-Fyber-FairBid).
 ///
 /// Starting point is a [FairBid] class which is used to initialize the native SDK
 library fairbid_flutter;
@@ -66,4 +66,7 @@ class FairBid {
   /// Prepares [BannerAd] instance for showing and destroying banner ad
   BannerAd prepareBanner(String placementId) =>
       _delegate.prepareBanner(placementId);
+
+  /// Sets a flag for some mediated networks to show video ads with audio muted or not
+  static Future<void> setMuted(bool muteAds) => FairBidInternal.setMuted(muteAds);
 }

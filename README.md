@@ -1,15 +1,15 @@
 # fairbid_flutter
-Unofficial plugin for [FairBid SDK](https://www.fyber.com/meet-the-new-fyber-fairbid/) from Fyber - the advertisement mediation platform. Supports banner, interstitial and rewarded video ads.
+Unofficial plugin for [FairBid SDK](https://www.fyber.com/fyber-fairbid/) from Fyber - the advertisement mediation platform. Supports banner, interstitial and rewarded video ads.
 
 ## Getting Started
 
-Before you start you need to be at least familiar with [FairBid SDK official documentation](https://developer.fyber.com/fairbid2/). Topics you should be familiar with:
-- [publisher UI](https://ui.fyber.com/docs) - to configure apps and prepare ad placements
-- [mediation networks integration](https://fyber-mediation.fyber.com/docs) - to learn how to setup your Android/iOS projects to provide additional mediation platforms
+Before you start you need to be at least familiar with [FairBid SDK official documentation](https://developer.fyber.com/hc/en-us/categories/360001778457-Fyber-FairBid). Topics you should be familiar with:
+- [publisher's console](https://developer.fyber.com/hc/en-us/sections/360002888297-Getting-Started-with-FairBid) - to configure apps and prepare ad placements
+- [mediation networks integration](https://developer.fyber.com/hc/en-us/sections/360002896737-FairBid-Mediation) - to learn how to setup your Android/iOS projects to provide additional mediation platforms
 - ad types provided by FairBid SDK - to know what suits your needs and how to use different ad types
 
 ## SDK setup
-Create account [Publishers UI](https://console.fyber.com/sign-up) and create configurations for Android and/or iOS app. App Ids has to be used to initialize SDK as described on official documentation for [Android](https://dev-android.fyber.com/docs/initialize-the-sdk) and [iOS](https://dev-ios.fyber.com/docs/initialize-the-sdk). You need to pass App Id for the platform your app is running on.
+Create account [Publishers UI](https://console.fyber.com/sign-up) and create configurations for Android and/or iOS app. App Ids has to be used to initialize SDK as described on official documentation for [Android](https://developer.fyber.com/hc/en-us/articles/360010079697-Initialize-the-SDK) and [iOS](https://developer.fyber.com/hc/en-us/articles/360009930737-Initializing-the-SDK). You need to pass App Id for the platform your app is running on.
 ```dart
 var appId = Platform.isAndroid ? _ANDROID_APP_ID : _IOS_APP_ID;
 sdk = FairBid.forOptions(Options(
