@@ -36,7 +36,7 @@ target 'Runner' do
   pod 'FBAudienceNetwork', '6.2.0'
   pod 'UnityAds', '3.6.0'
   pod 'Verizon-Ads-StandardEdition', '1.8.1'
-  # pod 'VungleSDK-iOS', '6.8.1'
+  pod 'VungleSDK-iOS', '6.8.1'
   pod 'IronSourceSDK', '7.0.4.0'
   pod 'InMobiSDK', '9.1.1'
 

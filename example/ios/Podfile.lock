@@ -95,6 +95,7 @@ PODS:
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-OMSDK (~> 1.6)
     - Verizon-Ads-Support (~> 1.9)
+  - VungleSDK-iOS (6.8.1)
 
 DEPENDENCIES:
   - AdColony (= 4.4.1.1)
@@ -106,6 +107,7 @@ DEPENDENCIES:
   - IronSourceSDK (= 7.0.4.0)
   - UnityAds (= 3.6.0)
   - Verizon-Ads-StandardEdition (= 1.8.1)
+  - VungleSDK-iOS (= 6.8.1)
 
 SPEC REPOS:
   trunk:
@@ -134,6 +136,7 @@ SPEC REPOS:
     - Verizon-Ads-VideoPlayer
     - Verizon-Ads-WebController
     - Verizon-Ads-WebView
+    - VungleSDK-iOS
 
 EXTERNAL SOURCES:
   fairbid_flutter:
@@ -169,7 +172,8 @@ SPEC CHECKSUMS:
   Verizon-Ads-VideoPlayer: 1ebc69f081819c1fad5d73fde924f873dd62e8a6
   Verizon-Ads-WebController: 9cfa4583aaead8f864d9c8ceab13bbe28c917e85
   Verizon-Ads-WebView: 47e475030f232dd5d71bbe8ed4ded1d1d25ae429
+  VungleSDK-iOS: 0405589c8626b2511dd57214a17e0d65e0d2f424
 
-PODFILE CHECKSUM: 3e6305b2a66608f21472e55b32bc576d9b837d99
+PODFILE CHECKSUM: d12ed85bc397bf5f1396b91936e092d4dd5f47ff
 
 COCOAPODS: 1.10.0
