@@ -1,3 +1,8 @@
+### 0.10.0
+* Updated dependencies to **FairBid 3.10.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
+** Added support for for **Ogury** Interstitials, Rewarded and Banner ads
+** Added support for Vungle banners
+
 ### 0.9.0
 * Updated dependencies to **FairBid 3.8.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
 * Add new `changeAutoRequesting` method to full screen ads (Official documentation: [Android](https://developer.fyber.com/hc/en-us/articles/360010251798-Auto-Request#auto-request-configuration-per-placement-0-2), [iOS](https://developer.fyber.com/hc/en-us/articles/360009940017-Auto-Request#auto-request-configuration-per-placement-0-2))
