@@ -1,4 +1,5 @@
 #import "FairbidFlutterPlugin.h"
+#import <FairBidSDK/FYBPluginOptions.h>
 
 @implementation FairbidFlutterPlugin
 
@@ -78,9 +79,6 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)startSdkAndInitListeners:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString *publisherId = arguments[@"publisherId"];
     
-    // NSString *pluginVersion = arguments[@"pluginVersion"];
-    // TODO: implement setting the plugin data
-    
     if ([FairBid isStarted]) {
         result([NSNumber numberWithBool:NO]);
         return;
@@ -91,11 +89,19 @@ BannerDelegateImpl                      *_bannerDelegate;
 
     NSNumber    *loggingAttr = arguments[@"logging"];
     BOOL        logging = loggingAttr != nil && [loggingAttr boolValue];
-
+    
+    // send plugin version
+    NSString *pluginVersion = arguments[@"pluginVersion"];
+    FYBPluginOptions *pluginOptions = [[FYBPluginOptions alloc] init];
+    pluginOptions.pluginFramework = FYBPluginFrameworkFlutter;
+    pluginOptions.pluginSdkVersion = pluginVersion;
+   
     FYBStartOptions *options = [[FYBStartOptions alloc] init];
 
     options.logLevel = logging ? FYBLoggingLevelVerbose : FYBLoggingLevelError;
     options.autoRequestingEnabled = autoRequesting;
+    
+    options.pluginOptions = pluginOptions;
 
     [FairBid startWithAppId:publisherId options:options];
 
