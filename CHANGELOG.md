@@ -2,6 +2,8 @@
 * Updated dependencies to **FairBid 3.11.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
 * **New API:** `InterstitialAd` and `RewardedAd` have new getter `impressionData` for getting impression data for current fill
 * **New API:** `ImpressionData` has new property `variantId` - in case using multi test experiment on placement it contains the id of the test variant
+* **New API:** `InterstitialAd` has new method `showWithSSR` to pass some parameters to server rewarding endpoint being called by FairBid backend.
+
 ### 0.10.0
 * Updated dependencies to **FairBid 3.10.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
   * Added support for for **Ogury** Interstitials, Rewarded and Banner ads

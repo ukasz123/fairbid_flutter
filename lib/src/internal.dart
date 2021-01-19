@@ -191,9 +191,6 @@ class RewardedAd extends _AdWrapper {
   RewardedAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.rewarded, placement);
 
-  Future<void> showWithSSR({Map<String, String> serverSideRewarding}) => _sdk
-      ._show(AdType.rewarded, placementId, extraOptions: serverSideRewarding);
-
   /// Impression depth represents the amount of impressions of rewarded ads.
   static Future<int> get impressionDepth =>
       FairBidInternal._getImpressionDepth(AdType.rewarded);

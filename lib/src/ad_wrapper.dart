@@ -29,6 +29,12 @@ abstract class _AdWrapper with _EventsProvider {
   /// Shows the ad for [placementId]. The ad has to be available to make this work. See [isAvailable].
   Future<void> show() => _sdk._show(_type, placementId);
 
+  /// Shows the ad for [placementId] with server side rewarding parameters for the impression. See [server side rewarding documentation](https://developer.fyber.com/hc/en-us/articles/360009923657-Server-Side-Rewarding)
+  /// The ad has to be available to make this work. See [isAvailable]. 
+  Future<void> showWithSSR({Map<String, String> serverSideRewardingOptions}) => _sdk
+      ._show(AdType.rewarded, placementId, extraOptions: serverSideRewardingOptions);
+
+
   /// Changes auto-requesting behavior for this [placementId].
   /// 
   /// Returnes [Future] that resolves to [autoRequestingEnabled] value when operation succeeds.

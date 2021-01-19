@@ -156,16 +156,22 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)show:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString    *placement = arguments[PLACEMENT_KEY];
     NSString    *type = arguments[AD_TYPE_KEY];
+    NSDictionary *extraOptions = arguments[EXTRA_OPTIONS_TYPE_KEY];
 
     if ([INTERSTITIAL_KEY isEqualToString:type]) {
-        [FYBInterstitial show:placement];
+        if (extraOptions){
+            FYBShowOptions *showOptions = [FYBShowOptions new];
+            showOptions.customParameters = extraOptions;
+            [FYBInterstitial show:placement options:showOptions];
+        } else {
+            [FYBInterstitial show:placement];
+        }
         result([NSNumber numberWithBool:YES]);
     } else if ([REWARDED_KEY isEqualToString:type]) {
-        NSDictionary *extraOptions = arguments[EXTRA_OPTIONS_TYPE_KEY];
         if (extraOptions){
-            FYBShowOptions *rewardedShowOptions = [FYBShowOptions new];
-            rewardedShowOptions.customParameters = extraOptions;
-            [FYBRewarded show:placement options:rewardedShowOptions];
+            FYBShowOptions *showOptions = [FYBShowOptions new];
+            showOptions.customParameters = extraOptions;
+            [FYBRewarded show:placement options:showOptions];
         } else {
             [FYBRewarded show:placement];
         }

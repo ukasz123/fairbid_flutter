@@ -345,7 +345,14 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         }
 
         if ("interstitial".equals(type)) {
-            Interstitial.show(placement, this.registrar.activity());
+            if (extraOptions == null) {
+                Interstitial.show(placement, this.registrar.activity());
+            } else {
+
+                RewardedOptions options = new RewardedOptions();
+                options.setCustomParameters(extraOptions);
+                Interstitial.show(placement, options, this.registrar.activity());
+            }
         }
 
         result.success(null);
