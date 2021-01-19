@@ -6,20 +6,15 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fyber.FairBid;
 import com.fyber.fairbid.ads.Banner;
-import com.fyber.fairbid.ads.CreativeSize;
 import com.fyber.fairbid.ads.ImpressionData;
 import com.fyber.fairbid.ads.Interstitial;
 import com.fyber.fairbid.ads.Rewarded;
-import com.fyber.fairbid.ads.banner.BannerAdView;
-import com.fyber.fairbid.ads.banner.BannerError;
 import com.fyber.fairbid.ads.banner.BannerListener;
 import com.fyber.fairbid.ads.banner.BannerOptions;
 import com.fyber.fairbid.ads.rewarded.RewardedOptions;
@@ -117,10 +112,24 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             this.invokeSetMuted(call, result);
         } else if (Utils.areEqual(call.method, "changeAutoRequesting")) {
             this.invokeChangeAutoRequesting(call, result);
+        } else if (Utils.areEqual(call.method, "getImpressionData")) {
+            this.invokeGetImpressionData(call, result);
         } else {
             result.notImplemented();
         }
 
+    }
+
+    private void invokeGetImpressionData(MethodCall call, MethodChannel.Result result) {
+        String type = call.argument("adType");
+        String placement = (String) call.argument("placement");
+        if ("rewarded".equals(type)) {
+            result.success(impressionDataToMap(Rewarded.getImpressionData(placement)));
+        } else if ("interstitial".equals(type)) {
+            result.success(impressionDataToMap(Interstitial.getImpressionData(placement)));
+        } else {
+            result.error("INVALID_ARGUMENTS", null, null);
+        }
     }
 
     private void invokeDestroyAlignedBanner(MethodCall call, MethodChannel.Result result) {
@@ -556,6 +565,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         output.put("renderingSdkVersion", impressionData.getRenderingSdkVersion());
         output.put("priceAccuracy", impressionData.getPriceAccuracy().name().toLowerCase(Locale.US));
         output.put("impressionDepth", impressionData.getImpressionDepth());
+        output.put("variantId", impressionData.getVariantId());
         return output;
     }
 
