@@ -10,7 +10,7 @@ abstract class _AdWrapper with _EventsProvider {
 
   final String placementId;
 
-  /// Returns [Future] that resolves to [true] if an ad is available for showing. If ad is not available yet then it would resolve to [false].
+  /// Returns [Future] that resolves to `true` if an ad is available for showing. If ad is not available yet then it would resolve to `false`.
   Future<bool> get isAvailable => _sdk._available(_type, placementId);
 
   /// Returns stream of availability changes. Listening to this stream is preferred
