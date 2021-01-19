@@ -24,7 +24,7 @@ class PrivacySettings {
 
   /// Updates CCPA privacy string (also known as IAB US privacy string)
   ///
-  /// The [consentString] should be a correct string formatted according to [IAB specification](https://iabtechlab.com/standards/ccpa/)
+  /// The `consentString` should be a correct string formatted according to [IAB specification](https://iabtechlab.com/standards/ccpa/)
   ///
   static Future<void> updateCCPAString({String ccpaString}) {
     final params = <String, Object>{

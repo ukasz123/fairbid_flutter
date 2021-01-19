@@ -125,6 +125,19 @@ class FairBidInternal {
     });
   }
 
+  Future<ImpressionData> _getImpressionData(
+      AdType type, String placement) async {
+    if (!_started.isCompleted) {
+      throw FairBidSDKNotStartedException();
+    }
+    var data =
+        await _channel.invokeMapMethod<String, dynamic>("getImpressionData", <String, Object>{
+      "adType": _adTypeToName(type),
+      "placement": placement,
+    });
+    return data != null ? ImpressionData._fromMap(type, data) : null;
+  }
+
   static Future<int> _getImpressionDepth(AdType type) =>
       _channel.invokeMethod("getImpressionDepth", <String, Object>{
         "adType": _adTypeToName(type),
@@ -162,6 +175,13 @@ class InterstitialAd extends _AdWrapper {
   /// Impression depth represents the amount of impressions of interstitial ads.
   static Future<int> get impressionDepth =>
       FairBidInternal._getImpressionDepth(AdType.interstitial);
+
+  /// Impression data for the current fill. 
+  /// Returns `null` when there is no fill for the placement.
+  /// 
+  /// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940417-Impression-Level-Data#getter-on-the-ad-format-class-0-4) [Android](https://developer.fyber.com/hc/en-us/articles/360010150517-Impression-Level-Data)
+  Future<ImpressionData> get impressionData =>
+      _sdk._getImpressionData(AdType.interstitial, placementId);
 }
 
 /// Rewarded ads are an engaging ad format that shows a short video ad to the user and in exchange the user will earn a reward. The user must consent and watch the video completely through to the end in order to earn the reward.
@@ -171,12 +191,16 @@ class RewardedAd extends _AdWrapper {
   RewardedAd._({@required FairBidInternal sdk, @required String placement})
       : super._(sdk, AdType.rewarded, placement);
 
-  Future<void> showWithSSR({Map<String, String> serverSideRewarding}) => _sdk
-      ._show(AdType.rewarded, placementId, extraOptions: serverSideRewarding);
-
   /// Impression depth represents the amount of impressions of rewarded ads.
   static Future<int> get impressionDepth =>
       FairBidInternal._getImpressionDepth(AdType.rewarded);
+
+  /// Impression data for the current fill. 
+  /// Returns `null` when there is no fill for the placement.
+  /// 
+  /// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940417-Impression-Level-Data#getter-on-the-ad-format-class-0-4) [Android](https://developer.fyber.com/hc/en-us/articles/360010150517-Impression-Level-Data)
+  Future<ImpressionData> get impressionData =>
+      _sdk._getImpressionData(AdType.rewarded, placementId);
 }
 
 /// Used for displaying banner ad near top and bottom edges of the screen

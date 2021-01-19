@@ -71,6 +71,8 @@ BannerDelegateImpl                      *_bannerDelegate;
         [self setMuted:arguments result:result];
     } else if ([@"changeAutoRequesting" isEqualToString:call.method]) {
         [self changeAutoRequesting:arguments result:result];
+    } else if ([@"getImpressionData" isEqualToString:call.method]) {
+        [self getImpressionData:arguments result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -154,16 +156,22 @@ BannerDelegateImpl                      *_bannerDelegate;
 - (void)show:(NSDictionary *)arguments result:(FlutterResult)result {
     NSString    *placement = arguments[PLACEMENT_KEY];
     NSString    *type = arguments[AD_TYPE_KEY];
+    NSDictionary *extraOptions = arguments[EXTRA_OPTIONS_TYPE_KEY];
 
     if ([INTERSTITIAL_KEY isEqualToString:type]) {
-        [FYBInterstitial show:placement];
+        if (extraOptions){
+            FYBShowOptions *showOptions = [FYBShowOptions new];
+            showOptions.customParameters = extraOptions;
+            [FYBInterstitial show:placement options:showOptions];
+        } else {
+            [FYBInterstitial show:placement];
+        }
         result([NSNumber numberWithBool:YES]);
     } else if ([REWARDED_KEY isEqualToString:type]) {
-        NSDictionary *extraOptions = arguments[EXTRA_OPTIONS_TYPE_KEY];
         if (extraOptions){
-            FYBShowOptions *rewardedShowOptions = [FYBShowOptions new];
-            rewardedShowOptions.customParameters = extraOptions;
-            [FYBRewarded show:placement options:rewardedShowOptions];
+            FYBShowOptions *showOptions = [FYBShowOptions new];
+            showOptions.customParameters = extraOptions;
+            [FYBRewarded show:placement options:showOptions];
         } else {
             [FYBRewarded show:placement];
         }
@@ -393,6 +401,72 @@ BannerDelegateImpl                      *_bannerDelegate;
     }
 }
 
+- (void) getImpressionData:(NSDictionary *)arguments result:(FlutterResult) result {
+    NSString        *type = arguments[AD_TYPE_KEY];
+    NSString        *placement = arguments[@"placement"];
+    if ([INTERSTITIAL_KEY isEqualToString:type]) {
+        FYBImpressionData *impressionData = [FYBInterstitial impressionData:placement];
+        result(impressionDataAsDictionary(impressionData));
+    } else if ([REWARDED_KEY isEqualToString:type]) {
+        FYBImpressionData *impressionData = [FYBRewarded impressionData:placement];
+        result(impressionDataAsDictionary(impressionData));
+    } else {
+        result(FlutterMethodNotImplemented);
+    }
+}
+
+static NSDictionary *impressionDataAsDictionary(FYBImpressionData *impressionData) {
+    NSString *priceAccuracy = @"undisclosed";
+    switch (impressionData.priceAccuracy) {
+        case FYBImpressionDataPriceAccuracyPredicted:
+            priceAccuracy = @"predicted";
+            break;
+        case FYBImpressionDataPriceAccuracyProgrammatic:
+            priceAccuracy = @"programmatic";
+        default:
+            break;
+    }
+    NSMutableDictionary *dataCollector = [@{@"priceAccuracy": priceAccuracy} mutableCopy];
+    if (impressionData.netPayout){
+        [dataCollector setValue:impressionData.netPayout forKey:@"netPayout"];
+    }
+    if (impressionData.impressionId){
+        [dataCollector setValue:impressionData.impressionId forKey:@"impressionId"];
+    }
+    if (impressionData.advertiserDomain){
+        [dataCollector setValue:impressionData.advertiserDomain forKey:@"advertiserDomain"];
+    }
+    if (impressionData.campaignId){
+        [dataCollector setValue:impressionData.campaignId forKey:@"campaignId"];
+    }
+    if (impressionData.countryCode){
+        [dataCollector setValue:impressionData.countryCode forKey:@"countryCode"];
+    }
+    if (impressionData.creativeId){
+        [dataCollector setValue:impressionData.creativeId forKey:@"creativeId"];
+    }
+    if (impressionData.currency){
+        [dataCollector setValue:impressionData.currency forKey:@"currency"];
+    }
+    if (impressionData.demandSource){
+        [dataCollector setValue:impressionData.demandSource forKey:@"demandSource"];
+    }
+    if (impressionData.networkInstanceId){
+        [dataCollector setValue:impressionData.networkInstanceId forKey:@"networkInstanceId"];
+    }
+    if (impressionData.renderingSDK){
+        [dataCollector setValue:impressionData.renderingSDK forKey:@"renderingSdk"];
+    }
+    if (impressionData.renderingSDKVersion){
+        [dataCollector setValue:impressionData.renderingSDKVersion forKey:@"renderingSdkVersion"];
+    }
+    if (impressionData.variantId){
+        [dataCollector setValue:impressionData.variantId forKey:@"variantId"];
+    }
+    [dataCollector setValue:[NSNumber numberWithUnsignedLong: impressionData.impressionDepth] forKey:@"impressionDepth"];
+    return dataCollector;
+}
+
 // prototocol FlutterStreamHandler
 - (FlutterError *_Nullable) onListenWithArguments   :(id _Nullable)arguments
                             eventSink               :(nonnull FlutterEventSink)events {
@@ -401,53 +475,8 @@ BannerDelegateImpl                      *_bannerDelegate;
         NSLog(@"[FB_Flutter] Event %@, %@, %@, %@", type, placement, eventName, impressionData);
         NSObject *impressionDataMap = [NSNull null];
         if (impressionData){
-            NSString *priceAccuracy = @"undisclosed";
-            switch (impressionData.priceAccuracy) {
-                case FYBImpressionDataPriceAccuracyPredicted:
-                    priceAccuracy = @"predicted";
-                    break;
-                case FYBImpressionDataPriceAccuracyProgrammatic:
-                    priceAccuracy = @"programmatic";
-                default:
-                    break;
-            }
-            NSMutableDictionary *dataCollector = [@{@"priceAccuracy": priceAccuracy} mutableCopy];
-            if (impressionData.netPayout){
-                [dataCollector setValue:impressionData.netPayout forKey:@"netPayout"];
-            }
-            if (impressionData.impressionId){
-                [dataCollector setValue:impressionData.impressionId forKey:@"impressionId"];
-            }
-            if (impressionData.advertiserDomain){
-                [dataCollector setValue:impressionData.advertiserDomain forKey:@"advertiserDomain"];
-            }
-            if (impressionData.campaignId){
-                [dataCollector setValue:impressionData.campaignId forKey:@"campaignId"];
-            }
-            if (impressionData.countryCode){
-                [dataCollector setValue:impressionData.countryCode forKey:@"countryCode"];
-            }
-            if (impressionData.creativeId){
-                [dataCollector setValue:impressionData.creativeId forKey:@"creativeId"];
-            }
-            if (impressionData.currency){
-                [dataCollector setValue:impressionData.currency forKey:@"currency"];
-            }
-            if (impressionData.demandSource){
-                [dataCollector setValue:impressionData.demandSource forKey:@"demandSource"];
-            }
-            if (impressionData.networkInstanceId){
-                [dataCollector setValue:impressionData.networkInstanceId forKey:@"networkInstanceId"];
-            }
-            if (impressionData.renderingSDK){
-                [dataCollector setValue:impressionData.renderingSDK forKey:@"renderingSdk"];
-            }
-            if (impressionData.renderingSDKVersion){
-                [dataCollector setValue:impressionData.renderingSDKVersion forKey:@"renderingSdkVersion"];
-            }
-            [dataCollector setValue:[NSNumber numberWithUnsignedLong: impressionData.impressionDepth] forKey:@"impressionDepth"];
+            impressionDataMap = impressionDataAsDictionary(impressionData);
             
-            impressionDataMap = dataCollector;
         }
         NSArray *eventData = @[type, placement, eventName, impressionDataMap];
         

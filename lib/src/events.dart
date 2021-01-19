@@ -221,6 +221,9 @@ class ImpressionData {
   /// Impression depth represents the amount of impressions in a given session per ad format.
   final int impressionDepth;
 
+  /// Waterfall variant Identifier. When running a multi test experiment, this ID will help you identify which variant was delivered on the device.
+  final String variantId;
+
   ImpressionData._({
     @required this.priceAccuracy,
     @required this.netPayout,
@@ -236,6 +239,7 @@ class ImpressionData {
     @required this.creativeId,
     @required this.campaignId,
     @required this.impressionDepth,
+    @required this.variantId,
   });
 
   factory ImpressionData._fromMap(AdType type, Map<String, dynamic> data) {
@@ -264,6 +268,7 @@ class ImpressionData {
       renderingSdk: data['renderingSdk'],
       renderingSdkVersion: data['renderingSdkVersion'],
       impressionDepth: data['impressionDepth'] as int ?? 0,
+      variantId: data['variantId'] as String,
     );
   }
 

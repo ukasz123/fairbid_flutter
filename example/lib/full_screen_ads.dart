@@ -109,25 +109,28 @@ class _FullScreenAdsState extends State<FullScreenAds> {
 
     Stream<bool> available;
     Stream<AdEventType> events;
+    AsyncValueGetter<ImpressionData> impressionDataGetter;
     if (isRewarded) {
       RewardedAd rewardedAd = (wrapper as RewardedWrapper).ad;
       request = () => rewardedAd.request();
       show = () =>
-          rewardedAd.showWithSSR(serverSideRewarding: {"option1": "value1"});
+          rewardedAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
       available = rewardedAd.isAvailable
           .asStream()
           .concatWith([rewardedAd.availabilityStream]);
       events = rewardedAd.simpleEvents;
       autoRequestingChange = rewardedAd.changeAutoRequesting;
+      impressionDataGetter = () => rewardedAd.impressionData;
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
-      show = () => interstitialAd.show();
+      show = () => interstitialAd.showWithSSR(serverSideRewardingOptions: {"option1":"value1"});
       available = interstitialAd.isAvailable
           .asStream()
           .concatWith([interstitialAd.availabilityStream]);
       events = interstitialAd.simpleEvents;
       autoRequestingChange = interstitialAd.changeAutoRequesting;
+      impressionDataGetter = () => interstitialAd.impressionData;
     }
     return Dismissible(
       key: ValueKey(wrapper.name),
@@ -135,6 +138,10 @@ class _FullScreenAdsState extends State<FullScreenAds> {
         _placements.remove(wrapper);
       }),
       child: ListTile(
+        onLongPress: () async {
+          var d = await impressionDataGetter.call();
+          print('Current impression data for ${wrapper.name} = $d');
+        },
         onTap: () => showEventsStream(
             context: context, events: events, placement: wrapper.name),
         title: Row(
