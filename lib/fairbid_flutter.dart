@@ -11,6 +11,7 @@ export 'src/banner_view.dart' show BannerView;
 export 'src/internal.dart'
     show
         Options,
+        LoggingLevel,
         AdEvent,
         AdType,
         InterstitialAd,
