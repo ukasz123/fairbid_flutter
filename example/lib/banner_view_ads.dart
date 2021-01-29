@@ -68,8 +68,9 @@ class _BannerViewAdsState extends State<BannerViewAds> {
                     child: BannerView(
                       placement,
                       widget.sdk,
-                      errorWidgetBuilder: (c, error)=>Center(child:Text("$error")),
-                      placeholderBuilder: (c)=>Placeholder(),
+                      errorWidgetBuilder: (c, error) =>
+                          Center(child: Text("$error")),
+                      placeholderBuilder: (c) => Placeholder(),
                     ),
                   ),
                   SizedBox(

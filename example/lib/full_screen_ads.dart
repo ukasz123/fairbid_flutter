@@ -113,8 +113,8 @@ class _FullScreenAdsState extends State<FullScreenAds> {
     if (isRewarded) {
       RewardedAd rewardedAd = (wrapper as RewardedWrapper).ad;
       request = () => rewardedAd.request();
-      show = () =>
-          rewardedAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
+      show = () => rewardedAd
+          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
       available = rewardedAd.isAvailable
           .asStream()
           .concatWith([rewardedAd.availabilityStream]);
@@ -124,7 +124,8 @@ class _FullScreenAdsState extends State<FullScreenAds> {
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
-      show = () => interstitialAd.showWithSSR(serverSideRewardingOptions: {"option1":"value1"});
+      show = () => interstitialAd
+          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
       available = interstitialAd.isAvailable
           .asStream()
           .concatWith([interstitialAd.availabilityStream]);

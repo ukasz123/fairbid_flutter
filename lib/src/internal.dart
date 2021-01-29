@@ -130,8 +130,8 @@ class FairBidInternal {
     if (!_started.isCompleted) {
       throw FairBidSDKNotStartedException();
     }
-    var data =
-        await _channel.invokeMapMethod<String, dynamic>("getImpressionData", <String, Object>{
+    var data = await _channel
+        .invokeMapMethod<String, dynamic>("getImpressionData", <String, Object>{
       "adType": _adTypeToName(type),
       "placement": placement,
     });
@@ -176,9 +176,9 @@ class InterstitialAd extends _AdWrapper {
   static Future<int> get impressionDepth =>
       FairBidInternal._getImpressionDepth(AdType.interstitial);
 
-  /// Impression data for the current fill. 
+  /// Impression data for the current fill.
   /// Returns `null` when there is no fill for the placement.
-  /// 
+  ///
   /// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940417-Impression-Level-Data#getter-on-the-ad-format-class-0-4) [Android](https://developer.fyber.com/hc/en-us/articles/360010150517-Impression-Level-Data)
   Future<ImpressionData> get impressionData =>
       _sdk._getImpressionData(AdType.interstitial, placementId);
@@ -195,9 +195,9 @@ class RewardedAd extends _AdWrapper {
   static Future<int> get impressionDepth =>
       FairBidInternal._getImpressionDepth(AdType.rewarded);
 
-  /// Impression data for the current fill. 
+  /// Impression data for the current fill.
   /// Returns `null` when there is no fill for the placement.
-  /// 
+  ///
   /// Official documentation: [iOS](https://developer.fyber.com/hc/en-us/articles/360009940417-Impression-Level-Data#getter-on-the-ad-format-class-0-4) [Android](https://developer.fyber.com/hc/en-us/articles/360010150517-Impression-Level-Data)
   Future<ImpressionData> get impressionData =>
       _sdk._getImpressionData(AdType.rewarded, placementId);
