@@ -89,8 +89,23 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSNumber    *autoRequestingAttr = arguments[@"autoRequesting"];
     BOOL        autoRequesting = autoRequestingAttr == nil || [autoRequestingAttr boolValue];
 
-    NSNumber    *loggingAttr = arguments[@"logging"];
-    BOOL        logging = loggingAttr != nil && [loggingAttr boolValue];
+    NSNumber    *loggingLevelAttr = arguments[@"loggingLevel"];
+    FYBLoggingLevel loggingLevel = FYBLoggingLevelSilent;
+    if (loggingLevelAttr) {
+        switch ([loggingLevelAttr intValue]) {
+            case 0:
+                loggingLevel = FYBLoggingLevelVerbose;
+                break;
+            case 1:
+                loggingLevel = FYBLoggingLevelInfo;
+                break;
+            case 2:
+                loggingLevel = FYBLoggingLevelError;
+                break;
+            default:
+                break;
+        }
+    }
     
     // send plugin version
     NSString *pluginVersion = arguments[@"pluginVersion"];
@@ -100,7 +115,7 @@ BannerDelegateImpl                      *_bannerDelegate;
    
     FYBStartOptions *options = [[FYBStartOptions alloc] init];
 
-    options.logLevel = logging ? FYBLoggingLevelVerbose : FYBLoggingLevelError;
+    options.logLevel = loggingLevel;
     options.autoRequestingEnabled = autoRequesting;
     
     options.pluginOptions = pluginOptions;

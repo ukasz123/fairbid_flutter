@@ -236,6 +236,7 @@ class _MyAppState extends State<MyApp> {
     var sdk = FairBid.forOptions(Options(
       appId: _sdkIdController.text.trim(),
       debugLogging: _enableLogs,
+      loggingLevel: _enableLogs ? LoggingLevel.info : LoggingLevel.error,
     ));
     await sdk.started;
     setState(() {
