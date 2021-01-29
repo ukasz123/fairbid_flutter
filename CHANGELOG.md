@@ -1,3 +1,6 @@
+### 0.11.1
+* Added new parameter for starting `Option` to give fine grained control over SDK's logging on iOS.
+
 ### 0.11.0
 * Updated dependencies to **FairBid 3.11.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
 * **New API:** `InterstitialAd` and `RewardedAd` have new getter `impressionData` for getting impression data for current fill
