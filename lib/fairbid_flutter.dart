@@ -11,6 +11,7 @@ export 'src/banner_view.dart' show BannerView;
 export 'src/internal.dart'
     show
         Options,
+        LoggingLevel,
         AdEvent,
         AdType,
         InterstitialAd,
@@ -68,5 +69,6 @@ class FairBid {
       _delegate.prepareBanner(placementId);
 
   /// Sets a flag for some mediated networks to show video ads with audio muted or not
-  static Future<void> setMuted(bool muteAds) => FairBidInternal.setMuted(muteAds);
+  static Future<void> setMuted(bool muteAds) =>
+      FairBidInternal.setMuted(muteAds);
 }

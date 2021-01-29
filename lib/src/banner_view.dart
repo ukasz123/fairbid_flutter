@@ -81,7 +81,7 @@ class BannerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = 50.0;
-    
+
     if (type == _BannerType.BANNER) {
       bool isTablet = MediaQuery.of(context).size.shortestSide > 600.0;
       height = isTablet ? 90 : 50;
@@ -97,7 +97,7 @@ class BannerView extends StatelessWidget {
 
       // if (constraints.hasBoundedWidth) {
       //   viewConstraints["width"] = constraints.biggest.width.floor();
-      // } 
+      // }
 
       return _FBNativeBanner(
         placement: placement,

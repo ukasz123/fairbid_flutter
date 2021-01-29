@@ -15,15 +15,28 @@ class Options {
   /// Turns on/off debug logging of the SDK. Default: `false`.
   final bool debugLogging;
 
-  Options({
-    @required this.appId,
-    this.autoRequesting = true,
-    this.debugLogging = false,
-  }) : assert(appId != null && appId.isNotEmpty);
+  /// Logging level of the SDK. Defaults to `silent`. It overrides `debugLogging` when provided.
+  final LoggingLevel loggingLevel;
+
+  Options(
+      {@required this.appId,
+      this.autoRequesting = true,
+      this.debugLogging = false,
+      this.loggingLevel})
+      : assert(appId != null && appId.isNotEmpty);
 
   Map<String, dynamic> _toMap() => {
         "publisherId": appId,
         "autoRequesting": autoRequesting,
-        "logging": debugLogging,
+        "logging": (loggingLevel != null &&
+                (loggingLevel == LoggingLevel.verbose ||
+                    loggingLevel == LoggingLevel.info) ||
+            (loggingLevel == null && debugLogging)),
+        "loggingLevel": loggingLevel?.index ??
+            (debugLogging
+                ? LoggingLevel.verbose.index
+                : LoggingLevel.silent.index),
       };
 }
+
+enum LoggingLevel { verbose, info, error, silent }
