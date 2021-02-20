@@ -68,13 +68,13 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
 
     // ad network sdks
-    implementation 'com.adcolony:sdk:4.3.1'
+    implementation 'com.adcolony:sdk:4.4.1'
 
-    implementation 'com.applovin:applovin-sdk:9.14.11'
+    implementation 'com.applovin:applovin-sdk:9.15.1'
 
     implementation 'com.facebook.android:audience-network-sdk:6.2.0'
 
-    implementation 'com.ironsource.sdk:mediationsdk:7.0.4'
+    implementation 'com.ironsource.sdk:mediationsdk:7.1.0.2'
 
     implementation 'com.unity3d.ads:unity-ads:3.6.0'
 
