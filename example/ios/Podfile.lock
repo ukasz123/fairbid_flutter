@@ -1,52 +1,52 @@
 PODS:
-  - AdColony (4.4.1.1)
-  - AppLovinSDK (6.14.10)
+  - AdColony (4.5.0)
+  - AppLovinSDK (6.15.2)
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (~> 3.11.0)
+    - FairBidSDK (~> 3.12.0)
     - Flutter
-  - FairBidSDK (3.11.0)
-  - FBAudienceNetwork (6.2.0):
+  - FairBidSDK (3.12.0)
+  - FBAudienceNetwork (6.2.1):
     - FBSDKCoreKit/Basics (>= 7.0.1)
-  - FBSDKCoreKit/Basics (8.2.0)
+  - FBSDKCoreKit/Basics (9.0.1)
   - Flutter (1.0.0)
-  - InMobiSDK (9.1.1):
-    - InMobiSDK/InMobiSDK (= 9.1.1)
-  - InMobiSDK/Core (9.1.1)
-  - InMobiSDK/InMobiSDK (9.1.1):
+  - InMobiSDK (9.1.5):
+    - InMobiSDK/InMobiSDK (= 9.1.5)
+  - InMobiSDK/Core (9.1.5)
+  - InMobiSDK/InMobiSDK (9.1.5):
     - InMobiSDK/Core
     - InMobiSDK/Moat
-  - InMobiSDK/Moat (9.1.1):
+  - InMobiSDK/Moat (9.1.5):
     - InMobiSDK/Core
-  - IronSourceSDK (7.0.4.0)
+  - IronSourceSDK (7.1.0.0)
   - UnityAds (3.6.0)
-  - Verizon-Ads-Core (2.3.1)
-  - Verizon-Ads-InlinePlacement (1.4.1):
-    - Verizon-Ads-Core (~> 2.3)
-    - Verizon-Ads-Support (~> 1.9)
-  - Verizon-Ads-InlineWebAdapter (1.4.0):
-    - Verizon-Ads-Core (~> 2.3)
-    - Verizon-Ads-InlinePlacement (~> 1.4)
-    - Verizon-Ads-Support (~> 1.9)
+  - Verizon-Ads-Core (2.4.0)
+  - Verizon-Ads-InlinePlacement (1.5.0):
+    - Verizon-Ads-Core (~> 2.4)
+    - Verizon-Ads-Support (~> 1.11)
+  - Verizon-Ads-InlineWebAdapter (1.5.0):
+    - Verizon-Ads-Core (~> 2.4)
+    - Verizon-Ads-InlinePlacement (~> 1.5)
+    - Verizon-Ads-Support (~> 1.11)
     - Verizon-Ads-WebController (~> 1.3)
     - Verizon-Ads-WebView (~> 1.5)
   - Verizon-Ads-InterstitialPlacement (1.5.0):
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-Support (~> 1.9)
-  - Verizon-Ads-InterstitialVASTAdapter (1.4.0):
-    - Verizon-Ads-Core (~> 2.3)
+  - Verizon-Ads-InterstitialVASTAdapter (1.5.0):
+    - Verizon-Ads-Core (~> 2.4)
     - Verizon-Ads-InterstitialPlacement (~> 1.5)
-    - Verizon-Ads-Support (~> 1.9)
-    - Verizon-Ads-VASTController (~> 1.5)
-  - Verizon-Ads-InterstitialWebAdapter (1.4.0):
-    - Verizon-Ads-Core (~> 2.3)
+    - Verizon-Ads-Support (~> 1.11)
+    - Verizon-Ads-VASTController (~> 1.6)
+  - Verizon-Ads-InterstitialWebAdapter (1.5.0):
+    - Verizon-Ads-Core (~> 2.4)
     - Verizon-Ads-InterstitialPlacement (~> 1.5)
-    - Verizon-Ads-Support (~> 1.9)
+    - Verizon-Ads-Support (~> 1.11)
     - Verizon-Ads-WebController (~> 1.3)
     - Verizon-Ads-WebView (~> 1.5)
-  - Verizon-Ads-NativePlacement (1.10.1):
-    - Verizon-Ads-Core (~> 2.3)
+  - Verizon-Ads-NativePlacement (1.11.0):
+    - Verizon-Ads-Core (~> 2.4)
     - Verizon-Ads-OMSDK (~> 1.6)
-    - Verizon-Ads-Support (~> 1.9)
+    - Verizon-Ads-Support (~> 1.11)
   - Verizon-Ads-NativeVerizonNativeAdapter (2.6.0):
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-NativePlacement (~> 1.10)
@@ -55,38 +55,38 @@ PODS:
     - Verizon-Ads-VerizonNativeController (~> 2.8)
   - Verizon-Ads-OMSDK (1.6.1):
     - Verizon-Ads-Core (~> 2.3)
-  - Verizon-Ads-StandardEdition (1.8.1):
-    - Verizon-Ads-Core (= 2.3.1)
-    - Verizon-Ads-InlinePlacement (= 1.4.1)
-    - Verizon-Ads-InlineWebAdapter (= 1.4.0)
+  - Verizon-Ads-StandardEdition (1.9.0):
+    - Verizon-Ads-Core (= 2.4.0)
+    - Verizon-Ads-InlinePlacement (= 1.5.0)
+    - Verizon-Ads-InlineWebAdapter (= 1.5.0)
     - Verizon-Ads-InterstitialPlacement (= 1.5.0)
-    - Verizon-Ads-InterstitialVASTAdapter (= 1.4.0)
-    - Verizon-Ads-InterstitialWebAdapter (= 1.4.0)
-    - Verizon-Ads-NativePlacement (= 1.10.1)
+    - Verizon-Ads-InterstitialVASTAdapter (= 1.5.0)
+    - Verizon-Ads-InterstitialWebAdapter (= 1.5.0)
+    - Verizon-Ads-NativePlacement (= 1.11.0)
     - Verizon-Ads-NativeVerizonNativeAdapter (= 2.6.0)
     - Verizon-Ads-OMSDK (= 1.6.1)
-    - Verizon-Ads-Support (= 1.9.1)
+    - Verizon-Ads-Support (= 1.11.0)
     - Verizon-Ads-URIExperience (= 2.5.0)
-    - Verizon-Ads-VASTController (= 1.5.0)
-    - Verizon-Ads-VerizonNativeController (= 2.8.1)
-    - Verizon-Ads-VideoPlayer (= 1.5.0)
+    - Verizon-Ads-VASTController (= 1.6.0)
+    - Verizon-Ads-VerizonNativeController (= 2.10.0)
+    - Verizon-Ads-VideoPlayer (= 1.6.0)
     - Verizon-Ads-WebController (= 1.3.0)
     - Verizon-Ads-WebView (= 1.5.1)
-  - Verizon-Ads-Support (1.9.1):
-    - Verizon-Ads-Core (~> 2.3)
+  - Verizon-Ads-Support (1.11.0):
+    - Verizon-Ads-Core (~> 2.4)
   - Verizon-Ads-URIExperience (2.5.0):
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-Support (~> 1.9)
-  - Verizon-Ads-VASTController (1.5.0):
-    - Verizon-Ads-Core (~> 2.3)
+  - Verizon-Ads-VASTController (1.6.0):
+    - Verizon-Ads-Core (~> 2.4)
     - Verizon-Ads-OMSDK (~> 1.6)
-    - Verizon-Ads-Support (~> 1.9)
-  - Verizon-Ads-VerizonNativeController (2.8.1):
-    - Verizon-Ads-Core (~> 2.3)
+    - Verizon-Ads-Support (~> 1.11)
+  - Verizon-Ads-VerizonNativeController (2.10.0):
+    - Verizon-Ads-Core (~> 2.4)
     - Verizon-Ads-OMSDK (~> 1.6)
-    - Verizon-Ads-Support (~> 1.9)
-  - Verizon-Ads-VideoPlayer (1.5.0):
-    - Verizon-Ads-Core (~> 2.3)
+    - Verizon-Ads-Support (~> 1.11)
+  - Verizon-Ads-VideoPlayer (1.6.0):
+    - Verizon-Ads-Core (~> 2.4)
   - Verizon-Ads-WebController (1.3.0):
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-Support (~> 1.9)
@@ -95,19 +95,19 @@ PODS:
     - Verizon-Ads-Core (~> 2.3)
     - Verizon-Ads-OMSDK (~> 1.6)
     - Verizon-Ads-Support (~> 1.9)
-  - VungleSDK-iOS (6.8.1)
+  - VungleSDK-iOS (6.9.1)
 
 DEPENDENCIES:
-  - AdColony (= 4.4.1.1)
-  - AppLovinSDK (= 6.14.10)
+  - AdColony (= 4.5.0)
+  - AppLovinSDK (= 6.15.2)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
-  - FBAudienceNetwork (= 6.2.0)
+  - FBAudienceNetwork (= 6.2.1)
   - Flutter (from `Flutter`)
-  - InMobiSDK (= 9.1.1)
-  - IronSourceSDK (= 7.0.4.0)
+  - InMobiSDK (= 9.1.5)
+  - IronSourceSDK (= 7.1.0.0)
   - UnityAds (= 3.6.0)
-  - Verizon-Ads-StandardEdition (= 1.8.1)
-  - VungleSDK-iOS (= 6.8.1)
+  - Verizon-Ads-StandardEdition (= 1.9.0)
+  - VungleSDK-iOS (= 6.9.1)
 
 SPEC REPOS:
   trunk:
@@ -145,35 +145,35 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  AdColony: a655685ae4a62eb8d6ddffa5fc1436858872a9e7
-  AppLovinSDK: 01870be92cfdc43f6528d81288aae43c98ad3482
-  fairbid_flutter: 815bea56142be55eb2be913f5504173ca5c8c68a
-  FairBidSDK: 4f550621ac1f3714d62de24a2eeabcabbabbea8c
-  FBAudienceNetwork: 69193f0362accc40305703fb3265342416971446
-  FBSDKCoreKit: 4afd6ff53d8133a433dbcda44451c9498f8c6ce4
+  AdColony: e54ee1d060491410135a5a1c9b010bcb4a171dab
+  AppLovinSDK: fc91aca5b6b529cae7181a43f63633363dddbe3b
+  fairbid_flutter: 14ab13a6c212190b690eeef319aad9170fb1ff17
+  FairBidSDK: ed1b01712b537fb4d4ba6ea10889db6b5cc7e9b3
+  FBAudienceNetwork: 6e85fd17319e49c0234d60026bee154389badf2c
+  FBSDKCoreKit: fada1a6a0076724678993ff05a633848765ff18c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  InMobiSDK: 382053e389cc1acd6603079e0ef0fd6e8b1e3e97
-  IronSourceSDK: 84e62e75f9d7c5e64510b6fcdaecd3d9be8e24a9
+  InMobiSDK: 4f30f1c2dc10e15ce897166b063c5f0c85829cff
+  IronSourceSDK: f090f9be30cc8c9d31d4d5b98847f98e80de59a6
   UnityAds: 3f88cf3d3b11991de1025fcf0e3109fd86035fba
-  Verizon-Ads-Core: ee3d22aac38b6813d9c6fcda86f7762571ba159c
-  Verizon-Ads-InlinePlacement: 24f84a7413290ade6caefa7d7ad512610e074a73
-  Verizon-Ads-InlineWebAdapter: 334aa225280bfe718fe1a62d727dc11caff861cc
+  Verizon-Ads-Core: 0f144f45c9b650ab2c21d2862c5259ccc23e8e2c
+  Verizon-Ads-InlinePlacement: 953bb9ab27422316c376757a6d4d438ef43124b9
+  Verizon-Ads-InlineWebAdapter: 812d39e5bf3b4490abc9409b13c3313ca3609d15
   Verizon-Ads-InterstitialPlacement: f2a31deb456c71e3e443650d98fcc27258e0fdfb
-  Verizon-Ads-InterstitialVASTAdapter: 2839661084db7e8229f0d28004a8b1b3ee610c41
-  Verizon-Ads-InterstitialWebAdapter: 834a5368515e71f0b8bb44eb4cdc4065fa97c1dc
-  Verizon-Ads-NativePlacement: f119df5ee72f9d6ce873ac2181118f3ba33f82b1
+  Verizon-Ads-InterstitialVASTAdapter: 40cc761c1d8c56b40540b467e41561280a57f657
+  Verizon-Ads-InterstitialWebAdapter: afed5e0539883ca92b057ac81516a27734848a84
+  Verizon-Ads-NativePlacement: d2669589121c7bc817d55dc1ff9cb2db28d8b433
   Verizon-Ads-NativeVerizonNativeAdapter: ebec03e238b5374ae7224d982a447561eb29b8b1
   Verizon-Ads-OMSDK: 737430ec7f803b35155c826f9aa25244ff47f4e0
-  Verizon-Ads-StandardEdition: 520922882990d5b457bf2b6d444de4ca59722baf
-  Verizon-Ads-Support: c136761ceeb0bc3b995aa51192f9966bb0871f69
+  Verizon-Ads-StandardEdition: dabff642f04dfd6c784de60f292ecebe055956ea
+  Verizon-Ads-Support: 245dc8fa9ab2ff2174fda9ff4306dc4c004dbcc8
   Verizon-Ads-URIExperience: 1f47a4ebb963aeac6abc6aa3ccb1496ee8fbf702
-  Verizon-Ads-VASTController: 559b8ab78b480efbd8f868125564469023d335a0
-  Verizon-Ads-VerizonNativeController: bac7539d3a37f3f685d00e7e5ef4262e5da83c2d
-  Verizon-Ads-VideoPlayer: 1ebc69f081819c1fad5d73fde924f873dd62e8a6
+  Verizon-Ads-VASTController: d27dc13b76c9625c88f76165a9905d6291dc258c
+  Verizon-Ads-VerizonNativeController: 6dd708b1b57b8516100d0cb03d2652b307522019
+  Verizon-Ads-VideoPlayer: 9b8bb20b7e6da89c8091d071b9cba7e306894471
   Verizon-Ads-WebController: 9cfa4583aaead8f864d9c8ceab13bbe28c917e85
   Verizon-Ads-WebView: 47e475030f232dd5d71bbe8ed4ded1d1d25ae429
-  VungleSDK-iOS: 0405589c8626b2511dd57214a17e0d65e0d2f424
+  VungleSDK-iOS: 09abfadbcc04e0748ce33c6bd02282e9961125ba
 
-PODFILE CHECKSUM: f386db833201f754a4bf580dd8cec6b9b445e6a1
+PODFILE CHECKSUM: 62655e796fb04a31a71edd1e598db5543183d941
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.1

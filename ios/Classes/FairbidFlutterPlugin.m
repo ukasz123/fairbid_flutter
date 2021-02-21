@@ -174,7 +174,7 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSDictionary *extraOptions = arguments[EXTRA_OPTIONS_TYPE_KEY];
 
     if ([INTERSTITIAL_KEY isEqualToString:type]) {
-        if (extraOptions){
+        if (extraOptions && ![extraOptions isEqual:[NSNull null]]){
             FYBShowOptions *showOptions = [FYBShowOptions new];
             showOptions.customParameters = extraOptions;
             [FYBInterstitial show:placement options:showOptions];
@@ -183,7 +183,7 @@ BannerDelegateImpl                      *_bannerDelegate;
         }
         result([NSNumber numberWithBool:YES]);
     } else if ([REWARDED_KEY isEqualToString:type]) {
-        if (extraOptions){
+        if (extraOptions && ![extraOptions isEqual:[NSNull null]]){
             FYBShowOptions *showOptions = [FYBShowOptions new];
             showOptions.customParameters = extraOptions;
             [FYBRewarded show:placement options:showOptions];
