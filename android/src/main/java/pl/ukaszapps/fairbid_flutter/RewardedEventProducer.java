@@ -29,7 +29,11 @@ final class RewardedEventProducer implements RewardedListener {
 
     public void onCompletion(@NonNull String placement, boolean userRewarded) {
         Utils.checkParameterIsNotNull(placement, "placement");
-        this.sendEvent.send(Constants.AdType.REWARDED, placement, "completion", null, userRewarded);
+        if (userRewarded) {
+            this.sendEvent.send(Constants.AdType.REWARDED, placement, "completion", null, userRewarded);
+        } else {
+            this.sendEvent.send(Constants.AdType.REWARDED, placement, "notCompletion", null, userRewarded);
+        }
     }
 
     @Override
