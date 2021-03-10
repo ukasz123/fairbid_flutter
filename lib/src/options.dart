@@ -16,10 +16,10 @@ class Options {
   final bool debugLogging;
 
   /// Logging level of the SDK. Defaults to `silent`. It overrides `debugLogging` when provided.
-  final LoggingLevel loggingLevel;
+  final LoggingLevel? loggingLevel;
 
   Options(
-      {@required this.appId,
+      {required this.appId,
       this.autoRequesting = true,
       this.debugLogging = false,
       this.loggingLevel})
