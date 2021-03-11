@@ -25,9 +25,7 @@ class AdEvent {
 
   const AdEvent._(this.adType, this.placementId, this.eventType, this.impressionData,
       [this.payload])
-      : assert(adType != null),
-        assert(eventType != null),
-        assert(placementId != null && placementId != '');
+      : assert(placementId != '');
 
   @override
   bool operator ==(dynamic other) {

@@ -111,7 +111,7 @@ class UserData {
   }
 
   static UserData? _instance;
-  UserData._fromMap(this._userData) : assert(_userData != null);
+  UserData._fromMap(this._userData);
 
   static void _updateInstance(Map<String, dynamic> userData) async {
     await FairBidInternal._channel.invokeMethod("updateUserData", userData);

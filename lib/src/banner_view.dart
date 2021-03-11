@@ -43,6 +43,7 @@ class BannerView extends StatelessWidget {
   /// Tries to create a banner with aspect ratio closer to 1:1 than for regular banners.
   ///
   /// ⚠️ Rectangle size banners are NOT supported by FairBid SDK yet.
+  // ignore: unused_element
   factory BannerView._rectangle(String placement, FairBid sdk,
           {WidgetBuilder? placeholderBuilder, ErrorWidgetBuilder? errorWidgetBuilder}) =>
       BannerView._(

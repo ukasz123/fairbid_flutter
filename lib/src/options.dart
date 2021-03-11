@@ -23,7 +23,7 @@ class Options {
       this.autoRequesting = true,
       this.debugLogging = false,
       this.loggingLevel})
-      : assert(appId != null && appId.isNotEmpty);
+      : assert(appId.isNotEmpty);
 
   Map<String, dynamic> _toMap() => {
         "publisherId": appId,
