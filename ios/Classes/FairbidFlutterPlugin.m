@@ -82,7 +82,7 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSString *publisherId = arguments[@"publisherId"];
     
     if ([FairBid isStarted]) {
-        result([NSNumber numberWithBool:NO]);
+        result([NSNumber numberWithBool:YES]);
         return;
     }
 
