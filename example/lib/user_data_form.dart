@@ -7,7 +7,7 @@ class UserDataForm extends StatelessWidget {
     return FutureBuilder<UserData>(
       builder: (BuildContext context, AsyncSnapshot<UserData> snapshot) {
         if (snapshot.hasData) {
-          var data = snapshot.data;
+          var data = snapshot.data!;
           return new _UserDataFormFields(data: data);
         } else {
           return Container();
@@ -20,8 +20,8 @@ class UserDataForm extends StatelessWidget {
 
 class _UserDataFormFields extends StatefulWidget {
   const _UserDataFormFields({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
   }) : super(key: key);
 
   final UserData data;
@@ -46,7 +46,7 @@ class __UserDataFormFieldsState extends State<_UserDataFormFields> {
                   ))
               .toList(),
           onChanged: (gender) => setState(() {
-            widget.data.gender = gender;
+            widget.data.gender = gender!;
           }),
         ),
         TextFormField(

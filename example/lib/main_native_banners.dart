@@ -11,14 +11,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  FairBid _sdk;
-  StreamSubscription<String> _sub;
+  late FairBid _sdk;
+  late StreamSubscription<String> _sub;
   List<String> _placements = [];
-  TextEditingController _placementIdController;
+  TextEditingController? _placementIdController;
   Map<String, Widget> bannersCache = {};
 
   //TODO update me
-  String get _appId => null;
+  String get _appId => throw UnimplementedError('The app id has not been set');
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    _sub?.cancel();
+    _sub.cancel();
     super.dispose();
   }
 
@@ -144,7 +144,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _buildBannerContainer(String placementId) {
-    Widget banner = bannersCache[placementId];
+    Widget? banner = bannersCache[placementId];
     if (banner == null) {
       banner = BannerContainer(_sdk, id: placementId);
       bannersCache[placementId] = banner;
@@ -153,8 +153,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _addPlacement() {
-    final placementId = _placementIdController.value.text;
-    _placementIdController.clear();
+    final placementId = _placementIdController!.value.text;
+    _placementIdController!.clear();
     _dismissKeyboard();
     setState(() {
       _placements.insert(0, placementId);
@@ -170,7 +170,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class BannerContainer extends StatelessWidget {
-  BannerContainer(this._sdk, {@required String id})
+  BannerContainer(this._sdk, {required String id})
       : this.id = id,
         super(key: ValueKey(id));
 

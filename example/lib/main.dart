@@ -23,24 +23,24 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _fairbidSdkVersion = 'Unknown';
 
-  FairBid _sdk;
+  FairBid? _sdk;
 
   bool _enableLogs = true;
 
   bool _muteAds = false;
 
-  TextEditingController _sdkIdController;
+  late TextEditingController _sdkIdController;
 
-  String _appId;
+  String? _appId;
 
-  int _step;
+  int _step = 0;
 
-  Stream<ImpressionData> _impressionStream;
+  Stream<ImpressionData?>? _impressionStream;
 
-  Stream<ImpressionData> get impressionsStream {
+  Stream<ImpressionData?>? get impressionsStream {
     if (_impressionStream == null) {
-      _impressionStream = Stream.fromFuture(_sdk.started)
-          .asyncExpand((_) => _sdk.events
+      _impressionStream = Stream.fromFuture(_sdk!.started)
+          .asyncExpand((_) => _sdk!.events
               .where((event) => event.impressionData != null)
               .map((event) => event.impressionData))
           .asBroadcastStream();
@@ -53,7 +53,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initPlatformState();
     _sdkIdController = TextEditingController();
-    _step = 0;
   }
 
   @override
@@ -99,8 +98,8 @@ class _MyAppState extends State<MyApp> {
                   currentStep: _step,
                   onStepTapped: (step) => setState(() => _step = step),
                   controlsBuilder: (context,
-                          {VoidCallback onStepContinue,
-                          VoidCallback onStepCancel}) =>
+                          {VoidCallback? onStepContinue,
+                          VoidCallback? onStepCancel}) =>
                       Container(),
                   steps: <Step>[
                     Step(
@@ -139,7 +138,7 @@ class _MyAppState extends State<MyApp> {
                               impressionsStream, [BannerAd.impressionDepth])
                           : null,
                       content:
-                          _sdk != null ? BannerAds(sdk: _sdk) : Container(),
+                          _sdk != null ? BannerAds(sdk: _sdk!) : Container(),
                     ),
                     Step(
                       isActive: _sdk != null,
@@ -149,12 +148,12 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
                       content:
-                          _sdk != null ? BannerViewAds(sdk: _sdk) : Container(),
+                          _sdk != null ? BannerViewAds(sdk: _sdk!) : Container(),
                     ),
                     Step(
                       isActive: _sdk != null,
                       title: Text("Test suite"),
-                      content: OutlineButton(
+                      content: OutlinedButton(
                         child: Text("Open Test suite"),
                         onPressed: () => _sdk?.showTestSuite(),
                       ),
@@ -193,7 +192,7 @@ class _MyAppState extends State<MyApp> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 6.0),
-                child: OutlineButton(
+                child: OutlinedButton(
                   onPressed: () {
                     _initSDK();
                   },
@@ -221,9 +220,9 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildSdkWidgets(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _sdk.started,
-      builder: (context, snapshot) => snapshot.hasData && snapshot.data
-          ? FullScreenAds(sdk: _sdk)
+      future: _sdk!.started,
+      builder: (context, snapshot) => snapshot.hasData && snapshot.data!
+          ? FullScreenAds(sdk: _sdk!)
           : Container(
               child: Center(
                 child: CircularProgressIndicator(),
@@ -250,12 +249,12 @@ class _MyAppState extends State<MyApp> {
 
 class ImpressionPresenter extends StatelessWidget {
   final List<AdType> adTypes;
-  final Stream<ImpressionData> impressions;
-  final List<Future<int>> initialImpressions;
+  final Stream<ImpressionData?>? impressions;
+  final List<Future<int?>> initialImpressions;
 
   const ImpressionPresenter(
       this.adTypes, this.impressions, this.initialImpressions,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -263,15 +262,15 @@ class ImpressionPresenter extends StatelessWidget {
     return Row(
       children: <Widget>[
         for (var index = 0; index < adTypes.length; index++)
-          StreamBuilder<int>(
+          StreamBuilder<int?>(
             initialData: 0,
             stream: Rx.concat([
               initialImpressions[index].asStream(),
-              impressions
-                  .where((imp) => imp.placementType == adTypes[index])
-                  .map((imp) => imp.impressionDepth)
+              impressions!
+                  .where((imp) => imp!.placementType == adTypes[index])
+                  .map((imp) => imp!.impressionDepth)
             ]),
-            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<int?> snapshot) {
               return Chip(label: Text('${snapshot.data}'));
             },
           ),
