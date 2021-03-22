@@ -35,6 +35,8 @@ class _MyAppState extends State<MyApp> {
 
   int _step = 0;
 
+  bool get _sdkAvailable => _sdk != null;
+
   Stream<ImpressionData?>? _impressionStream;
 
   Stream<ImpressionData?>? get impressionsStream {
@@ -98,60 +100,52 @@ class _MyAppState extends State<MyApp> {
                   currentStep: _step,
                   onStepTapped: (step) => setState(() => _step = step),
                   controlsBuilder: (context,
-                          {VoidCallback? onStepContinue,
-                          VoidCallback? onStepCancel}) =>
+                          {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) =>
                       Container(),
                   steps: <Step>[
                     Step(
                       title: Text("Setup SDK"),
-                      isActive: _sdk == null,
+                      isActive: !_sdkAvailable,
                       subtitle: _appId == null ? null : Text("App ID: $_appId"),
                       content: _buildFirstStep(),
                     ),
                     Step(
                       title: Text("User data"),
-                      isActive: _sdk != null,
+                      isActive: _sdkAvailable,
                       subtitle: Text("Optional"),
-                      content: _sdk != null ? UserDataForm() : Container(),
+                      content: _sdkAvailable ? UserDataForm() : Container(),
                     ),
                     Step(
-                      isActive: _sdk != null,
+                      isActive: _sdkAvailable,
                       title: Text("Ads control"),
-                      subtitle: _sdk != null
+                      subtitle: _sdkAvailable
                           ? ImpressionPresenter(
                               [AdType.interstitial, AdType.rewarded],
                               impressionsStream,
-                              [
-                                InterstitialAd.impressionDepth,
-                                RewardedAd.impressionDepth
-                              ])
+                              [InterstitialAd.impressionDepth, RewardedAd.impressionDepth])
                           : null,
-                      content: _sdk != null
-                          ? _buildSdkWidgets(context)
-                          : Container(),
+                      content: _sdkAvailable ? _buildSdkWidgets(context) : Container(),
                     ),
                     Step(
-                      isActive: _sdk != null,
+                      isActive: _sdkAvailable,
                       title: Text("Banners control"),
-                      subtitle: _sdk != null
-                          ? ImpressionPresenter([AdType.banner],
-                              impressionsStream, [BannerAd.impressionDepth])
+                      subtitle: _sdkAvailable
+                          ? ImpressionPresenter(
+                              [AdType.banner], impressionsStream, [BannerAd.impressionDepth])
                           : null,
-                      content:
-                          _sdk != null ? BannerAds(sdk: _sdk!) : Container(),
+                      content: _sdkAvailable ? BannerAds(sdk: _sdk!) : Container(),
                     ),
                     Step(
-                      isActive: _sdk != null,
+                      isActive: _sdkAvailable,
                       title: Text("Banner views control"),
                       subtitle: Text(
                         "Experimental",
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
-                      content:
-                          _sdk != null ? BannerViewAds(sdk: _sdk!) : Container(),
+                      content: _sdkAvailable ? BannerViewAds(sdk: _sdk!) : Container(),
                     ),
                     Step(
-                      isActive: _sdk != null,
+                      isActive: _sdkAvailable,
                       title: Text("Test suite"),
                       content: OutlinedButton(
                         child: Text("Open Test suite"),
@@ -252,9 +246,7 @@ class ImpressionPresenter extends StatelessWidget {
   final Stream<ImpressionData?>? impressions;
   final List<Future<int?>> initialImpressions;
 
-  const ImpressionPresenter(
-      this.adTypes, this.impressions, this.initialImpressions,
-      {Key? key})
+  const ImpressionPresenter(this.adTypes, this.impressions, this.initialImpressions, {Key? key})
       : super(key: key);
 
   @override

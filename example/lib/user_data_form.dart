@@ -49,9 +49,23 @@ class __UserDataFormFieldsState extends State<_UserDataFormFields> {
             widget.data.gender = gender!;
           }),
         ),
-        TextFormField(
-          initialValue: "${widget.data.location}",
-          decoration: InputDecoration(labelText: "Location"),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: TextFormField(
+                initialValue: "${widget.data.location?.latitude}",
+                decoration: InputDecoration(labelText: "Location", hintText: 'Latitude'),
+              ),
+            ),
+            SizedBox(width: 8.0),
+            Expanded(
+              child: TextFormField(
+                initialValue: "${widget.data.location?.longitude}",
+                decoration: InputDecoration(labelText: "", hintText: 'Longitude'),
+              ),
+            ),
+          ],
         ),
       ],
     );
