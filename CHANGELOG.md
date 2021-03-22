@@ -1,5 +1,6 @@
 ### 1.0.0
 * **Breaking change:** `Null-safety` support
+* Updated dependencies to **FairBid 3.13.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
 
 ### 0.11.2
 * Updated dependencies to **FairBid 3.12.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog))
