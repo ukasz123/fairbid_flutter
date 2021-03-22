@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class GDPRControls extends StatelessWidget {
   const GDPRControls({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -12,7 +12,7 @@ class GDPRControls extends StatelessWidget {
       spacing: 2,
       alignment: WrapAlignment.center,
       children: <Widget>[
-        OutlineButton(
+        OutlinedButton(
           onPressed: () async {
             await PrivacySettings.updateGDPRConsent(
                 grantsConsent: true,
@@ -21,14 +21,14 @@ class GDPRControls extends StatelessWidget {
           },
           child: Text("Grant GDPR consent"),
         ),
-        OutlineButton(
+        OutlinedButton(
           onPressed: () async {
             await PrivacySettings.updateGDPRConsent(grantsConsent: false);
             print("GDPR consent revoked");
           },
           child: Text("Revoke GDPR consent"),
         ),
-        OutlineButton(
+        OutlinedButton(
           onPressed: () async {
             await PrivacySettings.updateCCPAString(
                 ccpaString: "IABCompliantConstentString");
@@ -36,7 +36,7 @@ class GDPRControls extends StatelessWidget {
           },
           child: Text("Update CCPA consent"),
         ),
-        OutlineButton(
+        OutlinedButton(
           onPressed: () async {
             await PrivacySettings.clear();
             print("Privacy settings cleared");

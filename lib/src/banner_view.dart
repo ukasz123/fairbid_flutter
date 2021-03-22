@@ -11,8 +11,7 @@ import 'package:fairbid_flutter/fairbid_flutter.dart';
 // shared channel
 const MethodChannel _methodChannel = FairBidInternal.methodCallChannel;
 
-const EventChannel _metadataChannel =
-    EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
+const EventChannel _metadataChannel = EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
 
 enum _BannerType { BANNER, RECTANGLE }
 
@@ -27,29 +26,26 @@ class BannerView extends StatelessWidget {
   final String placement;
   final FairBid sdk;
   final _BannerType type;
-  final WidgetBuilder placeholderBuilder;
-  final ErrorWidgetBuilder errorWidgetBuilder;
+  final WidgetBuilder? placeholderBuilder;
+  final ErrorWidgetBuilder? errorWidgetBuilder;
 
   const BannerView._(
-      {Key key,
-      this.placement,
-      this.sdk,
+      {Key? key,
+      required this.placement,
+      required this.sdk,
       this.placeholderBuilder,
       this.errorWidgetBuilder,
-      this.type})
-      : assert(placement != null),
-        assert(sdk != null),
-        assert(type != null),
-        super(key: key);
+      required this.type})
+      : super(key: key);
 
   /// Creates a widget that embeds a rectangle banner for a [placement].
   ///
   /// Tries to create a banner with aspect ratio closer to 1:1 than for regular banners.
   ///
   /// ⚠️ Rectangle size banners are NOT supported by FairBid SDK yet.
+  // ignore: unused_element
   factory BannerView._rectangle(String placement, FairBid sdk,
-          {WidgetBuilder placeholderBuilder,
-          ErrorWidgetBuilder errorWidgetBuilder}) =>
+          {WidgetBuilder? placeholderBuilder, ErrorWidgetBuilder? errorWidgetBuilder}) =>
       BannerView._(
         placement: placement,
         sdk: sdk,
@@ -68,8 +64,7 @@ class BannerView extends StatelessWidget {
   /// The expected height of the banner would be one of the following values: 50 for phones, 90 for tablets. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
   /// The expected width of the banner is: 320 for phones and 728 for tablets although real values may vary.
   factory BannerView(String placement, FairBid sdk,
-          {WidgetBuilder placeholderBuilder,
-          ErrorWidgetBuilder errorWidgetBuilder}) =>
+          {WidgetBuilder? placeholderBuilder, ErrorWidgetBuilder? errorWidgetBuilder}) =>
       BannerView._(
         placement: placement,
         sdk: sdk,
@@ -90,8 +85,7 @@ class BannerView extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final viewConstraints = <String, int>{};
       viewConstraints["height"] =
-          (constraints.hasBoundedHeight ? constraints.maxHeight : height)
-              .floor();
+          (constraints.hasBoundedHeight ? constraints.maxHeight : height).floor();
 
       // we need to tell native code what size of banners it can fit into the view
 
@@ -116,14 +110,14 @@ class _FBNativeBanner extends StatefulWidget {
 
   final Map<String, int> viewConstraints;
 
-  final WidgetBuilder placeholderBuilder;
-  final ErrorWidgetBuilder errorWidgetBuilder;
+  final WidgetBuilder? placeholderBuilder;
+  final ErrorWidgetBuilder? errorWidgetBuilder;
 
   const _FBNativeBanner(
-      {Key key,
-      this.placement,
-      this.sdk,
-      this.viewConstraints,
+      {Key? key,
+      required this.placement,
+      required this.sdk,
+      required this.viewConstraints,
       this.placeholderBuilder,
       this.errorWidgetBuilder})
       : super(key: key);
@@ -136,15 +130,14 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
   static final _messageCodec = const StandardMessageCodec();
   static final _viewType = "bannerView";
 
-  _FBBannerFactory _bannerFactory;
+  late _FBBannerFactory _bannerFactory;
 
-  Future<dynamic> _loadFuture;
+  late Future<dynamic> _loadFuture;
 
-  Stream<List<double>> _sizeStream;
+  late Stream<List<double>> _sizeStream;
 
-  Map<String, dynamic> get bannerParams =>
-      Map<String, dynamic>.from(widget.viewConstraints)
-        ..putIfAbsent("placement", () => widget.placement);
+  Map<String, dynamic> get bannerParams => Map<String, dynamic>.from(widget.viewConstraints)
+    ..putIfAbsent("placement", () => widget.placement);
 
   @override
   void initState() {
@@ -162,24 +155,27 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
     super.dispose();
   }
 
-  Widget _nativeView;
+  Widget? _nativeView;
   Widget get nativeView {
+    Widget aView;
     if (_nativeView == null) {
       if (Platform.isAndroid) {
-        _nativeView = AndroidView(
+        aView = AndroidView(
           viewType: _viewType,
           creationParams: bannerParams,
           creationParamsCodec: _messageCodec,
         );
       } else {
-        _nativeView = UiKitView(
+        aView = UiKitView(
           viewType: _viewType,
           creationParams: bannerParams,
           creationParamsCodec: _messageCodec,
         );
       }
+    } else {
+      aView = _nativeView!;
     }
-    return _nativeView;
+    return aView;
   }
 
   @override
@@ -188,46 +184,44 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
         stream: _loadFuture.asStream().asyncExpand((_) => _sizeStream),
         builder: (context, streamSnapshot) {
           if (streamSnapshot.hasData) {
-            var size = Size(streamSnapshot.data[0], streamSnapshot.data[1]);
+            var data = streamSnapshot.data!;
+            var size = Size(data[0], data[1]);
             if (size.isEmpty) {
-              return widget.placeholderBuilder != null
-                  ? widget.placeholderBuilder(context)
-                  : Container();
+              return widget.placeholderBuilder?.call(context) ?? SizedBox.shrink();
             } else {
               return Container(
-                width: streamSnapshot.data[0],
-                height: streamSnapshot.data[1],
+                width: data[0],
+                height: data[1],
                 child: nativeView,
               );
             }
           } else if (streamSnapshot.hasError) {
             if (widget.errorWidgetBuilder != null) {
-              return widget.errorWidgetBuilder(context, streamSnapshot.error);
+              return widget.errorWidgetBuilder?.call(context, streamSnapshot.error!) ?? SizedBox.shrink();
             }
           } else {
             if (widget.placeholderBuilder != null) {
-              return widget.placeholderBuilder(context);
+              return widget.placeholderBuilder?.call(context) ?? SizedBox.shrink();
             }
           }
-          return Container();
+          return SizedBox.shrink();
         });
   }
 }
 
 class _FBBannerFactory {
-  static _FBBannerFactory _singleton;
+  static _FBBannerFactory? _singleton;
 
-  Timer delayTimer;
+  Timer? garbageCollector;
 
-  Timer garbageCollector;
-
-  Map<String, Stream<List<double>>> streamsCache = {};
+  final Map<String, Stream<List<double>>> _streamsCache = {};
+  
   _FBBannerFactory._(this.sdk);
+
   factory _FBBannerFactory(FairBid sdk) {
-    if (_singleton == null) {
-      _singleton = _FBBannerFactory._(sdk);
-    }
-    return _singleton;
+    _singleton ??= _FBBannerFactory._(sdk);
+    
+    return _singleton!;
   }
   final FairBid sdk;
   final Map<String, _FBBannerFutureHolder> loadedBanners = {};
@@ -235,7 +229,7 @@ class _FBBannerFactory {
   Future<dynamic> load(Map<String, dynamic> bannerParams) {
     String placementId = bannerParams['placement'];
 
-    _FBBannerFutureHolder futureHolder = loadedBanners[placementId];
+    _FBBannerFutureHolder? futureHolder = loadedBanners[placementId];
     if (futureHolder == null || futureHolder.error != null) {
       Future<dynamic> future = sdk.started.then((value) {
         if (value) {
@@ -269,21 +263,20 @@ class _FBBannerFactory {
       if (futureHolder.isFinished && futureHolder.isSuccess) {
         return Future.value(futureHolder.value);
       } else {
-        return futureHolder.pending;
+        return futureHolder.pending!;
       }
     }
   }
 
   void dispose(String placementId) {
-    _FBBannerFutureHolder futureHolder = loadedBanners[placementId];
+    _FBBannerFutureHolder? futureHolder = loadedBanners[placementId];
     if (futureHolder != null) {
       futureHolder.refCount--;
       if (garbageCollector == null) {
         garbageCollector = Timer(const Duration(seconds: 8), () {
           garbageCollector = null;
-          var toRemove = loadedBanners.values
-              .where((holder) => holder.refCount <= 0)
-              .toList(growable: false);
+          var toRemove =
+              loadedBanners.values.where((holder) => holder.refCount <= 0).toList(growable: false);
           loadedBanners.removeWhere((key, holder) => holder.refCount <= 0);
           toRemove.forEach((element) {
             _methodChannel.invokeMethod<dynamic>(
@@ -297,7 +290,7 @@ class _FBBannerFactory {
   }
 
   Stream<List<double>> sizeStream(String placementId) {
-    Stream<List<double>> s = streamsCache[placementId];
+    Stream<List<double>>? s = _streamsCache[placementId];
     if (s == null) {
       s = _metadataChannel
           .receiveBroadcastStream(placementId)
@@ -308,17 +301,17 @@ class _FBBannerFactory {
           //         (previousValue, element) => element.value == r[element.key]))
           .where((data) => data[0] > 0.0 && data[1] > 0.0)
           .shareValue();
-      streamsCache[placementId] = s;
+      _streamsCache[placementId] = s;
     }
     return s;
   }
 }
 
 class _FBBannerFutureHolder {
-  Future<dynamic> pending;
-  dynamic value;
+  Future<dynamic>? pending;
+  dynamic? value;
   int refCount = 0;
-  Future<dynamic> error;
+  Future<dynamic>? error;
 
   String placementId;
   _FBBannerFutureHolder(Future<dynamic> pending, this.placementId) {

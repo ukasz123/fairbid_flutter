@@ -7,12 +7,12 @@ class UserData {
   /// Returns current user data.
   static Future<UserData> getCurrent() async {
     if (_instance != null) {
-      return _instance;
+      return _instance!;
     } else {
       Map<String, dynamic> currentData =
-          await FairBidInternal._channel.invokeMapMethod("getUserData");
+          (await FairBidInternal._channel.invokeMapMethod("getUserData"))!.cast();
       _instance = UserData._fromMap(currentData);
-      return _instance;
+      return _instance!;
     }
   }
 
@@ -51,16 +51,16 @@ class UserData {
     _updateInstance(_userData);
   }
 
-  DateTime get birthday {
+  DateTime? get birthday {
     if (_userData.containsKey('birthday')) {
       var birthdayMap = _userData['birthday'] as Map<String, int>;
       return DateTime(
-          birthdayMap['year'], birthdayMap['month'], birthdayMap['day']);
+          birthdayMap['year']!, birthdayMap['month']!, birthdayMap['day']!);
     }
     return null;
   }
 
-  set birthday(DateTime date) {
+  set birthday(DateTime? date) {
     if (date != null) {
       var birthdayMap = <String, int>{
         'year': date.year,
@@ -74,7 +74,7 @@ class UserData {
     _updateInstance(_userData);
   }
 
-  Location get location {
+  Location? get location {
     if (_userData.containsKey('location')) {
       var locationData = _userData['location'] as Map<String, double>;
       return Location(locationData['latitude'], locationData['longitude']);
@@ -82,9 +82,9 @@ class UserData {
     return null;
   }
 
-  set location(Location location) {
+  set location(Location? location) {
     if (location != null) {
-      var locationData = <String, double>{
+      var locationData = <String, double?>{
         'latitude': location.latitude,
         'longitude': location.longitude,
       };
@@ -98,9 +98,9 @@ class UserData {
   /// User's identifier. It is used in [server-side rewarding](https://developer.fyber.com/hc/en-us/articles/360009923657-Server-Side-Rewarding) feature.
   ///
   /// > The User ID length must not exceed 256 characters. If it does, the Server Side Reward callback will not contain a User ID value.
-  String get id => _userData['id'];
+  String? get id => _userData['id'];
 
-  set id(String id) {
+  set id(String? id) {
     _userData['id'] = id;
     _updateInstance(_userData);
   }
@@ -110,13 +110,13 @@ class UserData {
     return 'UserData{ $_userData }';
   }
 
-  static UserData _instance;
-  UserData._fromMap(this._userData) : assert(_userData != null);
+  static UserData? _instance;
+  UserData._fromMap(this._userData);
 
   static void _updateInstance(Map<String, dynamic> userData) async {
     await FairBidInternal._channel.invokeMethod("updateUserData", userData);
     Map<String, dynamic> currentData =
-        await FairBidInternal._channel.invokeMapMethod("getUserData");
+        (await (FairBidInternal._channel.invokeMapMethod("getUserData")))!.cast();
     _instance = UserData._fromMap(currentData);
   }
 }
@@ -129,8 +129,8 @@ enum Gender {
 }
 
 class Location {
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
 
   Location(this.latitude, this.longitude);
 

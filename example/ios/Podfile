@@ -33,11 +33,11 @@ target 'Runner' do
   # Mediated network pods
   pod 'AdColony', '4.5.0'
   pod 'AppLovinSDK', '6.15.2'
-  pod 'FBAudienceNetwork', '6.2.1'
+  pod 'FBAudienceNetwork', '6.3.0'
   pod 'UnityAds', '3.6.0'
   pod 'Verizon-Ads-StandardEdition', '1.9.0'
   pod 'VungleSDK-iOS', '6.9.1'
-  pod 'IronSourceSDK', '7.1.0.0'
+  pod 'IronSourceSDK', '7.1.1.0'
   pod 'InMobiSDK', '9.1.5'
 
 end

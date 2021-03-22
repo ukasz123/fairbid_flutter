@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class BannerAds extends StatefulWidget {
   final fb.FairBid sdk;
 
-  const BannerAds({Key key, this.sdk}) : super(key: key);
+  const BannerAds({Key? key, required this.sdk}) : super(key: key);
   @override
   _BannerAdsState createState() => _BannerAdsState();
 }
@@ -14,7 +14,7 @@ class BannerAds extends StatefulWidget {
 class _BannerAdsState extends State<BannerAds> {
   List<fb.BannerAd> _ads = [];
 
-  TextEditingController _placementController;
+  late TextEditingController _placementController;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _BannerAdsState extends State<BannerAds> {
               tooltip: "Add Banner",
               onPressed: () {
                 setState(() {
-                  if (_placementController.text?.trim()?.isNotEmpty ?? false) {
+                  if (_placementController.text.trim().isNotEmpty) {
                     _ads.add(
                         widget.sdk.prepareBanner(_placementController.text));
                     _placementController.clear();

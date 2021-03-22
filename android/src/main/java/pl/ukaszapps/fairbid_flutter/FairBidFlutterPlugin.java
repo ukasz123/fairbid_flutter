@@ -459,6 +459,10 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
     }
 
     private void startSdkAndInitListeners(MethodCall call, MethodChannel.Result result) {
+        if (FairBid.hasStarted()){
+            result.success(true);
+            return;
+        }
         String publisherId = call.argument("publisherId");
         if (publisherId == null) {
             throw new NullPointerException("'publisherId' cannot be null");

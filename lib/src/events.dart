@@ -16,19 +16,16 @@ class AdEvent {
   /// The [ImpressionData] associated with the event containing detailed information for impression.
   ///
   /// May be null.
-  final ImpressionData impressionData;
+  final ImpressionData? impressionData;
 
   /// _(Optional)_ Extra data related to the event.
   ///
   /// See description of [AdEventType]s for extra information.
-  final List<dynamic> payload;
+  final List<dynamic>? payload;
 
-  const AdEvent._(
-      this.adType, this.placementId, this.eventType, this.impressionData,
+  const AdEvent._(this.adType, this.placementId, this.eventType, this.impressionData,
       [this.payload])
-      : assert(adType != null),
-        assert(eventType != null),
-        assert(placementId != null && placementId != '');
+      : assert(placementId != '');
 
   @override
   bool operator ==(dynamic other) {
@@ -46,9 +43,7 @@ class AdEvent {
   }
 
   @override
-  int get hashCode =>
-      (((adType.hashCode * 31) + eventType.hashCode) * 31) +
-      placementId.hashCode;
+  int get hashCode => (((adType.hashCode * 31) + eventType.hashCode) * 31) + placementId.hashCode;
 
   @override
   String toString() {
@@ -112,10 +107,13 @@ enum AdEventType {
   request,
 }
 
-AdEventType _eventTypeFromName(String name) {
-  return AdEventType.values.firstWhere(
-      (event) => event.toString().toLowerCase().contains(name.toLowerCase()),
-      orElse: () => null);
+AdEventType? _eventTypeFromName(String name) {
+  try {
+    return AdEventType.values
+        .firstWhere((event) => event.toString().toLowerCase().contains(name.toLowerCase()));
+  } on StateError {
+    return null;
+  }
 }
 
 /// Ad type of placement [AdEvent] is related to.
@@ -125,16 +123,19 @@ String _adTypeToName(AdType type) {
   return type.toString().split('.').last;
 }
 
-AdType _adTypeFromName(String name) {
-  return AdType.values.firstWhere(
-      (event) => event.toString().toLowerCase().contains(name.toLowerCase()));
+AdType? _adTypeFromName(String name) {
+  try {
+    return AdType.values
+        .firstWhere((event) => event.toString().toLowerCase().contains(name.toLowerCase()));
+  } on StateError {
+    return null;
+  }
 }
 
 mixin _EventsProvider {
-  Stream<AdEvent> _eventsStream;
+  Stream<AdEvent>? _eventsStream;
 
-  bool _filterEvents(AdEvent event) =>
-      event.adType == _type && event.placementId == placementId;
+  bool _filterEvents(AdEvent event) => event.adType == _type && event.placementId == placementId;
 
   @protected
   FairBidInternal get _sdk;
@@ -148,7 +149,7 @@ mixin _EventsProvider {
     if (_eventsStream == null) {
       _eventsStream = _sdk.events.where(_filterEvents).asBroadcastStream();
     }
-    return _eventsStream;
+    return _eventsStream!;
   }
 
   /// Stream of [AdEventType]s that are related only to the placement described by the instance of this class.
@@ -182,64 +183,64 @@ class ImpressionData {
   final double netPayout;
 
   /// Currency of the payout.
-  final String currency;
+  final String? currency;
 
   /// Demand Source name is the name of the buy-side / demand-side entity that purchased the impression.
   /// When mediated networks win an impression, you’ll see the mediated network’s name. When a DSP buying
   /// through the programmatic marketplace wins the impression, you’ll see the DSP’s name.
-  final String demandSource;
+  final String? demandSource;
 
   /// Name of the SDK rendering the ad.
-  final String renderingSdk;
+  final String? renderingSdk;
 
   /// Version of the SDK rendering the ad.
-  final String renderingSdkVersion;
+  final String? renderingSdkVersion;
 
   /// The mediated ad network’s original Placement/Zone/Location/Ad Unit ID that you created in their dashboard.
   /// For ads shown by the Fyber Marketplace the [networkInstanceId] is the Placement ID you created in the Fyber console.
-  final String networkInstanceId;
+  final String? networkInstanceId;
 
   /// Type of the impression’s placement.
   final AdType placementType;
 
   /// Country location of the ad impression (in ISO country code).
-  final String countryCode;
+  final String? countryCode;
 
   /// An unique identifier for a specific impression.
-  final String impressionId;
+  final String? impressionId;
 
   /// Advertiser’s domain when available. Used as an identifier for a set of campaigns for the same advertiser.
-  final String advertiserDomain;
+  final String? advertiserDomain;
 
   /// Creative ID when available. Used as an identifier for a specific creative of a certain campaign.
   /// This is particularly useful information when a certain creative is found to cause user experience issues.
-  final String creativeId;
+  final String? creativeId;
 
   /// Campaign ID when available used as an identifier for a specific campaign of a certain advertiser.
-  final String campaignId;
+  final String? campaignId;
 
   /// Impression depth represents the amount of impressions in a given session per ad format.
   final int impressionDepth;
 
   /// Waterfall variant Identifier. When running a multi test experiment, this ID will help you identify which variant was delivered on the device.
-  final String variantId;
+  final String? variantId;
 
   ImpressionData._({
-    @required this.priceAccuracy,
-    @required this.netPayout,
-    @required this.currency,
-    @required this.demandSource,
-    @required this.renderingSdk,
-    @required this.renderingSdkVersion,
-    @required this.networkInstanceId,
-    @required this.placementType,
-    @required this.countryCode,
-    @required this.impressionId,
-    @required this.advertiserDomain,
-    @required this.creativeId,
-    @required this.campaignId,
-    @required this.impressionDepth,
-    @required this.variantId,
+    required this.priceAccuracy,
+    required this.netPayout,
+    required this.currency,
+    required this.demandSource,
+    required this.renderingSdk,
+    required this.renderingSdkVersion,
+    required this.networkInstanceId,
+    required this.placementType,
+    required this.countryCode,
+    required this.impressionId,
+    required this.advertiserDomain,
+    required this.creativeId,
+    required this.campaignId,
+    required this.impressionDepth,
+    required this.variantId,
   });
 
   factory ImpressionData._fromMap(AdType type, Map<String, dynamic> data) {
@@ -255,7 +256,7 @@ class ImpressionData {
     }
     return ImpressionData._(
       priceAccuracy: accuracy,
-      netPayout: data['netPayout'] as double ?? 0.0,
+      netPayout: data['netPayout'] as double? ?? 0.0,
       advertiserDomain: data['advertiserDomain'],
       campaignId: data['campaignId'],
       currency: data['currency'],
@@ -267,8 +268,8 @@ class ImpressionData {
       placementType: type,
       renderingSdk: data['renderingSdk'],
       renderingSdkVersion: data['renderingSdkVersion'],
-      impressionDepth: data['impressionDepth'] as int ?? 0,
-      variantId: data['variantId'] as String,
+      impressionDepth: data['impressionDepth'] as int? ?? 0,
+      variantId: data['variantId'] as String?,
     );
   }
 
