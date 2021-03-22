@@ -2,12 +2,12 @@ PODS:
   - AdColony (4.5.0)
   - AppLovinSDK (6.15.2)
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (~> 3.12.0)
+    - FairBidSDK (~> 3.13.0)
     - Flutter
-  - FairBidSDK (3.12.0)
-  - FBAudienceNetwork (6.2.1):
+  - FairBidSDK (3.13.0)
+  - FBAudienceNetwork (6.3.0):
     - FBSDKCoreKit/Basics (>= 7.0.1)
-  - FBSDKCoreKit/Basics (9.0.1)
+  - FBSDKCoreKit/Basics (9.1.0)
   - Flutter (1.0.0)
   - InMobiSDK (9.1.5):
     - InMobiSDK/InMobiSDK (= 9.1.5)
@@ -17,7 +17,7 @@ PODS:
     - InMobiSDK/Moat
   - InMobiSDK/Moat (9.1.5):
     - InMobiSDK/Core
-  - IronSourceSDK (7.1.0.0)
+  - IronSourceSDK (7.1.1.0)
   - UnityAds (3.6.0)
   - Verizon-Ads-Core (2.4.0)
   - Verizon-Ads-InlinePlacement (1.5.0):
@@ -101,10 +101,10 @@ DEPENDENCIES:
   - AdColony (= 4.5.0)
   - AppLovinSDK (= 6.15.2)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
-  - FBAudienceNetwork (= 6.2.1)
+  - FBAudienceNetwork (= 6.3.0)
   - Flutter (from `Flutter`)
   - InMobiSDK (= 9.1.5)
-  - IronSourceSDK (= 7.1.0.0)
+  - IronSourceSDK (= 7.1.1.0)
   - UnityAds (= 3.6.0)
   - Verizon-Ads-StandardEdition (= 1.9.0)
   - VungleSDK-iOS (= 6.9.1)
@@ -147,13 +147,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AdColony: e54ee1d060491410135a5a1c9b010bcb4a171dab
   AppLovinSDK: fc91aca5b6b529cae7181a43f63633363dddbe3b
-  fairbid_flutter: 14ab13a6c212190b690eeef319aad9170fb1ff17
-  FairBidSDK: ed1b01712b537fb4d4ba6ea10889db6b5cc7e9b3
-  FBAudienceNetwork: 6e85fd17319e49c0234d60026bee154389badf2c
-  FBSDKCoreKit: fada1a6a0076724678993ff05a633848765ff18c
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  fairbid_flutter: 19f9dc4191b56fe4f0b5e8498483855bba6edc8c
+  FairBidSDK: ceaa3338d6824b8bd4c040eceb9109b1499e4670
+  FBAudienceNetwork: 58b4d0f2359783e5bc9ee59f138b4fda43173ac4
+  FBSDKCoreKit: a00fe2efd780c195a5e09201bf51c56106245b40
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   InMobiSDK: 4f30f1c2dc10e15ce897166b063c5f0c85829cff
-  IronSourceSDK: f090f9be30cc8c9d31d4d5b98847f98e80de59a6
+  IronSourceSDK: 6eb315501b51ba7651522c893a1bae260cfef988
   UnityAds: 3f88cf3d3b11991de1025fcf0e3109fd86035fba
   Verizon-Ads-Core: 0f144f45c9b650ab2c21d2862c5259ccc23e8e2c
   Verizon-Ads-InlinePlacement: 953bb9ab27422316c376757a6d4d438ef43124b9
@@ -174,6 +174,6 @@ SPEC CHECKSUMS:
   Verizon-Ads-WebView: 47e475030f232dd5d71bbe8ed4ded1d1d25ae429
   VungleSDK-iOS: 09abfadbcc04e0748ce33c6bd02282e9961125ba
 
-PODFILE CHECKSUM: 62655e796fb04a31a71edd1e598db5543183d941
+PODFILE CHECKSUM: 96730b2e61a9b7746d5b4dc9d75462f23ba0ab2c
 
 COCOAPODS: 1.10.1
