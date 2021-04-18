@@ -202,10 +202,12 @@ BannerDelegateImpl                      *_bannerDelegate;
 
 - (void)updateGDPR:(NSDictionary *)arguments result:(FlutterResult)result {
     NSNumber        *consentGrantedArg = arguments[@"grantConsent"];
-    BOOL            consentGranted = consentGrantedArg != nil && [consentGrantedArg boolValue];
+    if (consentGrantedArg != nil){
+        BOOL        consentGranted = [consentGrantedArg boolValue];
+        [FairBid user].GDPRConsent = consentGranted;
+    }
     NSString        *consentString = arguments[@"consentString"];
 
-    [FairBid user].GDPRConsent = consentGranted;
     [FairBid user].GDPRConsentString = consentString;
     result(nil);
 }
