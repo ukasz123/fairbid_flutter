@@ -308,12 +308,10 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     private void invokeGDPRUpdate(MethodCall call, MethodChannel.Result result) {
         Boolean grantConsent = call.argument("grantConsent");
-        if (grantConsent == null) {
-            grantConsent = false;
+        if (grantConsent != null) {
+            boolean consentGranted = grantConsent;
+            UserInfo.setGdprConsent(consentGranted, this.registrar.activeContext());
         }
-
-        boolean consentGranted = grantConsent;
-        UserInfo.setGdprConsent(consentGranted, this.registrar.activeContext());
 
         String consentString = call.argument("consentString");
         if (consentString != null) {

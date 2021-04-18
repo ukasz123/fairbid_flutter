@@ -2,9 +2,9 @@ PODS:
   - AdColony (4.5.0)
   - AppLovinSDK (6.15.2)
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (~> 3.13.0)
+    - FairBidSDK (~> 3.14.0)
     - Flutter
-  - FairBidSDK (3.13.0)
+  - FairBidSDK (3.14.0)
   - FBAudienceNetwork (6.3.0):
     - FBSDKCoreKit/Basics (>= 7.0.1)
   - FBSDKCoreKit/Basics (9.1.0)
@@ -147,8 +147,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AdColony: e54ee1d060491410135a5a1c9b010bcb4a171dab
   AppLovinSDK: fc91aca5b6b529cae7181a43f63633363dddbe3b
-  fairbid_flutter: 19f9dc4191b56fe4f0b5e8498483855bba6edc8c
-  FairBidSDK: ceaa3338d6824b8bd4c040eceb9109b1499e4670
+  fairbid_flutter: c29016f3a5cb7b8e06297e391d98adb40be388e3
+  FairBidSDK: 5696378c915e7d5679e06478e6d8550d8858ab67
   FBAudienceNetwork: 58b4d0f2359783e5bc9ee59f138b4fda43173ac4
   FBSDKCoreKit: a00fe2efd780c195a5e09201bf51c56106245b40
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
