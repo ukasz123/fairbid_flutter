@@ -21,22 +21,13 @@ class BannerCreationResultListener implements BannerListener {
     private Map<String, MethodChannel.Result> resultCallbacks = new HashMap<>();
     @Override
     public void onError(@NonNull String s, final BannerError bannerError) {
-        Log.d("CreationL", "onError: "+s);
-        final MethodChannel.Result callback = resultCallbacks.remove(s);
-        if (callback != null) {
-            runOnMain(() -> callback.error(
-                    (bannerError.getFailure() != null) ? bannerError.getFailure()
-                                                                    .name() : "unknown",
-                    (bannerError.getErrorMessage() != null) ? bannerError
-                            .getErrorMessage() : "no message",
-                    null
-            ));
-        }
     }
 
     @Override
     public void onLoad(@NonNull String s) {
-        Log.d("CreationL", "onLoad: "+s);
+        if (FairBidFlutterPlugin.debugLogging) {
+            Log.d("BannerCreationL", "onLoad: " + s);
+        }
         final MethodChannel.Result callback = resultCallbacks.remove(s);
         if (callback != null) {
             runOnMain(() -> callback.success(s));
@@ -60,5 +51,9 @@ class BannerCreationResultListener implements BannerListener {
 
     public void registerCallback(String placement, MethodChannel.Result result) {
         resultCallbacks.put(placement, result);
+    }
+
+    public void unregisterCallback(String placement) {
+        resultCallbacks.remove(placement);
     }
 }

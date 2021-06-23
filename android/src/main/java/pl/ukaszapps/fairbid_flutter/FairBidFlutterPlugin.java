@@ -178,6 +178,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             String placement = (String) arguments.get("placement");
             assert placement != null;
             this.getBannerAdFactory().set(placement, null);
+            resultBannerListener.unregisterCallback(placement);
 
             sendEvent(Constants.AdType.BANNER, placement, "hide", null);
         }

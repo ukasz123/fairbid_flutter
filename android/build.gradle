@@ -3,8 +3,8 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     repositories {
+        mavenCentral()
         google()
-        jcenter()
     }
 
     dependencies {
@@ -19,11 +19,8 @@ if (localPropsFile.exists()) {
 }
 rootProject.allprojects {
     repositories {
+        mavenCentral()
         google()
-        jcenter()
-        maven {
-            url "https://fyber.bintray.com/maven"
-        }
     }
 }
 
