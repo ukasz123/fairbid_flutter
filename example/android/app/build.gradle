@@ -68,17 +68,17 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
 
     // ad network sdks
-    implementation 'com.adcolony:sdk:4.4.1'
+    implementation 'com.adcolony:sdk:4.5.0'
 
-    implementation 'com.applovin:applovin-sdk:9.15.3'
+    implementation 'com.applovin:applovin-sdk:10.3.0'
 
-    implementation 'com.facebook.android:audience-network-sdk:6.3.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.5.0'
 
     implementation 'com.ironsource.sdk:mediationsdk:7.1.1'
 
-    implementation 'com.unity3d.ads:unity-ads:3.6.0'
+    implementation 'com.unity3d.ads:unity-ads:3.7.2'
 
-    implementation 'com.vungle:publisher-sdk-android:6.8.1'
+    implementation 'com.vungle:publisher-sdk-android:6.9.1'
 
     implementation 'com.inmobi.monetization:inmobi-ads:9.1.6'
     // InMobi's third-party dependencies
