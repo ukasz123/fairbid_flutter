@@ -1,5 +1,5 @@
 ### 1.1.0
-* Updated dependencies to **FairBid 3.16.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog)).
+* Updated dependencies to **FairBid 3.18.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog)).
 * Fixed issue in `BannerView` - the banner should be rendered in the view instead of popping out at the bottom of the screen.
 
 ### 1.0.1
