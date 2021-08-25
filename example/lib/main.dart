@@ -35,6 +35,8 @@ class _MyAppState extends State<MyApp> {
 
   int _step = 0;
 
+  late StreamSubscription<MediationAdapterStartEvent> _adapterStartedEventsSub;
+
   bool get _sdkAvailable => _sdk != null;
 
   Stream<ImpressionData?>? _impressionStream;
@@ -60,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _sdkIdController.dispose();
+    _adapterStartedEventsSub.cancel();
     super.dispose();
   }
 
@@ -231,6 +234,13 @@ class _MyAppState extends State<MyApp> {
       debugLogging: _enableLogs,
       loggingLevel: _enableLogs ? LoggingLevel.info : LoggingLevel.error,
     ));
+    _adapterStartedEventsSub = sdk.adapterEventsStream.listen((event) {
+      print(
+          'network ${event.networkName}(${event.networkVersion}) has ${event.successful ? '' : 'not '}started');
+      if (event.errorMessage != null) {
+        print('error: ${event.errorMessage}');
+      }
+    });
     await sdk.started;
     setState(() {
       _sdk = sdk;
