@@ -23,7 +23,8 @@ export 'src/internal.dart'
         Location,
         BannerAd,
         BannerAlignment,
-        ImpressionData;
+        ImpressionData,
+        MediationAdapterStartEvent;
 
 /// Starting point for interacting with FairBid native SDK.
 ///
@@ -48,6 +49,10 @@ class FairBid {
 
   /// Stream of [AdEvent]s for all ads combined
   Stream<AdEvent> get events => _delegate.events;
+
+  /// Stream of [MediationAdapterStartEvent]s for all mediated networks.
+  Stream<MediationAdapterStartEvent> get adapterEventsStream =>
+      _delegate.adapterEventsStream;
 
   /// Opens FairBid's Test Suite native view.
   ///

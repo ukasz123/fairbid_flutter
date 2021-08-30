@@ -10,23 +10,31 @@ part 'options.dart';
 part 'ad_wrapper.dart';
 part 'privacy.dart';
 part 'user_data.dart';
+part 'adapter_events.dart';
 
 class FairBidInternal {
-  static const MethodChannel _channel = const MethodChannel('pl.ukaszapps.fairbid_flutter');
+  static const MethodChannel _channel =
+      const MethodChannel('pl.ukaszapps.fairbid_flutter');
 
   static const EventChannel _eventsChannel =
       const EventChannel("pl.ukaszapps.fairbid_flutter:events");
 
+  static const EventChannel _adapterEventsChannel =
+      const EventChannel("pl.ukaszapps.fairbid_flutter:adapterEvents");
+
   static const MethodChannel methodCallChannel = _channel;
 
-  static final Map<String, dynamic> _baseStartArguments = {"pluginVersion": packageVersion};
-
+  static final Map<String, dynamic> _baseStartArguments = {
+    "pluginVersion": packageVersion
+  };
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  factory FairBidInternal.forOptions(Options options) {
+  factory FairBidInternal.forOptions(
+    Options options,
+  ) {
     final sdkHandler = FairBidInternal._();
     sdkHandler._start(options._toMap());
     return sdkHandler;
@@ -36,6 +44,9 @@ class FairBidInternal {
   Stream<AdEvent> get events => Stream.fromFuture(_started.future)
       .asyncExpand((started) => started ? _eventsStream : Stream.empty());
 
+  Stream<MediationAdapterStartEvent> get adapterEventsStream =>
+      _adapterEventsStream;
+
   void showTestSuite() => _channel.invokeMethod("showTestSuite");
 
   // private API
@@ -43,13 +54,18 @@ class FairBidInternal {
   late Completer<bool> _started;
   late Stream _rawEventsStream;
   late Stream<AdEvent> _eventsStream;
+  late Stream<MediationAdapterStartEvent> _adapterEventsStream;
 
   FairBidInternal._() {
+    this._adapterEventsStream = _convertRawAdaterEventsStream(
+            _adapterEventsChannel.receiveBroadcastStream())
+        .asBroadcastStream();
     this._started = Completer<bool>();
     this._started.future.then((started) {
       if (started) {
         this._rawEventsStream = _eventsChannel.receiveBroadcastStream();
-        this._eventsStream = _convertRawEventsStream(_rawEventsStream).asBroadcastStream();
+        this._eventsStream =
+            _convertRawEventsStream(_rawEventsStream).asBroadcastStream();
       }
     });
   }
