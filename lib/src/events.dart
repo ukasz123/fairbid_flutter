@@ -23,7 +23,8 @@ class AdEvent {
   /// See description of [AdEventType]s for extra information.
   final List<dynamic>? payload;
 
-  const AdEvent._(this.adType, this.placementId, this.eventType, this.impressionData,
+  const AdEvent._(
+      this.adType, this.placementId, this.eventType, this.impressionData,
       [this.payload])
       : assert(placementId != '');
 
@@ -43,7 +44,9 @@ class AdEvent {
   }
 
   @override
-  int get hashCode => (((adType.hashCode * 31) + eventType.hashCode) * 31) + placementId.hashCode;
+  int get hashCode =>
+      (((adType.hashCode * 31) + eventType.hashCode) * 31) +
+      placementId.hashCode;
 
   @override
   String toString() {
@@ -109,8 +112,8 @@ enum AdEventType {
 
 AdEventType? _eventTypeFromName(String name) {
   try {
-    return AdEventType.values
-        .firstWhere((event) => event.toString().toLowerCase().contains(name.toLowerCase()));
+    return AdEventType.values.firstWhere(
+        (event) => event.toString().toLowerCase().contains(name.toLowerCase()));
   } on StateError {
     return null;
   }
@@ -125,8 +128,8 @@ String _adTypeToName(AdType type) {
 
 AdType? _adTypeFromName(String name) {
   try {
-    return AdType.values
-        .firstWhere((event) => event.toString().toLowerCase().contains(name.toLowerCase()));
+    return AdType.values.firstWhere(
+        (event) => event.toString().toLowerCase().contains(name.toLowerCase()));
   } on StateError {
     return null;
   }
@@ -135,7 +138,8 @@ AdType? _adTypeFromName(String name) {
 mixin _EventsProvider {
   Stream<AdEvent>? _eventsStream;
 
-  bool _filterEvents(AdEvent event) => event.adType == _type && event.placementId == placementId;
+  bool _filterEvents(AdEvent event) =>
+      event.adType == _type && event.placementId == placementId;
 
   @protected
   FairBidInternal get _sdk;

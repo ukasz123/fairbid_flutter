@@ -11,7 +11,8 @@ import 'package:fairbid_flutter/fairbid_flutter.dart';
 // shared channel
 const MethodChannel _methodChannel = FairBidInternal.methodCallChannel;
 
-const EventChannel _metadataChannel = EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
+const EventChannel _metadataChannel =
+    EventChannel("pl.ukaszapps.fairbid_flutter:bannerMetadata");
 
 enum _BannerType { BANNER, RECTANGLE }
 
@@ -45,7 +46,8 @@ class BannerView extends StatelessWidget {
   /// ⚠️ Rectangle size banners are NOT supported by FairBid SDK yet.
   // ignore: unused_element
   factory BannerView._rectangle(String placement, FairBid sdk,
-          {WidgetBuilder? placeholderBuilder, ErrorWidgetBuilder? errorWidgetBuilder}) =>
+          {WidgetBuilder? placeholderBuilder,
+          ErrorWidgetBuilder? errorWidgetBuilder}) =>
       BannerView._(
         placement: placement,
         sdk: sdk,
@@ -64,7 +66,8 @@ class BannerView extends StatelessWidget {
   /// The expected height of the banner would be one of the following values: 50 for phones, 90 for tablets. Consider this values when using [placeholderBuilder] and [errorWidgetBuilder].
   /// The expected width of the banner is: 320 for phones and 728 for tablets although real values may vary.
   factory BannerView(String placement, FairBid sdk,
-          {WidgetBuilder? placeholderBuilder, ErrorWidgetBuilder? errorWidgetBuilder}) =>
+          {WidgetBuilder? placeholderBuilder,
+          ErrorWidgetBuilder? errorWidgetBuilder}) =>
       BannerView._(
         placement: placement,
         sdk: sdk,
@@ -85,7 +88,8 @@ class BannerView extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final viewConstraints = <String, int>{};
       viewConstraints["height"] =
-          (constraints.hasBoundedHeight ? constraints.maxHeight : height).floor();
+          (constraints.hasBoundedHeight ? constraints.maxHeight : height)
+              .floor();
 
       // we need to tell native code what size of banners it can fit into the view
 
@@ -136,8 +140,9 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
 
   late Stream<List<double>> _sizeStream;
 
-  Map<String, dynamic> get bannerParams => Map<String, dynamic>.from(widget.viewConstraints)
-    ..putIfAbsent("placement", () => widget.placement);
+  Map<String, dynamic> get bannerParams =>
+      Map<String, dynamic>.from(widget.viewConstraints)
+        ..putIfAbsent("placement", () => widget.placement);
 
   @override
   void initState() {
@@ -187,7 +192,8 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
             var data = streamSnapshot.data!;
             var size = Size(data[0], data[1]);
             if (size.isEmpty) {
-              return widget.placeholderBuilder?.call(context) ?? SizedBox.shrink();
+              return widget.placeholderBuilder?.call(context) ??
+                  SizedBox.shrink();
             } else {
               return Container(
                 width: data[0],
@@ -197,11 +203,14 @@ class _FBNativeBannerState extends State<_FBNativeBanner> {
             }
           } else if (streamSnapshot.hasError) {
             if (widget.errorWidgetBuilder != null) {
-              return widget.errorWidgetBuilder?.call(context, streamSnapshot.error!) ?? SizedBox.shrink();
+              return widget.errorWidgetBuilder
+                      ?.call(context, streamSnapshot.error!) ??
+                  SizedBox.shrink();
             }
           } else {
             if (widget.placeholderBuilder != null) {
-              return widget.placeholderBuilder?.call(context) ?? SizedBox.shrink();
+              return widget.placeholderBuilder?.call(context) ??
+                  SizedBox.shrink();
             }
           }
           return SizedBox.shrink();
@@ -215,12 +224,12 @@ class _FBBannerFactory {
   Timer? garbageCollector;
 
   final Map<String, Stream<List<double>>> _streamsCache = {};
-  
+
   _FBBannerFactory._(this.sdk);
 
   factory _FBBannerFactory(FairBid sdk) {
     _singleton ??= _FBBannerFactory._(sdk);
-    
+
     return _singleton!;
   }
   final FairBid sdk;
@@ -275,8 +284,9 @@ class _FBBannerFactory {
       if (garbageCollector == null) {
         garbageCollector = Timer(const Duration(seconds: 8), () {
           garbageCollector = null;
-          var toRemove =
-              loadedBanners.values.where((holder) => holder.refCount <= 0).toList(growable: false);
+          var toRemove = loadedBanners.values
+              .where((holder) => holder.refCount <= 0)
+              .toList(growable: false);
           loadedBanners.removeWhere((key, holder) => holder.refCount <= 0);
           toRemove.forEach((element) {
             _methodChannel.invokeMethod<dynamic>(

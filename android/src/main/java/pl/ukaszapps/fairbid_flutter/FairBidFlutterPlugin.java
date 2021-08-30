@@ -17,11 +17,16 @@ import com.fyber.fairbid.ads.Interstitial;
 import com.fyber.fairbid.ads.Rewarded;
 import com.fyber.fairbid.ads.banner.BannerListener;
 import com.fyber.fairbid.ads.banner.BannerOptions;
+import com.fyber.fairbid.ads.mediation.MediatedNetwork;
+import com.fyber.fairbid.ads.mediation.MediationStartedListener;
 import com.fyber.fairbid.ads.rewarded.RewardedOptions;
 import com.fyber.fairbid.internal.Constants;
 import com.fyber.fairbid.internal.Framework;
 import com.fyber.fairbid.user.Gender;
 import com.fyber.fairbid.user.UserInfo;
+
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,16 +42,38 @@ import io.flutter.plugin.common.PluginRegistry;
 
 
 public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandler {
+    private static final String TAG = "FairBidFlutter";
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    static boolean debugLogging = false;
+    private final PluginRegistry.Registrar registrar;
     private BannerAdsFactory bannerAdFactoryInstance;
     @SuppressWarnings("FieldCanBeLocal")
     private EventChannel eventChannel;
+    private final EventChannel adapterEventChannel;
     private EventChannel.EventSink eventSink;
-    private final PluginRegistry.Registrar registrar;
-    private static final String TAG = "FairBidFlutter";
-    static boolean debugLogging = false;
-
-    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private EventChannel.EventSink adapterEventSink;
     private BannerCreationResultListener resultBannerListener;
+
+    public FairBidFlutterPlugin(@NonNull PluginRegistry.Registrar registrar) {
+        Utils.checkParameterIsNotNull(registrar, "registrar");
+        this.registrar = registrar;
+
+        this.adapterEventChannel = new EventChannel(this.registrar.messenger(), "pl.ukaszapps.fairbid_flutter:adapterEvents");
+        this.adapterEventChannel.setStreamHandler(new EventChannel.StreamHandler() {
+
+
+            @Override
+            public void onListen(Object o, EventChannel.EventSink eventSink) {
+                adapterEventSink = eventSink;
+            }
+
+            @Override
+            public void onCancel(Object o) {
+                adapterEventSink = null;
+            }
+        });
+
+    }
 
     public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
         FairBidFlutterPlugin instance = new FairBidFlutterPlugin(registrar);
@@ -54,6 +81,16 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         MethodChannel channel = new MethodChannel(registrar.messenger(), "pl.ukaszapps.fairbid_flutter");
         channel.setMethodCallHandler(instance);
         registrar.platformViewRegistry().registerViewFactory("bannerView", instance.getBannerAdFactory());
+
+
+    }
+
+    static void runOnMain(Runnable runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            mainThreadHandler.post(runnable);
+        }
     }
 
     private BannerAdsFactory getBannerAdFactory() {
@@ -61,11 +98,6 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             bannerAdFactoryInstance = new BannerAdsFactory(this.registrar.messenger());
         }
         return bannerAdFactoryInstance;
-    }
-
-    public FairBidFlutterPlugin(@NonNull PluginRegistry.Registrar registrar) {
-        Utils.checkParameterIsNotNull(registrar, "registrar");
-        this.registrar = registrar;
     }
 
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
@@ -178,6 +210,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             String placement = (String) arguments.get("placement");
             assert placement != null;
             this.getBannerAdFactory().set(placement, null);
+            resultBannerListener.unregisterCallback(placement);
 
             sendEvent(Constants.AdType.BANNER, placement, "hide", null);
         }
@@ -223,7 +256,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
     @SuppressWarnings("deprecation")
     private void invokeGetUserData(MethodChannel.Result result) {
         Map<String, Object> userData = new HashMap<>();
-        userData.put("gender", UserInfo.getGender().code);
+        userData.put("gender", UserInfo.getGender().getCode());
         userData.put("id", UserInfo.getUserId());
 
         Date birthDate = UserInfo.getBirthDate();
@@ -254,7 +287,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             Gender[] values = Gender.values();
 
             for (Gender value : values) {
-                if (Utils.areEqual(tempArgument, value.code)) {
+                if (Utils.areEqual(tempArgument, value.getCode())) {
                     gender = value;
                     break;
                 }
@@ -423,7 +456,6 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         }
     }
 
-
     private void invokeSetMuted(MethodCall call, MethodChannel.Result result) {
         boolean mute = call.argument("mute");
         FairBid.Settings.setMuted(mute);
@@ -457,7 +489,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
     }
 
     private void startSdkAndInitListeners(MethodCall call, MethodChannel.Result result) {
-        if (FairBid.hasStarted()){
+        if (FairBid.hasStarted()) {
             result.success(true);
             return;
         }
@@ -481,7 +513,39 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         Framework.framework = "flutter";
         Framework.pluginVersion = call.argument("pluginVersion");
 
-        FairBid sdk = FairBid.configureForAppId(publisherId);
+        FairBid sdk = FairBid.configureForAppId(publisherId)
+                .withMediationStartedListener(new MediationStartedListener() {
+                    @Override
+                    public void onNetworkStarted(@NotNull MediatedNetwork mediatedNetwork) {
+                        if (debugLogging){
+                            Log.d(TAG, "network " + mediatedNetwork.getName()+" ("+mediatedNetwork.getVersion()+") started");
+                        }
+                        if (adapterEventSink != null) {
+                            Map<String, String> message = new HashMap<>();
+                            message.put("name", mediatedNetwork.getName());
+                            message.put("version", mediatedNetwork.getVersion());
+                            adapterEventSink.success(
+                                    message
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onNetworkFailedToStart(@NotNull MediatedNetwork mediatedNetwork, @NotNull String errorMessage) {
+                        if (debugLogging){
+                            Log.d(TAG, "network " + mediatedNetwork.getName()+" ("+mediatedNetwork.getVersion()+") not started:\n"+errorMessage);
+                        }
+                        if (adapterEventSink != null) {
+                            Map<String, String> message = new HashMap<>();
+                            message.put("name", mediatedNetwork.getName());
+                            message.put("version", mediatedNetwork.getVersion());
+                            message.put("message", errorMessage);
+                            adapterEventSink.success(
+                                    message
+                            );
+                        }
+                    }
+                });
         if (!autoRequesting) {
             sdk = sdk.disableAutoRequesting();
         }
@@ -545,14 +609,6 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
             });
         }
 
-    }
-
-    static void runOnMain(Runnable runnable) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run();
-        } else {
-            mainThreadHandler.post(runnable);
-        }
     }
 
     private @Nullable

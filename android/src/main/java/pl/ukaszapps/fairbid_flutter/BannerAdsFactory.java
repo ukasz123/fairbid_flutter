@@ -13,9 +13,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.fyber.fairbid.ads.CreativeSize;
+import com.fyber.fairbid.ads.Banner;
 import com.fyber.fairbid.ads.ImpressionData;
-import com.fyber.fairbid.ads.banner.BannerAdView;
 import com.fyber.fairbid.ads.banner.BannerError;
 import com.fyber.fairbid.ads.banner.BannerListener;
 import com.fyber.fairbid.ads.banner.BannerOptions;
@@ -40,7 +39,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
     private static final int BANNER_MIN_WIDTH_TABLET = 728;
     private static final int BANNER_MIN_HEIGHT_PHONE = 50;
     private static final int BANNER_MIN_HEIGHT_TABLET = 90;
-    private final Map<String, BannerAdView> adsCache = new ConcurrentHashMap<>();
+    private final Map<String, ViewGroup> adsCache = new ConcurrentHashMap<>();
     private final Map<String, EventChannel.EventSink> metadataSinks = new ConcurrentHashMap<>();
 
     BannerAdsFactory(BinaryMessenger messenger) {
@@ -57,7 +56,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
                 if (previous != null) {
                     previous.endOfStream();
                 }
-                BannerAdView adView = adsCache.get(placement);
+                ViewGroup adView = adsCache.get(placement);
                 if (adView != null) {
                     eventSink.success(getBannerMeasurements(adView));
                 }
@@ -80,7 +79,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
         }
         String placement = (String) arguments.get("placement");
         if (!TextUtils.isEmpty(placement) && TextUtils.isDigitsOnly(placement)) {
-            final BannerAdView cachedBanner = adsCache.get(placement);
+            final ViewGroup cachedBanner = adsCache.get(placement);
             if (cachedBanner != null) {
                 ViewParent parent = cachedBanner.getParent();
                 if (parent != null) {
@@ -99,30 +98,29 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
         return new DefaultPlatformView(defaultView);
     }
 
-    BannerAdView get(@NonNull final String placement) {
+    ViewGroup get(@NonNull final String placement) {
         Utils.checkParameterIsNotNull(placement, "placementName");
         return adsCache.get(placement);
     }
 
-    void set(@NonNull final String placement, BannerAdView bannerView) {
+    void set(@NonNull final String placement, ViewGroup bannerView) {
         Utils.checkParameterIsNotNull(placement, "placementName");
         if (bannerView == null) {
-            BannerAdView toRemove = adsCache.remove(placement);
+            ViewGroup toRemove = adsCache.remove(placement);
             if (toRemove != null) {
                 if (debugLogging) {
                     Log.d(TAG, "removing banner: " + toRemove);
                 }
-                toRemove.destroy();
+                Banner.destroy(placement);
             }
         } else {
-            BannerAdView toRemove = adsCache.put(placement, bannerView);
-
+            ViewGroup toRemove = adsCache.put(placement, bannerView);
             if (toRemove != null) {
                 if (debugLogging) {
-                    Log.d(TAG, "replacing banner: " + toRemove);
+                    Log.w(TAG, "replacing previous banner: " + toRemove);
                 }
-                toRemove.destroy();
             }
+
             View actualBanner = bannerView.getChildAt(0);
             if (actualBanner != null) {
                 actualBanner.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -153,25 +151,21 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
         int placementId = Integer.parseInt(placement);
         DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
 
-        final BannerAdView bannerView = new BannerAdView(activity, placementId);
-
         final BannerOptions bannerOptions = new BannerOptions();
-        CreativeSize.Builder sizeBuilder = CreativeSize.Builder.newBuilder();
         int tempWidth = BANNER_MIN_WIDTH_PHONE;
         if (Utils.isTablet(activity)) {
             tempWidth = BANNER_MIN_WIDTH_TABLET;
         }
         if (requestedWidth != null) {
             tempWidth = ((Number) (requestedWidth)).intValue();
-            sizeBuilder.withWidth(tempWidth);
         }
+
         int tempHeight = BANNER_MIN_HEIGHT_PHONE;
         if (Utils.isTablet(activity)) {
             tempHeight = BANNER_MIN_HEIGHT_TABLET;
         }
         if (requestedHeight != null) {
             tempHeight = ((Number) (requestedHeight)).intValue();
-            sizeBuilder.withHeight(tempHeight);
         }
 
         FrameLayout bannerFrame = new FrameLayout(activity);
@@ -179,22 +173,22 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
                 (int) (tempWidth * metrics.density),
                 (int) (tempHeight * metrics.density)
         );
-        bannerView.setLayoutParams(bannerFrameLayoutParams);
-
+        bannerFrame.setLayoutParams(bannerFrameLayoutParams);
 
         bannerOptions.placeInContainer(bannerFrame);
+
         if (debugLogging) {
             Log.d(TAG,
                   String.format("placing banner in the frame (%d, %d)", tempWidth, tempHeight)
             );
         }
-        bannerView.load(placementId, true);
-        this.set(placement, bannerView);
+        Banner.show(placement, bannerOptions, activity);
+        this.set(placement, bannerFrame);
     }
 
     @Override
     public void onError(@NonNull String placementId, BannerError bannerError) {
-        set(placementId, null);
+        
     }
 
     @Override
@@ -204,10 +198,11 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
     @Override
     public void onShow(@NonNull String placementId, @NonNull ImpressionData impressionData) {
-        BannerAdView adView = adsCache.get(placementId);
+        ViewGroup adView = adsCache.get(placementId);
         EventChannel.EventSink sizeSink = metadataSinks.get(placementId);
         if (adView != null && sizeSink != null) {
-            sizeSink.success(getBannerMeasurements(adView));
+            ArrayList<Double> size = getBannerMeasurements(adView);
+            sizeSink.success(size);
         }
     }
 
@@ -243,9 +238,9 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
 
     private static class BannerPlatformView implements PlatformView {
 
-        private final BannerAdView bannerView;
+        private final View bannerView;
 
-        private BannerPlatformView(BannerAdView bannerView) {
+        private BannerPlatformView(View bannerView) {
             this.bannerView = bannerView;
         }
 
@@ -263,7 +258,7 @@ final class BannerAdsFactory extends PlatformViewFactory implements BannerListen
         }
     }
 
-    static ArrayList<Double> getBannerMeasurements(BannerAdView bannerAdView) {
+    static ArrayList<Double> getBannerMeasurements(ViewGroup bannerAdView) {
         DisplayMetrics metrics = bannerAdView.getResources().getDisplayMetrics();
         View bannerChild = bannerAdView.getChildAt(0);
 

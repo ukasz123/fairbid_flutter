@@ -35,6 +35,8 @@ class _MyAppState extends State<MyApp> {
 
   int _step = 0;
 
+  late StreamSubscription<MediationAdapterStartEvent> _adapterStartedEventsSub;
+
   bool get _sdkAvailable => _sdk != null;
 
   Stream<ImpressionData?>? _impressionStream;
@@ -60,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _sdkIdController.dispose();
+    _adapterStartedEventsSub.cancel();
     super.dispose();
   }
 
@@ -100,7 +103,8 @@ class _MyAppState extends State<MyApp> {
                   currentStep: _step,
                   onStepTapped: (step) => setState(() => _step = step),
                   controlsBuilder: (context,
-                          {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) =>
+                          {VoidCallback? onStepContinue,
+                          VoidCallback? onStepCancel}) =>
                       Container(),
                   steps: <Step>[
                     Step(
@@ -122,18 +126,24 @@ class _MyAppState extends State<MyApp> {
                           ? ImpressionPresenter(
                               [AdType.interstitial, AdType.rewarded],
                               impressionsStream,
-                              [InterstitialAd.impressionDepth, RewardedAd.impressionDepth])
+                              [
+                                InterstitialAd.impressionDepth,
+                                RewardedAd.impressionDepth
+                              ])
                           : null,
-                      content: _sdkAvailable ? _buildSdkWidgets(context) : Container(),
+                      content: _sdkAvailable
+                          ? _buildSdkWidgets(context)
+                          : Container(),
                     ),
                     Step(
                       isActive: _sdkAvailable,
                       title: Text("Banners control"),
                       subtitle: _sdkAvailable
-                          ? ImpressionPresenter(
-                              [AdType.banner], impressionsStream, [BannerAd.impressionDepth])
+                          ? ImpressionPresenter([AdType.banner],
+                              impressionsStream, [BannerAd.impressionDepth])
                           : null,
-                      content: _sdkAvailable ? BannerAds(sdk: _sdk!) : Container(),
+                      content:
+                          _sdkAvailable ? BannerAds(sdk: _sdk!) : Container(),
                     ),
                     Step(
                       isActive: _sdkAvailable,
@@ -142,7 +152,9 @@ class _MyAppState extends State<MyApp> {
                         "Experimental",
                         style: TextStyle(color: Colors.deepOrangeAccent),
                       ),
-                      content: _sdkAvailable ? BannerViewAds(sdk: _sdk!) : Container(),
+                      content: _sdkAvailable
+                          ? BannerViewAds(sdk: _sdk!)
+                          : Container(),
                     ),
                     Step(
                       isActive: _sdkAvailable,
@@ -231,6 +243,13 @@ class _MyAppState extends State<MyApp> {
       debugLogging: _enableLogs,
       loggingLevel: _enableLogs ? LoggingLevel.info : LoggingLevel.error,
     ));
+    _adapterStartedEventsSub = sdk.adapterEventsStream.listen((event) {
+      print(
+          'network ${event.networkName}(${event.networkVersion}) has ${event.successful ? '' : 'not '}started');
+      if (event.errorMessage != null) {
+        print('error: ${event.errorMessage}');
+      }
+    });
     await sdk.started;
     setState(() {
       _sdk = sdk;
@@ -246,7 +265,9 @@ class ImpressionPresenter extends StatelessWidget {
   final Stream<ImpressionData?>? impressions;
   final List<Future<int?>> initialImpressions;
 
-  const ImpressionPresenter(this.adTypes, this.impressions, this.initialImpressions, {Key? key})
+  const ImpressionPresenter(
+      this.adTypes, this.impressions, this.initialImpressions,
+      {Key? key})
       : super(key: key);
 
   @override

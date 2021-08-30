@@ -10,23 +10,31 @@ part 'options.dart';
 part 'ad_wrapper.dart';
 part 'privacy.dart';
 part 'user_data.dart';
+part 'adapter_events.dart';
 
 class FairBidInternal {
-  static const MethodChannel _channel = const MethodChannel('pl.ukaszapps.fairbid_flutter');
+  static const MethodChannel _channel =
+      const MethodChannel('pl.ukaszapps.fairbid_flutter');
 
   static const EventChannel _eventsChannel =
       const EventChannel("pl.ukaszapps.fairbid_flutter:events");
 
+  static const EventChannel _adapterEventsChannel =
+      const EventChannel("pl.ukaszapps.fairbid_flutter:adapterEvents");
+
   static const MethodChannel methodCallChannel = _channel;
 
-  static final Map<String, dynamic> _baseStartArguments = {"pluginVersion": packageVersion};
-
+  static final Map<String, dynamic> _baseStartArguments = {
+    "pluginVersion": packageVersion
+  };
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  factory FairBidInternal.forOptions(Options options) {
+  factory FairBidInternal.forOptions(
+    Options options,
+  ) {
     final sdkHandler = FairBidInternal._();
     sdkHandler._start(options._toMap());
     return sdkHandler;
@@ -36,6 +44,9 @@ class FairBidInternal {
   Stream<AdEvent> get events => Stream.fromFuture(_started.future)
       .asyncExpand((started) => started ? _eventsStream : Stream.empty());
 
+  Stream<MediationAdapterStartEvent> get adapterEventsStream =>
+      _adapterEventsStream;
+
   void showTestSuite() => _channel.invokeMethod("showTestSuite");
 
   // private API
@@ -43,20 +54,26 @@ class FairBidInternal {
   late Completer<bool> _started;
   late Stream _rawEventsStream;
   late Stream<AdEvent> _eventsStream;
+  late Stream<MediationAdapterStartEvent> _adapterEventsStream;
 
   FairBidInternal._() {
+    this._adapterEventsStream = _convertRawAdaterEventsStream(
+            _adapterEventsChannel.receiveBroadcastStream())
+        .asBroadcastStream();
     this._started = Completer<bool>();
     this._started.future.then((started) {
       if (started) {
         this._rawEventsStream = _eventsChannel.receiveBroadcastStream();
-        this._eventsStream = _convertRawEventsStream(_rawEventsStream).asBroadcastStream();
+        this._eventsStream =
+            _convertRawEventsStream(_rawEventsStream).asBroadcastStream();
       }
     });
   }
 
   Future<bool> _start(Map<String, dynamic> arguments) {
     _channel
-        .invokeMethod("startSdk", Map<String, dynamic>.from(_baseStartArguments)..addAll(arguments))
+        .invokeMethod("startSdk",
+            Map<String, dynamic>.from(_baseStartArguments)..addAll(arguments))
         .then((started) {
       _started.complete(started);
     }, onError: (e) {
@@ -77,12 +94,13 @@ class FairBidInternal {
     return result;
   }
 
-  Stream<AdEvent> _convertRawEventsStream(Stream rawEventsStream) => rawEventsStream
-      .cast<List>()
-      .map(_readEventData)
-      // filter out unsupported events
-      .where((event) => event != null)
-      .cast<AdEvent>();
+  Stream<AdEvent> _convertRawEventsStream(Stream rawEventsStream) =>
+      rawEventsStream
+          .cast<List>()
+          .map(_readEventData)
+          // filter out unsupported events
+          .where((event) => event != null)
+          .cast<AdEvent>();
 
   AdEvent? _readEventData(List eventData) {
     String adTypeName = eventData[0];
@@ -94,8 +112,9 @@ class FairBidInternal {
     if (eventType == null || adType == null) {
       return null;
     }
-    ImpressionData? impressionData =
-        impressionDataRaw != null ? ImpressionData._fromMap(adType, impressionDataRaw) : null;
+    ImpressionData? impressionData = impressionDataRaw != null
+        ? ImpressionData._fromMap(adType, impressionDataRaw)
+        : null;
     List<dynamic>? extras = eventData.length > 4 ? eventData.sublist(4) : null;
     return AdEvent._(adType, placement, eventType, impressionData, extras);
   }
@@ -110,7 +129,8 @@ class FairBidInternal {
     });
   }
 
-  Future<void> _show(AdType type, String placement, {Map<String, String>? extraOptions}) async {
+  Future<void> _show(AdType type, String placement,
+      {Map<String, String>? extraOptions}) async {
     if (!_started.isCompleted) {
       throw FairBidSDKNotStartedException();
     }
@@ -121,12 +141,13 @@ class FairBidInternal {
     });
   }
 
-  Future<ImpressionData?> _getImpressionData(AdType type, String placement) async {
+  Future<ImpressionData?> _getImpressionData(
+      AdType type, String placement) async {
     if (!_started.isCompleted) {
       throw FairBidSDKNotStartedException();
     }
-    var data =
-        await _channel.invokeMapMethod<String, dynamic>("getImpressionData", <String, Object>{
+    var data = await _channel
+        .invokeMapMethod<String, dynamic>("getImpressionData", <String, Object>{
       "adType": _adTypeToName(type),
       "placement": placement,
     });
@@ -141,9 +162,11 @@ class FairBidInternal {
   InterstitialAd prepareInterstitial(String placementId) =>
       InterstitialAd._(sdk: this, placement: placementId);
 
-  RewardedAd prepareRewarded(String placement) => RewardedAd._(sdk: this, placement: placement);
+  RewardedAd prepareRewarded(String placement) =>
+      RewardedAd._(sdk: this, placement: placement);
 
-  BannerAd prepareBanner(String placement) => BannerAd._(this, placementId: placement);
+  BannerAd prepareBanner(String placement) =>
+      BannerAd._(this, placementId: placement);
 
   static Future<void> setMuted(bool muteAds) =>
       _channel.invokeMethod('setMuted', <String, bool>{'mute': muteAds});
@@ -185,7 +208,8 @@ class RewardedAd extends _AdWrapper {
       : super._(sdk, AdType.rewarded, placement);
 
   /// Impression depth represents the amount of impressions of rewarded ads.
-  static Future<int?> get impressionDepth => FairBidInternal._getImpressionDepth(AdType.rewarded);
+  static Future<int?> get impressionDepth =>
+      FairBidInternal._getImpressionDepth(AdType.rewarded);
 
   /// Impression data for the current fill.
   /// Returns `null` when there is no fill for the placement.
@@ -205,8 +229,10 @@ class BannerAd with _EventsProvider {
 
   /// Loads and shows banner ad
   ///
-  Future<void> show({BannerAlignment alignment = BannerAlignment.bottom}) async {
-    await FairBidInternal._channel.invokeMethod('showAlignedBanner', <String, String>{
+  Future<void> show(
+      {BannerAlignment alignment = BannerAlignment.bottom}) async {
+    await FairBidInternal._channel
+        .invokeMethod('showAlignedBanner', <String, String>{
       'placement': this.placementId,
       'alignment': alignment == BannerAlignment.top ? 'top' : 'bottom',
     });
@@ -214,13 +240,15 @@ class BannerAd with _EventsProvider {
 
   /// Destroy banner instance
   Future<void> destroy() async {
-    await FairBidInternal._channel.invokeMethod('destroyAlignedBanner', <String, String>{
+    await FairBidInternal._channel
+        .invokeMethod('destroyAlignedBanner', <String, String>{
       'placement': this.placementId,
     });
   }
 
   /// Impression depth represents the amount of impressions of banner ads.
-  static Future<int?> get impressionDepth => FairBidInternal._getImpressionDepth(AdType.banner);
+  static Future<int?> get impressionDepth =>
+      FairBidInternal._getImpressionDepth(AdType.banner);
 
   @override
   AdType get _type => AdType.banner;
