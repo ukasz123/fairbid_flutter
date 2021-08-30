@@ -1,5 +1,6 @@
 ### 1.1.0
 * Updated dependencies to **FairBid 3.18.0** (Official changelog: [Android](https://developer.fyber.com/hc/en-us/articles/360010205178-FairBid-Android-SDK-Changelog), [iOS](https://developer.fyber.com/hc/en-us/articles/360010021878-FairBid-iOS-SDK-Changelog)).
+* **New API:** [FairBid.adapterEventsStream] - stream of [MediationAdapterStartEvent]s to track which adapters has been started. (Official documentation: [Android](https://developer.fyber.com/hc/en-us/articles/4405766010641-Adapter-Started-Callback), [iOS](https://developer.fyber.com/hc/en-us/articles/4405738348305-Adapter-Started-Callback)).
 * Fixed issue in `BannerView` - the banner should be rendered in the view instead of popping out at the bottom of the screen.
 
 ### 1.0.1
