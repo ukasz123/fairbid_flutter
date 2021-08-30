@@ -1,7 +1,13 @@
 #import <Flutter/Flutter.h>
 #import <FairBidSDK/FairBidSDK.h>
 
-@interface FairbidFlutterPlugin : NSObject<FlutterPlugin, FlutterStreamHandler>
+@interface AdapterStartedStreamHandler :NSObject<FlutterStreamHandler>
+
+- (void)sendAdapterStartEvent:(NSString *_Nonnull)name version:(NSString *_Nonnull)version message: ( NSString* _Nullable) message;
+
+@end
+
+@interface FairbidFlutterPlugin : NSObject<FlutterPlugin, FlutterStreamHandler, FairBidDelegate>
 
 @end
 
