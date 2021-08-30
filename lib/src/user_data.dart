@@ -10,7 +10,8 @@ class UserData {
       return _instance!;
     } else {
       Map<String, dynamic> currentData =
-          (await FairBidInternal._channel.invokeMapMethod("getUserData"))!.cast();
+          (await FairBidInternal._channel.invokeMapMethod("getUserData"))!
+              .cast();
       _instance = UserData._fromMap(currentData);
       return _instance!;
     }
@@ -116,7 +117,8 @@ class UserData {
   static void _updateInstance(Map<String, dynamic> userData) async {
     await FairBidInternal._channel.invokeMethod("updateUserData", userData);
     Map<String, dynamic> currentData =
-        (await (FairBidInternal._channel.invokeMapMethod("getUserData")))!.cast();
+        (await (FairBidInternal._channel.invokeMapMethod("getUserData")))!
+            .cast();
     _instance = UserData._fromMap(currentData);
   }
 }

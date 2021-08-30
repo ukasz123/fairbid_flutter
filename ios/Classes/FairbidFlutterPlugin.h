@@ -29,11 +29,11 @@ typedef void (^ EventSender)(NSString *type, NSString *placementId, NSString *ev
 
 @interface BannerDelegateImpl: NSObject<FYBBannerDelegate, EventProducer, FlutterPlatformViewFactory, FlutterStreamHandler>
 
-- (void)registerResultCallback:(FlutterResult)result forPlacement:(NSString *) placementId;
+- (void)registerResultCallback:(FlutterResult _Nonnull )result forPlacement:(NSString *_Nonnull) placementId;
 
 - (void)loadBanner:(NSString *)placement width:(NSNumber *)width height:(NSNumber *)height andResult:(FlutterResult)result;
 
 - (void)destroyBanner:(NSString *)placementId;
 
-- (id)initWith:(NSObject<FlutterBinaryMessenger> *)messenger;
+- (id)initWith:(NSObject<FlutterBinaryMessenger> *_Nonnull)messenger;
 @end

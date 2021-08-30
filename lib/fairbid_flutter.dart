@@ -38,8 +38,7 @@ class FairBid {
     return instance;
   }
 
-  FairBid._(Options options)
-      : _delegate = FairBidInternal.forOptions(options);
+  FairBid._(Options options) : _delegate = FairBidInternal.forOptions(options);
 
   /// Returns a [Future] that completes to the version of integrated FairBid SDK.
   static Future<String> get version => FairBidInternal.platformVersion;
