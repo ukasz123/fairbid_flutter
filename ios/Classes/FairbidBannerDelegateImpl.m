@@ -64,13 +64,6 @@ static NSString *const _AD_TYPE = @"banner";
 }
 
 - (void)bannerDidFailToLoad:(NSString *)placementId withError:(NSError *)error {
-    FlutterResult result = [callbacks valueForKey:placementId];
-    if (result){
-        result([FlutterError errorWithCode:(error) ? [[NSNumber numberWithLong: error.code] stringValue] : @"unknown"
-                                   message: (error && error.domain) ? error.domain : @"no message"
-                                   details:nil]);
-        [callbacks setValue:nil forKey:placementId];
-    }
     [self sendEvent:@"error" forPlacement:placementId];
 }
 

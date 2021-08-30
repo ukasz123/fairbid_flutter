@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 showEventsStream(
-        {BuildContext context, Stream<AdEventType> events, String placement}) =>
+        {required BuildContext context,
+        required Stream<AdEventType> events,
+        required String placement}) =>
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -21,9 +23,8 @@ showEventsStream(
             Divider(),
             StreamBuilder<List<MapEntry<AdEventType, DateTime>>>(
               initialData: [],
-              stream: events
-                  .map((event) => MapEntry(event, DateTime.now()))
-                  .scan((list, event, _) {
+              stream: events.map((event) => MapEntry(event, DateTime.now())).scan((l, event, _) {
+                final list = l ?? [];
                 if (list.length == 5) {
                   list.removeLast();
                 }
@@ -33,12 +34,11 @@ showEventsStream(
               builder: (c, snapshot) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: snapshot.data
+                children: snapshot.data!
                     .map((eventType) => Padding(
                           child: Text(
                               "${eventType.value}: ${eventType.key.toString().split('.').last}"),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                         ))
                     .toList(),
               ),

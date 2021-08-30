@@ -1,6 +1,35 @@
 #import "FairbidFlutterPlugin.h"
 #import <FairBidSDK/FYBPluginOptions.h>
 
+
+@implementation AdapterStartedStreamHandler
+
+ FlutterEventSink sink;
+    
+- (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments {
+    sink = nil;
+    return nil;
+}
+
+- (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments eventSink:(nonnull FlutterEventSink)events {
+    sink = events;
+    return nil;
+}
+
+- (void)sendAdapterStartEvent:(NSString *)name version:(NSString *)version message: ( NSString* _Nullable) message {
+    if (sink != nil) {
+        NSMutableDictionary *dataCollector = [@{@"name": name, @"version": version} mutableCopy];
+        if (message != nil){
+            [dataCollector setValue:message forKey:@"message"];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            sink(dataCollector);
+        });
+    }
+}
+
+@end
+
 @implementation FairbidFlutterPlugin
 
 static NSString *const  PLACEMENT_KEY = @"placement";
@@ -20,12 +49,17 @@ static NSString *const  BANNER_KEY = @"banner";
 }
 
 NSObject<FlutterPluginRegistrar>        *_registrar;
+AdapterStartedStreamHandler             *_adapterStartStreamHandler;
 EventProducingRewardedDelegateImpl      *_rewardedDelegate;
 EventProducingInterstitialDelegateImpl  *_interstitialDelegate;
 BannerDelegateImpl                      *_bannerDelegate;
 
 - (id)initWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     _registrar = registrar;
+    
+    FlutterEventChannel *adapterEventChannel = [FlutterEventChannel eventChannelWithName:@"pl.ukaszapps.fairbid_flutter:adapterEvents" binaryMessenger:[_registrar messenger]];
+    _adapterStartStreamHandler = [[AdapterStartedStreamHandler alloc] init];
+    [adapterEventChannel setStreamHandler:_adapterStartStreamHandler];
     return self;
 }
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
@@ -82,7 +116,7 @@ BannerDelegateImpl                      *_bannerDelegate;
     NSString *publisherId = arguments[@"publisherId"];
     
     if ([FairBid isStarted]) {
-        result([NSNumber numberWithBool:NO]);
+        result([NSNumber numberWithBool:YES]);
         return;
     }
 
@@ -119,7 +153,9 @@ BannerDelegateImpl                      *_bannerDelegate;
     options.autoRequestingEnabled = autoRequesting;
     
     options.pluginOptions = pluginOptions;
-
+    
+    FairBid.delegate = self;
+    
     [FairBid startWithAppId:publisherId options:options];
 
     // registering listeners
@@ -202,10 +238,12 @@ BannerDelegateImpl                      *_bannerDelegate;
 
 - (void)updateGDPR:(NSDictionary *)arguments result:(FlutterResult)result {
     NSNumber        *consentGrantedArg = arguments[@"grantConsent"];
-    BOOL            consentGranted = consentGrantedArg != nil && [consentGrantedArg boolValue];
+    if (consentGrantedArg != nil){
+        BOOL        consentGranted = [consentGrantedArg boolValue];
+        [FairBid user].GDPRConsent = consentGranted;
+    }
     NSString        *consentString = arguments[@"consentString"];
 
-    [FairBid user].GDPRConsent = consentGranted;
     [FairBid user].GDPRConsentString = consentString;
     result(nil);
 }
@@ -518,5 +556,56 @@ static NSDictionary *impressionDataAsDictionary(FYBImpressionData *impressionDat
 }
 
 // end of protocol FlutterStreamHandler
+
+// protocol FairBidDelegate
+- (void)networkStarted:(FYBMediatedNetwork)network {
+    [_adapterStartStreamHandler sendAdapterStartEvent: [self mediatedNetworkToString: network] version: @"unknown" message: nil];
+}
+- (void)network:(FYBMediatedNetwork)network failedToStartWithError:(NSError *)error{
+    [_adapterStartStreamHandler sendAdapterStartEvent: [self mediatedNetworkToString: network] version: @"unknown" message: [error localizedDescription]];
+}
+
+- (NSString*) mediatedNetworkToString: (FYBMediatedNetwork) network{
+    switch (network) {
+        case FYBMediatedNetworkSnap:
+            return @"Snap";
+        case FYBMediatedNetworkOgury:
+            return @"Ogury";
+        case FYBMediatedNetworkPangle:
+            return @"Pangle";
+        case FYBMediatedNetworkTapjoy:
+            return @"Tapjoy";
+        case FYBMediatedNetworkVungle:
+            return @"Vungle";
+        case FYBMediatedNetworkVerizon:
+            return @"Verizon";
+        case FYBMediatedNetworkFacebook:
+            return @"Facebook";
+        case FYBMediatedNetworkMintegral:
+            return @"Mintegral";
+        case FYBMediatedNetworkChartboost:
+            return @"Chartboost";
+        case FYBMediatedNetworkAdMob:
+            return @"AdMob";
+        case FYBMediatedNetworkHyprMX:
+            return @"HyprMX";
+        case FYBMediatedNetworkInMobi:
+            return @"InMobi";
+        case FYBMediatedNetworkAdColony:
+            return @"AdColony";
+        case FYBMediatedNetworkAppLovin:
+            return @"AppLovin";
+        case FYBMediatedNetworkUnityAds:
+            return @"UnityAds";
+        case FYBMediatedNetworkIronSource:
+            return @"IronSource";
+        case FYBMediatedNetworkMyTarget:
+            return @"MyTarget";
+            
+        default:
+            return @"unknown";
+    }
+}
+// end of protocol FairBidDelegate
 @end
 

@@ -7,7 +7,7 @@ class UserDataForm extends StatelessWidget {
     return FutureBuilder<UserData>(
       builder: (BuildContext context, AsyncSnapshot<UserData> snapshot) {
         if (snapshot.hasData) {
-          var data = snapshot.data;
+          var data = snapshot.data!;
           return new _UserDataFormFields(data: data);
         } else {
           return Container();
@@ -20,8 +20,8 @@ class UserDataForm extends StatelessWidget {
 
 class _UserDataFormFields extends StatefulWidget {
   const _UserDataFormFields({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
   }) : super(key: key);
 
   final UserData data;
@@ -46,12 +46,26 @@ class __UserDataFormFieldsState extends State<_UserDataFormFields> {
                   ))
               .toList(),
           onChanged: (gender) => setState(() {
-            widget.data.gender = gender;
+            widget.data.gender = gender!;
           }),
         ),
-        TextFormField(
-          initialValue: "${widget.data.location}",
-          decoration: InputDecoration(labelText: "Location"),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: TextFormField(
+                initialValue: "${widget.data.location?.latitude}",
+                decoration: InputDecoration(labelText: "Location", hintText: 'Latitude'),
+              ),
+            ),
+            SizedBox(width: 8.0),
+            Expanded(
+              child: TextFormField(
+                initialValue: "${widget.data.location?.longitude}",
+                decoration: InputDecoration(labelText: "", hintText: 'Longitude'),
+              ),
+            ),
+          ],
         ),
       ],
     );

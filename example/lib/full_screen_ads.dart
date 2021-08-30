@@ -7,16 +7,16 @@ import 'package:rxdart/rxdart.dart';
 class FullScreenAds extends StatefulWidget {
   final FairBid sdk;
 
-  const FullScreenAds({Key key, this.sdk}) : super(key: key);
+  const FullScreenAds({Key? key, required this.sdk}) : super(key: key);
 
   @override
   _FullScreenAdsState createState() => _FullScreenAdsState();
 }
 
 class _FullScreenAdsState extends State<FullScreenAds> {
-  TextEditingController _placementController;
+  late TextEditingController _placementController;
 
-  List<_AdWrapper> _placements;
+  late List<_AdWrapper> _placements;
 
   @override
   void initState() {
@@ -71,8 +71,7 @@ class _FullScreenAdsState extends State<FullScreenAds> {
           ListView.builder(
             shrinkWrap: true,
             primary: false,
-            itemBuilder: (context, index) =>
-                _buildListItem(context, _placements[index]),
+            itemBuilder: (context, index) => _buildListItem(context, _placements[index]),
             itemCount: _placements.length,
           ),
         ],
@@ -81,7 +80,7 @@ class _FullScreenAdsState extends State<FullScreenAds> {
   }
 
   void _addInterstitial() {
-    if (_placementController.text?.trim()?.isNotEmpty ?? false) {
+    if (_placementController.text.trim().isNotEmpty) {
       var placement = _placementController.text.trim();
       InterstitialAd interstitialAd = widget.sdk.prepareInterstitial(placement);
       setState(() {
@@ -92,7 +91,7 @@ class _FullScreenAdsState extends State<FullScreenAds> {
   }
 
   void _addRewarded() {
-    if (_placementController.text?.trim()?.isNotEmpty ?? false) {
+    if (_placementController.text.trim().isNotEmpty) {
       var placement = _placementController.text.trim();
       RewardedAd rewardedAd = widget.sdk.prepareRewarded(placement);
       setState(() {
@@ -109,26 +108,21 @@ class _FullScreenAdsState extends State<FullScreenAds> {
 
     Stream<bool> available;
     Stream<AdEventType> events;
-    AsyncValueGetter<ImpressionData> impressionDataGetter;
+    AsyncValueGetter<ImpressionData?> impressionDataGetter;
     if (isRewarded) {
       RewardedAd rewardedAd = (wrapper as RewardedWrapper).ad;
       request = () => rewardedAd.request();
-      show = () => rewardedAd
-          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
-      available = rewardedAd.isAvailable
-          .asStream()
-          .concatWith([rewardedAd.availabilityStream]);
+      show = () => rewardedAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
+      available = rewardedAd.isAvailable.asStream().concatWith([rewardedAd.availabilityStream]);
       events = rewardedAd.simpleEvents;
       autoRequestingChange = rewardedAd.changeAutoRequesting;
       impressionDataGetter = () => rewardedAd.impressionData;
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
-      show = () => interstitialAd
-          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
-      available = interstitialAd.isAvailable
-          .asStream()
-          .concatWith([interstitialAd.availabilityStream]);
+      show = () => interstitialAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
+      available =
+          interstitialAd.isAvailable.asStream().concatWith([interstitialAd.availabilityStream]);
       events = interstitialAd.simpleEvents;
       autoRequestingChange = interstitialAd.changeAutoRequesting;
       impressionDataGetter = () => interstitialAd.impressionData;
@@ -143,8 +137,7 @@ class _FullScreenAdsState extends State<FullScreenAds> {
           var d = await impressionDataGetter.call();
           print('Current impression data for ${wrapper.name} = $d');
         },
-        onTap: () => showEventsStream(
-            context: context, events: events, placement: wrapper.name),
+        onTap: () => showEventsStream(context: context, events: events, placement: wrapper.name),
         title: Row(
           children: <Widget>[
             Icon(
@@ -173,18 +166,16 @@ typedef Future<T> ValueUpdateMaybe<T>(T value);
 class AdActions extends StatefulWidget {
   final AsyncCallback requestAction;
   final AsyncCallback showAction;
-  final Stream<bool> showAvailable;
-  final ValueUpdateMaybe<bool> toggleAutoRequesting;
+  final Stream<bool>? showAvailable;
+  final ValueUpdateMaybe<bool>? toggleAutoRequesting;
 
   const AdActions(
-      {Key key,
-      @required this.requestAction,
-      @required this.showAction,
+      {Key? key,
+      required this.requestAction,
+      required this.showAction,
       this.showAvailable,
       this.toggleAutoRequesting})
-      : assert(requestAction != null),
-        assert(showAction != null),
-        super(key: key);
+      : super(key: key);
 
   @override
   _AdActionsState createState() => _AdActionsState();
@@ -207,18 +198,17 @@ class _AdActionsState extends State<AdActions> {
         StreamBuilder<bool>(
             stream: widget.showAvailable,
             builder: (context, snapshot) {
-              var available = snapshot.hasData && snapshot.data;
+              var available = snapshot.hasData && snapshot.data!;
               return IconButton(
                 tooltip: 'Show ad',
-                disabledColor:
-                    Theme.of(context).iconTheme.color.withOpacity(0.1),
+                disabledColor: Theme.of(context).iconTheme.color!.withOpacity(0.1),
                 onPressed: available ? widget.showAction : null,
                 icon: Icon(Icons.slideshow),
               );
             }),
         Switch.adaptive(
           onChanged: (value) async {
-            var result = await widget.toggleAutoRequesting(value);
+            var result = await widget.toggleAutoRequesting!(value);
             setState(() {
               autoRequestEnabled = result;
             });
