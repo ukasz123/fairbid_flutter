@@ -35,7 +35,9 @@ class _MyAppState extends State<MyApp> {
 
   int _step = 0;
 
-  late StreamSubscription<MediationAdapterStartEvent> _adapterStartedEventsSub;
+  late StreamSubscription<MediationAdapterStartEvent>? _adapterStartedEventsSub;
+
+  late StreamSubscription<AdEvent>? _allEventsSub;
 
   bool get _sdkAvailable => _sdk != null;
 
@@ -62,7 +64,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _sdkIdController.dispose();
-    _adapterStartedEventsSub.cancel();
+    _adapterStartedEventsSub?.cancel();
+    _allEventsSub?.cancel();
     super.dispose();
   }
 
@@ -256,6 +259,10 @@ class _MyAppState extends State<MyApp> {
       _appId = _sdkIdController.text;
       // go to full screen ads
       _step = 2;
+    });
+    _allEventsSub = sdk.events.listen((event) {
+      print(
+          'event (${event.eventType}) for ${event.placementId}: ${event.payload}');
     });
   }
 }
