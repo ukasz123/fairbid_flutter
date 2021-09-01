@@ -68,9 +68,9 @@ static NSString *const _AD_TYPE = @"rewarded";
 - (void)rewardedDidComplete:(NSString *)placementId userRewarded:(BOOL)userRewarded {
     //    Called when a rewarded ad finishes playing
     
-    NSString *eventName = @"completion:noReward";
+    NSString *eventName = @"notCompletion";
     if (userRewarded) {
-        eventName = @"completion:rewarded";
+        eventName = @"completion";
     }
     [self sendEvent: eventName forPlacement: placementId];
 }
