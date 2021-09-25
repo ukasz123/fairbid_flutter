@@ -97,6 +97,15 @@ enum AdEventType {
   ///
   /// Triggered for [AdType.rewarded] placements only.
   /// The [AdEvent.payload] list contains a [bool] value at index 0 that reflects whether user should be rewarded for watching the ad.
+  ///
+  /// ```dart
+  /// bool? isUserRewarded(AdEvent event) {
+  ///   if (event.eventType == AdEventType.completion) {
+  ///     return event.payload![0] as bool;
+  ///   }
+  ///   return null;
+  /// }
+  /// ```
   completion,
 
   /// An error occurred while loading a banner ad.

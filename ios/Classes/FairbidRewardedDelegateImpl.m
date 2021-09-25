@@ -67,12 +67,11 @@ static NSString *const _AD_TYPE = @"rewarded";
 
 - (void)rewardedDidComplete:(NSString *)placementId userRewarded:(BOOL)userRewarded {
     //    Called when a rewarded ad finishes playing
-    
-    NSString *eventName = @"completion:noReward";
-    if (userRewarded) {
-        eventName = @"completion:rewarded";
+    if (self.sender) {
+        self.sender(_AD_TYPE, placementId, @"completion", nil, @[[NSNumber numberWithBool:userRewarded]]);
+    } else {
+        NSLog(@"no sender set!!");
     }
-    [self sendEvent: eventName forPlacement: placementId];
 }
 
 - (void)rewardedWillStartAudio {
