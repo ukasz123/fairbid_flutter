@@ -1,6 +1,7 @@
 package pl.ukaszapps.fairbid_flutter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -35,33 +36,77 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugin.platform.PlatformViewRegistry;
 
+interface ValueGetter<T> {
+    T get();
+}
 
-public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandler {
+public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandler, FlutterPlugin, ActivityAware {
     private static final String TAG = "FairBidFlutter";
     private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
     static boolean debugLogging = false;
-    private final PluginRegistry.Registrar registrar;
     private BannerAdsFactory bannerAdFactoryInstance;
     @SuppressWarnings("FieldCanBeLocal")
     private EventChannel eventChannel;
-    private final EventChannel adapterEventChannel;
+    private EventChannel adapterEventChannel;
     private EventChannel.EventSink eventSink;
     private EventChannel.EventSink adapterEventSink;
     private BannerCreationResultListener resultBannerListener;
+    private PlatformViewRegistry platformRegistry;
+    private BinaryMessenger messenger;
+    private Activity activityRef;
+    private Context applicationContext;
+    private ValueGetter<Activity> activityGetter;
 
-    public FairBidFlutterPlugin(@NonNull PluginRegistry.Registrar registrar) {
-        Utils.checkParameterIsNotNull(registrar, "registrar");
-        this.registrar = registrar;
+    @Override
+    public void onAttachedToActivity(@NonNull @NotNull ActivityPluginBinding activityPluginBinding) {
+        this.activityRef = activityPluginBinding.getActivity();
+    }
 
-        this.adapterEventChannel = new EventChannel(this.registrar.messenger(), "pl.ukaszapps.fairbid_flutter:adapterEvents");
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        this.activityRef = null;
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull @NotNull ActivityPluginBinding activityPluginBinding) {
+        this.activityRef = activityPluginBinding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        this.activityRef = null;
+    }
+
+    @Override
+    public void onAttachedToEngine(@NonNull @NotNull FlutterPluginBinding flutterPluginBinding) {
+        Utils.checkParameterIsNotNull(flutterPluginBinding, "flutterPluginBinding");
+
+        this.onInit(flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getPlatformViewRegistry(), flutterPluginBinding.getApplicationContext());
+        this.activityGetter = () -> activityRef;
+    }
+
+    private void onInit(@NonNull BinaryMessenger messenger, @NonNull PlatformViewRegistry registry, @NonNull Context applicationContext) {
+        this.platformRegistry = registry;
+        this.messenger = messenger;
+        this.applicationContext = applicationContext;
+
+        MethodChannel channel = new MethodChannel(messenger, "pl.ukaszapps.fairbid_flutter");
+        channel.setMethodCallHandler(this);
+        this.platformRegistry.registerViewFactory("bannerView", this.getBannerAdFactory());
+
+
+        this.adapterEventChannel = new EventChannel(messenger, "pl.ukaszapps.fairbid_flutter:adapterEvents");
         this.adapterEventChannel.setStreamHandler(new EventChannel.StreamHandler() {
-
-
             @Override
             public void onListen(Object o, EventChannel.EventSink eventSink) {
                 adapterEventSink = eventSink;
@@ -72,16 +117,17 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
                 adapterEventSink = null;
             }
         });
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull @NotNull FlutterPluginBinding flutterPluginBinding) {
 
     }
 
     public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
-        FairBidFlutterPlugin instance = new FairBidFlutterPlugin(registrar);
-
-        MethodChannel channel = new MethodChannel(registrar.messenger(), "pl.ukaszapps.fairbid_flutter");
-        channel.setMethodCallHandler(instance);
-        registrar.platformViewRegistry().registerViewFactory("bannerView", instance.getBannerAdFactory());
-
+        FairBidFlutterPlugin instance = new FairBidFlutterPlugin();
+        instance.onInit(registrar.messenger(), registrar.platformViewRegistry(), registrar.context());
+        instance.activityGetter = () -> registrar.activity();
 
     }
 
@@ -95,7 +141,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     private BannerAdsFactory getBannerAdFactory() {
         if (bannerAdFactoryInstance == null) {
-            bannerAdFactoryInstance = new BannerAdsFactory(this.registrar.messenger());
+            bannerAdFactoryInstance = new BannerAdsFactory(messenger);
         }
         return bannerAdFactoryInstance;
     }
@@ -117,7 +163,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         } else if (Utils.areEqual(call.method, "show")) {
             this.invokeShow(call, result);
         } else if (Utils.areEqual(call.method, "showTestSuite")) {
-            FairBid.showTestSuite(this.registrar.activity());
+            FairBid.showTestSuite(activityGetter.get());
         } else if (Utils.areEqual(call.method, "updateGDPR")) {
             this.invokeGDPRUpdate(call, result);
         } else if (Utils.areEqual(call.method, "clearGDPR")) {
@@ -195,7 +241,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
                 options = options.placeAtTheBottom();
             }
 
-            Banner.show(placement, options, registrar.activity());
+            Banner.show(placement, options, activityGetter.get());
 
         }
         result.success(null);
@@ -219,7 +265,6 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
     private void invokeLoadBanner(MethodCall call, final MethodChannel.Result result) {
         Object args = call.arguments;
-        Activity activity = this.registrar.activity();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH) {
             result.error("Unsupported operation", "Native views are not supported on that API level", "In-view banners require at least Android API 20 (Kitkat Watch)");
         }
@@ -238,7 +283,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
                     );
                 }
                 resultBannerListener.registerCallback(placement, result);
-                this.getBannerAdFactory().createBannerView(activity, placement, requestedWidth, requestedHeight);
+                this.getBannerAdFactory().createBannerView(activityGetter.get(), placement, requestedWidth, requestedHeight);
 
             } else {
                 runOnMain(() -> {
@@ -324,18 +369,18 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
     }
 
     private void invokeClearCCPAString(MethodChannel.Result result) {
-        UserInfo.clearIabUsPrivacyString(this.registrar.activeContext());
+        UserInfo.clearIabUsPrivacyString(applicationContext);
         result.success(null);
     }
 
     private void invokeCCPAStringUpdate(MethodCall call, MethodChannel.Result result) {
         String ccpaString = call.argument("ccpaString");
-        UserInfo.setIabUsPrivacyString(ccpaString, this.registrar.activeContext());
+        UserInfo.setIabUsPrivacyString(ccpaString, applicationContext);
         result.success(null);
     }
 
     private void invokeClearGDPRString(MethodChannel.Result result) {
-        UserInfo.clearGdprConsent(this.registrar.activeContext());
+        UserInfo.clearGdprConsent(applicationContext);
         result.success(null);
     }
 
@@ -343,18 +388,23 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         Boolean grantConsent = call.argument("grantConsent");
         if (grantConsent != null) {
             boolean consentGranted = grantConsent;
-            UserInfo.setGdprConsent(consentGranted, this.registrar.activeContext());
+            UserInfo.setGdprConsent(consentGranted, applicationContext);
         }
 
         String consentString = call.argument("consentString");
         if (consentString != null) {
-            UserInfo.setGdprConsentString(consentString, this.registrar.activeContext());
+            UserInfo.setGdprConsentString(consentString, applicationContext);
         }
 
         result.success(null);
     }
 
     private void invokeShow(MethodCall call, MethodChannel.Result result) {
+        Activity activity = activityGetter.get();
+        if (activity == null){
+            result.error("Unable show add - activity not available", null, null);
+            return;
+        }
 
         String type = call.argument("adType");
 
@@ -367,22 +417,22 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
 
         if ("rewarded".equals(type)) {
             if (extraOptions == null) {
-                Rewarded.show(placement, this.registrar.activity());
+                Rewarded.show(placement, activity);
             } else {
                 RewardedOptions options = new RewardedOptions();
                 options.setCustomParameters(extraOptions);
-                Rewarded.show(placement, options, this.registrar.activity());
+                Rewarded.show(placement, options, activity);
             }
         }
 
         if ("interstitial".equals(type)) {
             if (extraOptions == null) {
-                Interstitial.show(placement, this.registrar.activity());
+                Interstitial.show(placement, activity);
             } else {
 
                 RewardedOptions options = new RewardedOptions();
                 options.setCustomParameters(extraOptions);
-                Interstitial.show(placement, options, this.registrar.activity());
+                Interstitial.show(placement, options, activity);
             }
         }
 
@@ -553,9 +603,8 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         if (debugLogging) {
             sdk = sdk.enableLogs();
         }
-
+        Activity activity = activityGetter.get();
         // starting SDK
-        Activity activity = this.registrar.activity();
         if (activity == null) {
             throw new NullPointerException("Plugin registered outside Activity context");
         }
@@ -563,7 +612,7 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         sdk.start(activity);
 
         // setting up the events channel
-        this.eventChannel = new EventChannel(this.registrar.messenger(), "pl.ukaszapps.fairbid_flutter:events");
+        this.eventChannel = new EventChannel(messenger, "pl.ukaszapps.fairbid_flutter:events");
 
         eventChannel.setStreamHandler((new EventChannel.StreamHandler() {
             public void onListen(@Nullable Object arguments, @NonNull EventChannel.EventSink sink) {
@@ -633,5 +682,4 @@ public final class FairBidFlutterPlugin implements MethodChannel.MethodCallHandl
         output.put("variantId", impressionData.getVariantId());
         return output;
     }
-
 }
