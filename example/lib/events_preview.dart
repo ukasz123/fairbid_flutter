@@ -23,7 +23,9 @@ showEventsStream(
             Divider(),
             StreamBuilder<List<MapEntry<AdEventType, DateTime>>>(
               initialData: [],
-              stream: events.map((event) => MapEntry(event, DateTime.now())).scan((l, event, _) {
+              stream: events
+                  .map((event) => MapEntry(event, DateTime.now()))
+                  .scan((l, event, _) {
                 final list = l ?? [];
                 if (list.length == 5) {
                   list.removeLast();
@@ -38,7 +40,8 @@ showEventsStream(
                     .map((eventType) => Padding(
                           child: Text(
                               "${eventType.value}: ${eventType.key.toString().split('.').last}"),
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                         ))
                     .toList(),
               ),

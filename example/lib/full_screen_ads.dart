@@ -71,7 +71,8 @@ class _FullScreenAdsState extends State<FullScreenAds> {
           ListView.builder(
             shrinkWrap: true,
             primary: false,
-            itemBuilder: (context, index) => _buildListItem(context, _placements[index]),
+            itemBuilder: (context, index) =>
+                _buildListItem(context, _placements[index]),
             itemCount: _placements.length,
           ),
         ],
@@ -112,17 +113,22 @@ class _FullScreenAdsState extends State<FullScreenAds> {
     if (isRewarded) {
       RewardedAd rewardedAd = (wrapper as RewardedWrapper).ad;
       request = () => rewardedAd.request();
-      show = () => rewardedAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
-      available = rewardedAd.isAvailable.asStream().concatWith([rewardedAd.availabilityStream]);
+      show = () => rewardedAd
+          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
+      available = rewardedAd.isAvailable
+          .asStream()
+          .concatWith([rewardedAd.availabilityStream]);
       events = rewardedAd.simpleEvents;
       autoRequestingChange = rewardedAd.changeAutoRequesting;
       impressionDataGetter = () => rewardedAd.impressionData;
     } else {
       InterstitialAd interstitialAd = (wrapper as InterstitialWrapper).ad;
       request = () => interstitialAd.request();
-      show = () => interstitialAd.showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
-      available =
-          interstitialAd.isAvailable.asStream().concatWith([interstitialAd.availabilityStream]);
+      show = () => interstitialAd
+          .showWithSSR(serverSideRewardingOptions: {"option1": "value1"});
+      available = interstitialAd.isAvailable
+          .asStream()
+          .concatWith([interstitialAd.availabilityStream]);
       events = interstitialAd.simpleEvents;
       autoRequestingChange = interstitialAd.changeAutoRequesting;
       impressionDataGetter = () => interstitialAd.impressionData;
@@ -137,7 +143,8 @@ class _FullScreenAdsState extends State<FullScreenAds> {
           var d = await impressionDataGetter.call();
           print('Current impression data for ${wrapper.name} = $d');
         },
-        onTap: () => showEventsStream(context: context, events: events, placement: wrapper.name),
+        onTap: () => showEventsStream(
+            context: context, events: events, placement: wrapper.name),
         title: Row(
           children: <Widget>[
             Icon(
@@ -201,7 +208,8 @@ class _AdActionsState extends State<AdActions> {
               var available = snapshot.hasData && snapshot.data!;
               return IconButton(
                 tooltip: 'Show ad',
-                disabledColor: Theme.of(context).iconTheme.color!.withOpacity(0.1),
+                disabledColor:
+                    Theme.of(context).iconTheme.color!.withOpacity(0.1),
                 onPressed: available ? widget.showAction : null,
                 icon: Icon(Icons.slideshow),
               );

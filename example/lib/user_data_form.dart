@@ -55,14 +55,16 @@ class __UserDataFormFieldsState extends State<_UserDataFormFields> {
             Expanded(
               child: TextFormField(
                 initialValue: "${widget.data.location?.latitude}",
-                decoration: InputDecoration(labelText: "Location", hintText: 'Latitude'),
+                decoration: InputDecoration(
+                    labelText: "Location", hintText: 'Latitude'),
               ),
             ),
             SizedBox(width: 8.0),
             Expanded(
               child: TextFormField(
                 initialValue: "${widget.data.location?.longitude}",
-                decoration: InputDecoration(labelText: "", hintText: 'Longitude'),
+                decoration:
+                    InputDecoration(labelText: "", hintText: 'Longitude'),
               ),
             ),
           ],
