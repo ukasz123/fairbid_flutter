@@ -1,35 +1,35 @@
 PODS:
-  - AdColony (4.6.1)
-  - AppLovinSDK (10.3.4)
+  - AdColony (4.7.1)
+  - AppLovinSDK (10.3.5)
   - fairbid_flutter (0.0.1):
-    - FairBidSDK (~> 3.18.0)
+    - FairBidSDK (~> 3.19.0)
     - Flutter
-  - FairBidSDK (3.18.0)
-  - FBAudienceNetwork (6.5.1):
+  - FairBidSDK (3.19.0)
+  - FBAudienceNetwork (6.6.0):
     - FBSDKCoreKit_Basics
-  - FBSDKCoreKit_Basics (11.1.0):
-    - FBSDKCoreKit_Basics/Basics (= 11.1.0)
-  - FBSDKCoreKit_Basics/Basics (11.1.0)
+  - FBSDKCoreKit_Basics (11.2.1):
+    - FBSDKCoreKit_Basics/Basics (= 11.2.1)
+  - FBSDKCoreKit_Basics/Basics (11.2.1)
   - Flutter (1.0.0)
-  - InMobiSDK (9.2.0):
-    - InMobiSDK/InMobiSDK (= 9.2.0)
-  - InMobiSDK/Core (9.2.0)
-  - InMobiSDK/InMobiSDK (9.2.0):
+  - InMobiSDK (9.2.1):
+    - InMobiSDK/InMobiSDK (= 9.2.1)
+  - InMobiSDK/Core (9.2.1)
+  - InMobiSDK/InMobiSDK (9.2.1):
     - InMobiSDK/Core
-  - IronSourceSDK (7.1.7.0)
+  - IronSourceSDK (7.1.10.0)
   - UnityAds (3.7.5)
-  - VungleSDK-iOS (6.10.1)
+  - VungleSDK-iOS (6.10.2)
 
 DEPENDENCIES:
-  - AdColony (= 4.6.1)
-  - AppLovinSDK (= 10.3.4)
+  - AdColony (= 4.7.1)
+  - AppLovinSDK (= 10.3.5)
   - fairbid_flutter (from `.symlinks/plugins/fairbid_flutter/ios`)
-  - FBAudienceNetwork (= 6.5.1)
+  - FBAudienceNetwork (= 6.6.0)
   - Flutter (from `Flutter`)
-  - InMobiSDK (= 9.2.0)
-  - IronSourceSDK (= 7.1.7.0)
+  - InMobiSDK (= 9.2.1)
+  - IronSourceSDK (= 7.1.10.0)
   - UnityAds (= 3.7.5)
-  - VungleSDK-iOS (= 6.10.1)
+  - VungleSDK-iOS (= 6.10.2)
 
 SPEC REPOS:
   trunk:
@@ -50,18 +50,18 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  AdColony: 957c975fa756fcdb10a91e8a7d6de4cf5bfc4f78
-  AppLovinSDK: 5a28da8e9b298a11e9e878abcc98e21e7edbdad3
-  fairbid_flutter: b3bc3443ba25b23f17e729063491c9cbe95485ce
-  FairBidSDK: 79653b65631eebf8f2a8cd3b3b4e85255dc9e2cc
-  FBAudienceNetwork: 9a5f277d6ed36a46354a045c46a4858b47407a72
-  FBSDKCoreKit_Basics: 8f978bce195845f609b0ec6b425949d0d24f525b
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  InMobiSDK: aafb46d900d41f1f89fe2347f5a6ba945383e8b0
-  IronSourceSDK: 6a3b2809c44a345bb6e99c3310437d3f89b25661
+  AdColony: f019aa76e21d2d728871a2441f95f309bb8558cc
+  AppLovinSDK: 3188b9df77128b503cea9822b77e1b4fe7e4761b
+  fairbid_flutter: 9d8f0afb7dd153fc4b10e4d40d86dbea527ad0a4
+  FairBidSDK: 9b305476cefe386d764b756e461fb8a38f884fca
+  FBAudienceNetwork: 9226b1e415de489e80bb5f83b3b8b61cbf75efde
+  FBSDKCoreKit_Basics: 73ebe3a27eb688ac5b5aa7e99f68992993042115
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  InMobiSDK: 23605be2a700af34786e1e7b3c4feb7da01e1e41
+  IronSourceSDK: 1c02b3cf4b09b6569fd259adbad06a41818e649a
   UnityAds: 9adbfd8ccc008e4e3e7b1bcf5666a126df4f1a8e
-  VungleSDK-iOS: 0344be7980f4cca040761f819dfd8101edba44cf
+  VungleSDK-iOS: 794c22a0ea0339c9767da80d63b7c07b8042ddc4
 
-PODFILE CHECKSUM: 9a02890ae322444d2207a1138f243f5477b20efa
+PODFILE CHECKSUM: f76355f57b45424ba7002f15ad55605fdb1e35c1
 
 COCOAPODS: 1.10.2

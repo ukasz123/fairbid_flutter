@@ -31,13 +31,13 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
   # Mediated network pods
-  pod 'AdColony', '4.6.1'
-  pod 'AppLovinSDK', '10.3.4'
-  pod 'FBAudienceNetwork', '6.5.1'
+  pod 'AdColony', '4.7.1'
+  pod 'AppLovinSDK', '10.3.5'
+  pod 'FBAudienceNetwork', '6.6.0'
+  pod 'InMobiSDK', '9.2.1'
+  pod 'IronSourceSDK', '7.1.10.0'
   pod 'UnityAds', '3.7.5'
-  pod 'VungleSDK-iOS', '6.10.1'
-  pod 'IronSourceSDK', '7.1.7.0'
-  pod 'InMobiSDK', '9.2.0'
+  pod 'VungleSDK-iOS', '6.10.2'
 
 end
 

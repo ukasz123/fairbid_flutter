@@ -319,7 +319,7 @@ class _FBBannerFactory {
 
 class _FBBannerFutureHolder {
   Future<dynamic>? pending;
-  dynamic? value;
+  dynamic value;
   int refCount = 0;
   Future<dynamic>? error;
 
